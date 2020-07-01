@@ -3,7 +3,6 @@ package org.code.algorithm.page;
 import org.code.algorithm.datastructe.ListNode;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author liulu12@xiaomi.com
@@ -16,8 +15,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        ListNode node = new ListNode(0);
-        page.removeNthFromEnd(node, 1);
+        page.nextPermutation(new int[]{1, 2, 3});
     }
 
     /**
@@ -766,14 +764,662 @@ public class FirstPage {
             }
             node = node.next;
         }
-        ListNode reverseKGroup = reverseKGroup(node, k);
+        ListNode reverseHead = reverseList(head, node);
 
-        return reverseList(head,reverseKGroup);
+        head.next = reverseKGroupV2(node, k);
+
+        return reverseHead;
+    }
+
+    private ListNode reverseList(ListNode start, ListNode end) {
+        ListNode prev = end;
+        while (start != end) {
+            ListNode tmp = start.next;
+            start.next = prev;
+            prev = start;
+            start = tmp;
+        }
+        return prev;
+    }
+
+    /**
+     * 26. 删除排序数组中的重复项
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[index++] = nums[i];
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 29. 两数相除
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
+    public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        boolean positiveSign = (dividend > 0 && divisor > 0)
+                || (dividend < 0 && divisor < 0);
+
+        int sign = 1;
+
+        if (!positiveSign) {
+            sign = -1;
+        }
+        long result = 0;
+        long dvd = Math.abs((long) dividend);
+        long dvs = Math.abs((long) divisor);
+
+        while (dvd >= dvs) {
+            int count = 1;
+            long tmp = dvs;
+            while (dvd >= (tmp << 1)) {
+                tmp <<= 1;
+                count <<= 1;
+            }
+            dvd -= tmp;
+            result += count;
+        }
+        return (int) (sign * result);
+    }
+
+    /**
+     * 30. 串联所有单词的子串
+     *
+     * @param s
+     * @param words
+     * @return
+     */
+    public List<Integer> findSubstring(String s, String[] words) {
+        return null;
+    }
+
+    /**
+     * 31. 下一个排列
+     *
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int length = nums.length - 1;
+
+        int index = length;
+
+        while (index >= 1) {
+            if (nums[index] > nums[index - 1]) {
+                break;
+            }
+            index--;
+        }
+        if (index == 0) {
+            reverseNums(nums, 0, length - 1);
+        } else {
+            int val = nums[index - 1];
+            int j = length;
+            while (j > index - 1) {
+                if (nums[j] > val) {
+                    break;
+                }
+                j--;
+            }
+            swap(nums, j, index - 1);
+            reverseNums(nums, index, length);
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        if (i == j) {
+            return;
+        }
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
+    private void reverseNums(int[] nums, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        int mid = (start + end) / 2;
+        for (int i = start; i <= mid; i++) {
+            int val = nums[i];
+            nums[i] = nums[start + end - i];
+            nums[start + end - i] = val;
+        }
+    }
+
+    /**
+     * 32. 最长有效括号
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        int len = s.length();
+        int left = -1;
+        for (int i = 0; i < len; i++) {
+            char word = s.charAt(i);
+            if (word == '(') {
+                stack.push(i);
+            } else {
+                if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                    stack.pop();
+                } else {
+                    left = i;
+                }
+                if (stack.isEmpty()) {
+                    result = Math.max(result, i - left);
+                } else {
+                    result = Math.max(result, i - stack.peek());
+                }
+            }
+        }
+        return result;
+    }
+
+    public int longestValidParenthesesV2(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char word = s.charAt(i);
+            if (stack.isEmpty() || word == '(') {
+                stack.push(i);
+            } else if (s.charAt(stack.peek()) == '(') {
+                stack.pop();
+            } else {
+                stack.push(i);
+            }
+        }
+        if (stack.isEmpty()) {
+            return s.length();
+        } else {
+            int result = 0;
+            int edge = s.length();
+            while (!stack.isEmpty()) {
+                Integer pop = stack.pop();
+
+                result = Math.max(result, edge - 1 - pop);
+
+                edge = pop;
+            }
+            result = Math.max(result, edge);
+            return result;
+        }
+    }
+
+
+    /**
+     * 33. 搜索旋转排序数组
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] < nums[mid]) {
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 34. 在排序数组中查找元素的第一个和最后一个位置
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int[] result = new int[]{-1, -1};
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] != target) {
+            return result;
+        }
+        result[0] = left;
+        right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2 + 1;
+
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        result[1] = left;
+        return result;
+    }
+
+
+    public int[] searchRangeV2(int[] nums, int target) {
+        int[] result = new int[]{-1, -1};
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+        int leftIndex = findLeftTargetIndex(nums, 0, nums.length - 1, target);
+
+        int rightIndex = findRightTargetIndex(nums, 0, nums.length - 1, target);
+
+        if (leftIndex == -1 || rightIndex == -1) {
+            return result;
+        }
+        result[0] = leftIndex;
+
+        result[1] = rightIndex;
+
+        return result;
 
     }
 
-    private ListNode reverseList(ListNode start, ListNode reverseKGroup) {
+    private int findRightTargetIndex(int[] nums, int left, int right, int target) {
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                if (mid < nums.length - 1 && nums[mid] == nums[mid + 1]) {
+                    left = mid + 1;
+                } else {
+                    return mid;
+                }
+            }
+        }
+        return -1;
+    }
 
+    private int findLeftTargetIndex(int[] nums, int left, int right, int target) {
+        if (left > right) {
+            return -1;
+        }
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] < target) {
+            return findLeftTargetIndex(nums, mid + 1, right, target);
+        } else if (nums[mid] > target) {
+            return findLeftTargetIndex(nums, left, mid - 1, target);
+        } else {
+            if (mid > 0 && nums[mid - 1] == target) {
+                return findLeftTargetIndex(nums, left, mid - 1, target);
+            }
+            return mid;
+        }
+    }
+
+
+    /**
+     * todo
+     * 35. 搜索插入位置
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[left] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 39. 组合总和
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
+        intervalCombination(result, new ArrayList<Integer>(), 0, candidates, target);
+        return result;
+    }
+
+    private void intervalCombination(List<List<Integer>> result,
+                                     ArrayList<Integer> integers, int start, int[] candidates, int target) {
+        if (target == 0) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            integers.add(candidates[i]);
+            intervalCombination(result, integers, i, candidates, target - candidates[i]);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    /**
+     * 40. Combination Sum II
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
+        intervalCombinationSums(result, new ArrayList<Integer>(), 0, candidates, target);
+        return result;
+    }
+
+    private void intervalCombinationSums(List<List<Integer>> result, ArrayList<Integer> tmp,
+                                         int start, int[] candidates, int target) {
+        if (target == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            tmp.add(candidates[i]);
+            intervalCombinationSums(result, tmp, i + 1, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
+        }
+
+    }
+
+    /**
+     * 41. First Missing Positive
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] >= 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i + 1 != nums[i]) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    /**
+     * 42. Trapping Rain Water
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        int left = 0;
+        int right = height.length - 1;
+        int leftEdge = 0;
+        int rightEdge = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (leftEdge <= height[left]) {
+                    leftEdge = height[left];
+                } else {
+                    result += leftEdge - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightEdge) {
+                    rightEdge = height[right];
+                } else {
+                    result += rightEdge - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param height
+     * @return
+     */
+    public int trapV2(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+
+        int result = 0;
+        int left = 0;
+
+        int right = height.length - 1;
+
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int edge = Math.min(height[left], height[right]);
+
+            for (int i = left; i <= right; i++) {
+                int value = height[i];
+
+                if (value > edge) {
+                    height[i] -= edge;
+                } else {
+                    result += edge - height[i];
+                    height[i] = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 43. Multiply Strings
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1.isEmpty() && num2.isEmpty()) {
+            return "0";
+        }
+        int len1 = num1.length();
+
+        int len2 = num2.length();
+
+        int[] nums = new int[num1.length() + num2.length()];
+
+        for (int i = len1 - 1; i >= 0; i--) {
+            for (int j = len2 - 1; j >= 0; j--) {
+                int value = Character.getNumericValue(num1.charAt(i))
+                        * Character.getNumericValue(num2.charAt(j)) + nums[i + j + 1];
+
+                nums[i + j + 1] = value % 10;
+
+                nums[i + j] += value / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+
+        for (int num : nums) {
+            if (!(builder.length() == 0 && num == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+
+    /**
+     * 45. Jump Game II
+     *
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        int step = 0;
+        int furthest = nums[0];
+        int current = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            furthest = Math.max(furthest, i + nums[i]);
+
+            if (i == current) {
+                step++;
+                current = furthest;
+            }
+        }
+        return step;
+    }
+
+    /**
+     * 46. Permutations
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        intervalPermute(result, new ArrayList<Integer>(), nums, used);
+        return result;
+    }
+
+    private void intervalPermute(List<List<Integer>> result, ArrayList<Integer> tmp, int[] nums, boolean[] used) {
+        if (tmp.size() == nums.length) {
+            result.add(new ArrayList<>(tmp));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            tmp.add(nums[i]);
+            intervalPermute(result, tmp, nums, used);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+
+    }
+
+    /**
+     * 47. Permutations II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        intervalPermuteUnique(result, new ArrayList<Integer>(), used, nums);
+        return result;
+
+    }
+
+    private void intervalPermuteUnique(List<List<Integer>> result, ArrayList<Integer> integers, boolean[] used, int[] nums) {
+        if (integers.size() == nums.length) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i]) {
+                continue;
+            }
+            used[i] = true;
+            integers.add(nums[i]);
+            intervalPermuteUnique(result, integers, used, nums);
+            integers.remove(integers.size() - 1);
+            used[i] = false;
+        }
     }
 
 
