@@ -1423,4 +1423,160 @@ public class FirstPage {
     }
 
 
+    /**
+     * 48. Rotate Image
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < i; j++) {
+                swapMatrix(matrix, i, j);
+            }
+        }
+        for (int[] row : matrix) {
+            int start = 0;
+            int end = row.length - 1;
+            for (int i = start; i <= (start + end) / 2; i++) {
+                swap(row, i, start + end - i);
+            }
+        }
+
+    }
+
+    private void swapMatrix(int[][] matrix, int i, int j) {
+        int val = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[j][i] = val;
+    }
+
+    /**
+     * 49. Group Anagrams
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();
+
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = String.valueOf(chars);
+
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+
+            list.add(str);
+
+            map.put(key, list);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+
+    /**
+     * 50. Pow(x, n)
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            n = -n;
+            x = 1 / x;
+        }
+        if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
+            return 0;
+        }
+        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+    }
+
+
+    public double myPowV2(double x, int n) {
+        long sign = Math.abs((long) n);
+        double result = 1.0;
+        while (sign != 0) {
+            if (sign % 2 != 0) {
+                result *= x;
+            }
+            if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
+                return 0;
+            }
+            x *= x;
+            sign >>= 1;
+        }
+        return n < 0 ? 1 / result : result;
+    }
+
+
+    /**
+     * 51. N-Queens
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        char[][] matrix = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = '.';
+            }
+        }
+        List<List<String>> result = new ArrayList<>();
+        intervalSolveNQueens(result, 0, matrix);
+        return result;
+    }
+
+    private void intervalSolveNQueens(List<List<String>> result, int row, char[][] matrix) {
+        if (row == matrix.length) {
+            List<String> tmp = new ArrayList<>();
+            for (char[] chars : matrix) {
+                tmp.add(String.valueOf(chars));
+            }
+            result.add(tmp);
+            return;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            if (validNQueens(i, row, matrix)) {
+                matrix[row][i] = 'Q';
+                intervalSolveNQueens(result, row + 1, matrix);
+                matrix[row][i] = '.';
+            }
+        }
+
+    }
+
+    private boolean validNQueens(int column, int row, char[][] matrix) {
+        for (int i = column; i >= 0; i--) {
+            if (matrix[row][i] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < matrix.length; i--, j++) {
+            if (matrix[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }
