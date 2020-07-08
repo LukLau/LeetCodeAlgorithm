@@ -15,10 +15,14 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        int[][] result = new int[][]{{1, 2},
-                {1, 1}};
+        String number = "0";
+        System.out.println(page.isNumber(number));
 
-        page.minPathSum(result);
+        System.out.println(page.isNumber(" 0.1"));
+
+        System.out.println(page.isNumber("abc"));
+
+        System.out.println(page.isNumber("1 a"));
     }
 
     /**
@@ -1937,6 +1941,190 @@ public class FirstPage {
             }
         }
         return dp[column - 1];
+    }
+
+
+    /**
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null) {
+            return false;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return false;
+        }
+        boolean numberAfterE = true;
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenDigit = false;
+        int length = s.length();
+
+        for (int i = 0; i < length; i++) {
+            char word = s.charAt(i);
+            if (Character.isDigit(word)) {
+                seenNumber = true;
+
+                numberAfterE = true;
+            } else if (word == 'e' || word == 'E') {
+                if (seenE || i == 0) {
+                    return false;
+                }
+                if (!seenNumber) {
+                    return false;
+                }
+                if (!Character.isDigit(s.charAt(i - 1)) && s.charAt(i - 1) != '.') {
+                    return false;
+                }
+                seenE = true;
+                numberAfterE = false;
+            } else if (word == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                if (seenE) {
+                    return false;
+                }
+                seenDigit = true;
+            } else if (word == '-' || word == '+') {
+                if (i != 0 && s.charAt(i - 1) != 'e' && s.charAt(i - 1) != 'E') {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return numberAfterE && seenNumber;
+    }
+
+    /**
+     * 66. Plus One
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        if (digits == null || digits.length == 0) {
+            return new int[]{};
+        }
+        int len = digits.length - 1;
+        for (int i = len; i > 0; i--) {
+            if (digits[i] != 9) {
+                digits[i]++;
+                return digits;
+            } else {
+                digits[i] = 0;
+            }
+        }
+        int[] result = new int[digits.length + 1];
+        result[0] = 1;
+        return result;
+    }
+
+
+    /**
+     * 67. Add Binary
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        int m = a.length() - 1;
+        int n = b.length() - 1;
+        int carry = 0;
+        StringBuilder builder = new StringBuilder();
+        while (m >= 0 || n >= 0 || carry > 0) {
+            int val = (m >= 0 ? Character.getNumericValue(a.charAt(m--)) : 0)
+                    + (n >= 0 ? Character.getNumericValue(b.charAt(n--)) : 0) + carry;
+            builder.append(val % 2);
+            carry = val / 2;
+        }
+        return builder.reverse().toString();
+    }
+
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int startIndex = 0;
+        while (startIndex < words.length) {
+            int line = 0;
+            int endIndex = startIndex;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            StringBuilder builder = new StringBuilder();
+            boolean lastRow = endIndex == words.length;
+            int countOfWord = endIndex - startIndex;
+            int width = maxWidth - line + 1;
+            if (countOfWord == 1) {
+                builder.append(words[startIndex]);
+            } else {
+                int blankSpace = lastRow ? 1 : 1 + width / (countOfWord - 1);
+                int extraSpace = lastRow ? 0 : width % (countOfWord - 1);
+                builder.append(constructWord(words, blankSpace, extraSpace, startIndex, endIndex));
+            }
+            String tmp = builder.toString();
+
+            result.add(trimWord(tmp, maxWidth));
+
+            startIndex = endIndex;
+        }
+        return result;
+    }
+
+    private String constructWord(String[] words, int blankSpace, int extraSpace, int start, int end) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = start; i < end; i++) {
+            builder.append(words[i]);
+            int tmp = blankSpace;
+            while (tmp-- > 0) {
+                builder.append(" ");
+            }
+            if (extraSpace-- > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    private String trimWord(String word, int maxWidth) {
+        StringBuilder wordBuilder = new StringBuilder(word);
+
+        while (wordBuilder.length() < maxWidth) {
+
+            wordBuilder.append(" ");
+        }
+        word = wordBuilder.toString();
+        while (word.length() > maxWidth) {
+            word = word.substring(0, word.length() - 1);
+        }
+        return word;
+    }
+
+    /**
+     * todo
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustifyV2(String[] words, int maxWidth) {
+        return null;
     }
 
 
