@@ -15,14 +15,7 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        String number = "0";
-        System.out.println(page.isNumber(number));
-
-        System.out.println(page.isNumber(" 0.1"));
-
-        System.out.println(page.isNumber("abc"));
-
-        System.out.println(page.isNumber("1 a"));
+        page.simplifyPath("\"/home//foo/\"");
     }
 
     /**
@@ -2119,12 +2112,117 @@ public class FirstPage {
 
     /**
      * todo
+     *
      * @param words
      * @param maxWidth
      * @return
      */
     public List<String> fullJustifyV2(String[] words, int maxWidth) {
-        return null;
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int index = 0;
+        while (index < words.length) {
+            int k = 0;
+            int line = 0;
+            while (index + k < words.length && line + words[index + k].length() <= maxWidth - k) {
+                line += words[index + k].length();
+                k++;
+            }
+            StringBuilder builder = new StringBuilder();
+            for (int j = 0; j < k; j++) {
+                builder.append(words[index + j]);
+                if (index + k >= words.length) {
+                    builder.append(" ");
+                } else if (k > 1) {
+                    int space = (maxWidth - line) / (k - 1) + (j < (maxWidth - line) % (k - 1) ? 1 : 0);
+
+                    while (space-- > 0) {
+                        builder.append(" ");
+                    }
+                }
+            }
+            result.add(trimWord(builder.toString(), maxWidth));
+
+            index += k;
+        }
+        return result;
+    }
+
+    /**
+     * 69. Sqrt(x)
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double result = x;
+        while (result * result - x > precision) {
+            result = (result + x / result) / 2;
+        }
+        return (int) result;
+    }
+
+    /**
+     * 70. Climbing Stairs
+     *
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int step1 = 1;
+        int step2 = 2;
+        int result = 0;
+        for (int i = 3; i <= n; i++) {
+            result = step1 + step2;
+            step1 = step2;
+            step2 = result;
+        }
+        return result;
+    }
+
+
+    /**
+     * 71. Simplify Path
+     *
+     * @param path
+     * @return
+     */
+    public String simplifyPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "/";
+        }
+        String[] split = path.split("/");
+        List<String> skip = Arrays.asList("", "..", "/", ".");
+        LinkedList<String> deque = new LinkedList<>();
+        for (String word : split) {
+            if (word.equals("..")) {
+                if (!deque.isEmpty()) {
+                    deque.poll();
+                }
+            } else if (!skip.contains(word)) {
+                deque.offer(word);
+            }
+        }
+        if (deque.isEmpty()) {
+            return "/";
+        }
+        StringBuilder result = new StringBuilder();
+        for (String word : deque) {
+            result.append("/").append(word);
+        }
+        return result.toString();
     }
 
 
