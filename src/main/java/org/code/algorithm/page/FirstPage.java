@@ -2225,5 +2225,113 @@ public class FirstPage {
         return result.toString();
     }
 
+    /**
+     * todo
+     * 72. Edit Distance
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2 == null) {
+            return 0;
+        }
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1])) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    /**
+     * 73. Set Matrix Zeroes
+     *
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        boolean setRow = false;
+        boolean setColumn = false;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                boolean zeroNum = matrix[i][j] == 0;
+                if (!zeroNum) {
+                    continue;
+                }
+                matrix[i][0] = 0;
+                matrix[0][j] = 0;
+                if (i == 0) {
+                    setColumn = true;
+                }
+                if (j == 0) {
+                    setRow = true;
+                }
+
+            }
+        }
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[i].length; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (setRow) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+        if (setColumn) {
+            Arrays.fill(matrix[0], 0);
+        }
+    }
+
+
+    /**
+     * 74. Search a 2D Matrix
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < column) {
+            int val = matrix[i][j];
+            if (val == target) {
+                return true;
+            } else if (val < target) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return false;
+    }
+
 
 }
