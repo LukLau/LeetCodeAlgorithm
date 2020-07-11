@@ -2334,4 +2334,116 @@ public class FirstPage {
     }
 
 
+    /**
+     * todo
+     * 75. Sort Colors
+     *
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int i = 0, j = nums.length - 1;
+        for (int k = 0; k <= j; ) {
+
+        }
+        return;
+    }
+
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int count = t.length();
+        int[] hash = new int[512];
+        for (int i = 0; i < count; i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+        int result = Integer.MAX_VALUE;
+        int begin = 0;
+        int head = 0;
+        int end = 0;
+        while (end < s.length()) {
+            if (hash[s.charAt(end++) - '0']-- > 0) {
+                count--;
+            }
+            while (count == 0) {
+                if (end - begin < result) {
+                    head = begin;
+                    result = end - begin;
+                }
+                if (hash[s.charAt(begin++) - '0']++ == 0) {
+                    count++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return "";
+    }
+
+    /**
+     * 77. Combinations
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        if (n <= 0 || k <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        combine(result, new ArrayList<>(), 1, n, k);
+        return result;
+    }
+
+    private <E> void combine(List<List<Integer>> result, List<Integer> tmp, int start, int n, int k) {
+        if (tmp.size() == k) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            tmp.add(i);
+            combine(result, tmp, i + 1, n, k);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
+    /**
+     * 78. Subsets
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        subsets(result, new ArrayList<Integer>(), 0, nums);
+        return result;
+    }
+
+    private void subsets(List<List<Integer>> result, ArrayList<Integer> integers, int start, int[] nums) {
+        result.add(new ArrayList<>(integers));
+        for (int i = start; i < nums.length; i++) {
+            integers.add(nums[i]);
+            subsets(result, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
 }
