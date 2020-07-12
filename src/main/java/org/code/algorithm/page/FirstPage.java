@@ -2446,4 +2446,113 @@ public class FirstPage {
     }
 
 
+    /**
+     * 79. Word Search
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && intervalExist(used, board, i, j, 0, word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean intervalExist(boolean[][] used, char[][] board, int i, int j, int k, String word) {
+        if (k >= word.length()) {
+            return true;
+        }
+        if (i < 0 || j < 0 || i >= board.length || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalExist(used, board, i - 1, j, k + 1, word)
+                || intervalExist(used, board, i + 1, j, k + 1, word)
+                || intervalExist(used, board, i, j - 1, k + 1, word)
+                || intervalExist(used, board, i, j + 1, k + 1, word)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+
+    /**
+     * 80. Remove Duplicates from Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicatesV2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int index = 1;
+        int count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[index++] = nums[i];
+                count = 1;
+            } else {
+                count++;
+                if (count > 2) {
+                    continue;
+                }
+                nums[index++] = nums[i];
+            }
+        }
+        return index;
+    }
+
+
+    /**
+     * 81. Search in Rotated Sorted Array II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean searchV2(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] == nums[right]) {
+                left++;
+            }
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+
+        }
+        return nums[left] == target;
+    }
 }
