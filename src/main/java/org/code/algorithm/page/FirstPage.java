@@ -2531,14 +2531,13 @@ public class FirstPage {
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
-            if (nums[left] == nums[right]) {
-                left++;
-            }
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 return true;
             }
-            if (nums[left] <= nums[mid]) {
+            if (nums[left] == nums[right]) {
+                left++;
+            } else if (nums[left] <= nums[mid]) {
                 if (target < nums[mid] && target >= nums[left]) {
                     right = mid - 1;
                 } else {
@@ -2555,4 +2554,91 @@ public class FirstPage {
         }
         return nums[left] == target;
     }
+
+
+    /**
+     * 82. Remove Duplicates from Sorted List II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode node = head.next.next;
+            while (node != null && node.val == head.val) {
+                node = node.next;
+            }
+            return deleteDuplicates(node);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
+
+    /**
+     * 83. Remove Duplicates from Sorted List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicatesV2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val != head.next.val) {
+            head.next = deleteDuplicatesV2(head.next);
+            return head;
+        }
+        return deleteDuplicatesV2(head.next);
+    }
+
+
+    /**
+     * 84. Largest Rectangle in Histogram
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int result = 0;
+        for (int i = 0; i <= heights.length; i++) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] <= height) {
+                stack.push(i);
+            } else {
+                int previousHeight = heights[stack.pop()];
+
+                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+
+                result = Math.max(result, width * previousHeight);
+
+                i--;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        return -1;
+    }
+
+
 }
