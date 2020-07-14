@@ -3,6 +3,9 @@ package org.code.algorithm;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author bilibili
+ */
 @SpringBootApplication
 public class AlgorithmApplication {
 
