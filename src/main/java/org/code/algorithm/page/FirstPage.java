@@ -2637,6 +2637,172 @@ public class FirstPage {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
+        int column = matrix[0].length;
+        int[] height = new int[column];
+        int[] left = new int[column];
+        int[] right = new int[column];
+        for (int j = 0; j < column; j++) {
+            right[j] = column;
+        }
+        int result = 0;
+
+        for (int i = 0; i < matrix.length; i++) {
+            char[] chars = matrix[i];
+            int leftEdge = 0;
+            int rightEdge = column;
+            for (int j = 0; j < column; j++) {
+                char tmp = chars[j];
+                if (tmp == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+                if (tmp == '1') {
+                    left[j] = Math.max(leftEdge, left[j]);
+                } else {
+                    left[j] = 0;
+                    leftEdge = j + 1;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                char tmp = chars[j];
+                if (tmp == '1') {
+                    right[j] = Math.min(rightEdge, right[j]);
+                } else {
+                    right[j] = column;
+                    rightEdge = j;
+                }
+            }
+
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, height[j] * (right[j] - left[j]));
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode slow = new ListNode(0);
+        ListNode dummy1 = slow;
+
+        ListNode fast = new ListNode(0);
+        ListNode dummy2 = fast;
+        while (head != null) {
+            if (head.val <= x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        dummy2.next = null;
+
+        dummy1.next = fast.next;
+
+        fast.next = null;
+
+        return slow.next;
+    }
+
+
+    /**
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        return false;
+    }
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int k = m + n - 1;
+        m--;
+        n--;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] >= nums2[n]) {
+                nums1[k--] = nums1[m--];
+            } else {
+                nums1[k--] = nums2[n--];
+            }
+        }
+        while (n >= 0) {
+            nums1[k--] = nums2[n--];
+        }
+    }
+
+
+    /**
+     * todo
+     * 89. Gray Code
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        return null;
+    }
+
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        intervalSubSets(result, new ArrayList<Integer>(), 0, nums);
+        return result;
+
+    }
+
+    private void intervalSubSets(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            intervalSubSets(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
         return -1;
     }
 
