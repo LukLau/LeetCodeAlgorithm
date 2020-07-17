@@ -1,6 +1,7 @@
 package org.code.algorithm.page;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -2803,7 +2804,135 @@ public class FirstPage {
      * @return
      */
     public int numDecodings(String s) {
+
         return -1;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+
+        root.next = head;
+
+        ListNode fast = root;
+
+        ListNode slow = root;
+
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        ListNode start = slow.next;
+
+        ListNode end = fast.next;
+
+        ListNode prev = end;
+
+        while (start != end) {
+            ListNode tmp = start.next;
+
+            start.next = prev;
+
+            prev = start;
+
+            start = tmp;
+        }
+        slow.next = prev;
+
+        return root.next;
+    }
+
+
+    /**
+     * 93. Restore IP Addresses
+     * todo
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return null;
+    }
+
+
+    /**
+     * 94. Binary Tree Inorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            result.add(p.val);
+            p = p.right;
+        }
+        return result;
+    }
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return intervalGenerateTrees(1, n);
+    }
+
+    private List<TreeNode> intervalGenerateTrees(int start, int end) {
+        List<TreeNode> result = new ArrayList<>();
+        if (start > end) {
+            result.add(null);
+            return result;
+        }
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            result.add(node);
+            return result;
+        }
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftNodes = intervalGenerateTrees(start, i - 1);
+            List<TreeNode> rightNodes = intervalGenerateTrees(i + 1, end);
+            for (TreeNode leftNode : leftNodes) {
+                for (TreeNode rightNode : rightNodes) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = leftNode;
+                    root.right = rightNode;
+                    result.add(root);
+                }
+            }
+        }
+        return result;
     }
 
 
