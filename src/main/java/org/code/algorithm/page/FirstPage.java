@@ -2804,8 +2804,18 @@ public class FirstPage {
      * @return
      */
     public int numDecodings(String s) {
-
-        return -1;
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        StringBuilder builder = new StringBuilder();
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char tmp = s.charAt(i);
+            char word = (char) ((tmp - 1) % 26 + 'A');
+            builder.append(word);
+        }
+        int result = builder.length();
+        return result == 0 ? 1 : result;
     }
 
 
@@ -2858,7 +2868,6 @@ public class FirstPage {
 
     /**
      * 93. Restore IP Addresses
-     * todo
      *
      * @param s
      * @return
@@ -2867,7 +2876,59 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        return null;
+        List<String> result = new ArrayList<>();
+        int length = s.length();
+        for (int i = 1; i < 4 && i < length - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < length - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < length; k++) {
+                    String s1 = s.substring(0, i);
+                    String s2 = s.substring(i, j);
+                    String s3 = s.substring(j, k);
+                    String s4 = s.substring(k, length);
+                    if (validIp(s1) && validIp(s1) && validIp(s1) && validIp(s1)) {
+                        String tmp = s1 + "." + s2 + "." + s3 + "." + s4;
+                        result.add(tmp);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean validIp(String s) {
+        return !s.isEmpty() && s.length() <= 3 && Integer.parseInt(s) <= 255 && (s.charAt(0) != '0' || s.length() <= 1);
+    }
+
+
+    /**
+     * todo
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddressesV2(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        for (int a = 1; a <= 3; a++) {
+            for (int b = 1; b <= 3; b++) {
+                for (int c = 1; c <= 3; c++) {
+                    String s1 = s.substring(0, a);
+                    String s2 = s.substring(a, a + b);
+                    String s3 = s.substring(a + b, a + b + c);
+                    String s4 = s.substring(a + b + c);
+                    if (s1.length() + s2.length() + s3.length() + s4.length() == 12) {
+                        if (validIp(s1) && validIp(s1) && validIp(s1) && validIp(s1)) {
+                            String tmp = s1 + "." + s2 + "." + s3 + "." + s4;
+                            result.add(tmp);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
 
@@ -2933,6 +2994,76 @@ public class FirstPage {
             }
         }
         return result;
+    }
+
+
+    /**
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null || s2 == null || s3 == null) {
+            return false;
+        }
+        int m = s1.length();
+        return false;
+    }
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            if (prev != null && prev.val >= p.val) {
+                return false;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return true;
     }
 
 
