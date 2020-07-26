@@ -1,7 +1,7 @@
 package org.code.algorithm.datastructe;
 
 /**
- * @author liulu12@xiaomi.com
+ * @author luk
  * @date 2020/7/18
  */
 public class TreeNode {

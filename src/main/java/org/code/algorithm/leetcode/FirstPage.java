@@ -1,4 +1,4 @@
-package org.code.algorithm.page;
+package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;

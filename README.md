@@ -24,11 +24,25 @@
 | 89 | gray code |  | 
 
 ### 二分查找
+
+#### leet code
 |  序列号   | 题目名称  | 题目难点|
 |  ----  | ----  | --- |
 | 33  | 搜索旋转排序数组 | 要求O(logN),同时数组是个旋转数组|
 | 34 | 在排序数组中查找元素的第一个和最后一个位置 | 要求O(logN) |
 | 87 | 在旋转具有重复的数组中查找目标元素 | |
+
+
+
+
+#### 剑指offer
+|  序列号   | 题目名称  | 题目难点|
+|  ----  | ----  | --- |
+| 旋转数组最小值  | [获取旋转数组最小值](https://www.nowcoder.com/practice/9f3231a991af4f55b95579b44b7a01ba?tpId=13&tags=&title=&diffculty=0&judgeStatus=0&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | |
+
+
+
+
 
 
 
