@@ -1,10 +1,12 @@
 package org.code.algorithm.swordoffer;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.RandomListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -468,6 +470,121 @@ public class SwordOffer {
             bottom--;
         }
         return result;
+    }
+
+
+    public boolean IsPopOrder(int[] pushA, int[] popA) {
+        if (pushA == null || popA == null) {
+            return false;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int j = 0;
+        for (int value : pushA) {
+            stack.push(value);
+            while (!stack.isEmpty() && popA[j] == stack.peek()) {
+                stack.pop();
+                j++;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+
+    public boolean VerifySquenceOfBST(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        int end = sequence.length - 1;
+        while (end > 0) {
+            int index = 0;
+            while (index < end && sequence[index] < sequence[end]) {
+                index++;
+            }
+            while (index < end && sequence[index] > sequence[end]) {
+                index++;
+            }
+            if (index != end) {
+                return false;
+            }
+            end--;
+        }
+        return true;
+
+//        return intervalVerify(0, sequence.length - 1, sequence);
+    }
+
+
+    public boolean VerifySquenceOfBSTV2(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        return intervalVerify(0, sequence.length - 1, sequence);
+    }
+
+    private boolean intervalVerify(int start, int end, int[] sequence) {
+        if (start > end) {
+            return true;
+        }
+        if (start == end) {
+            return true;
+        }
+        int tmp1 = start;
+        while (tmp1 < end && sequence[tmp1] < sequence[end]) {
+            tmp1++;
+        }
+        int tmp2 = tmp1;
+        while (tmp2 < end && sequence[tmp2] > sequence[end]) {
+            tmp2++;
+        }
+        if (tmp2 != end) {
+            return false;
+        }
+        return intervalVerify(start, tmp1 - 1, sequence) && intervalVerify(tmp2, end, sequence);
+    }
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        FindPath(result, new ArrayList<Integer>(), root, target);
+        return result;
+
+    }
+
+    private void FindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, TreeNode root, int target) {
+        integers.add(root.val);
+        if (root.left == null && root.right == null && root.val == target) {
+            result.add(new ArrayList<>(integers));
+        } else {
+            if (root.left != null) {
+                FindPath(result, integers, root.left, target - root.val);
+            }
+            if (root.right != null) {
+                FindPath(result, integers, root.right, target - root.val);
+            }
+        }
+        integers.remove(integers.size() - 1);
+    }
+
+
+    /**
+     * todo
+     * @param pHead
+     * @return
+     */
+    public RandomListNode Clone(RandomListNode pHead) {
+        if (pHead == null) {
+            return null;
+        }
+        RandomListNode node = pHead;
+        while (node.next != null) {
+
+            RandomListNode tmp = new RandomListNode(node.next.label);
+
+            tmp.next = node.next;
+        }
+        return null;
     }
 
 
