@@ -569,7 +569,8 @@ public class SwordOffer {
 
 
     /**
-     * todo
+     * 复制链表
+     *
      * @param pHead
      * @return
      */
@@ -578,14 +579,180 @@ public class SwordOffer {
             return null;
         }
         RandomListNode node = pHead;
-        while (node.next != null) {
 
-            RandomListNode tmp = new RandomListNode(node.next.label);
+        while (node != null) {
+
+            RandomListNode tmp = new RandomListNode(node.label);
 
             tmp.next = node.next;
+
+            node.next = tmp;
+
+            node = tmp.next;
+        }
+
+        node = pHead;
+
+        while (node != null) {
+            RandomListNode tmp = node.next;
+            if (node.random != null) {
+                tmp.random = node.random.next;
+            }
+            node = tmp.next;
+        }
+
+        node = pHead;
+
+        RandomListNode cloneNode = node.next;
+
+        while (node.next != null) {
+            RandomListNode tmp = node.next;
+
+            node.next = tmp.next;
+
+            node = tmp;
+        }
+        return cloneNode;
+    }
+
+
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        TreeNode p = pRootOfTree;
+        TreeNode root = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (prev != null) {
+                prev.right = p;
+                p.left = prev;
+            } else {
+                root = p;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return root;
+    }
+
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        char[] words = str.toCharArray();
+        boolean[] used = new boolean[words.length];
+        intervalPermutation(result, "", used, words);
+        return result;
+    }
+
+    private void intervalPermutation(ArrayList<String> result, String word, boolean[] used, char[] words) {
+        if (word.length() == words.length) {
+            result.add(word);
+            return;
+        }
+        for (int i = 0; i < words.length; i++) {
+            if (i > 0 && words[i] == words[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            word += words[i];
+            intervalPermutation(result, word, used, words);
+            word = word.substring(0, word.length() - 1);
+            used[i] = false;
+        }
+    }
+
+
+    /**
+     * todo
+     *
+     * @param str
+     * @return
+     */
+    public ArrayList<String> PermutationV2(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        char[] words = str.toCharArray();
+        intervalPermutationV2(result, 0, words);
+        return result;
+
+    }
+
+    private void intervalPermutationV2(ArrayList<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+        }
+
+
+    }
+
+
+    /**
+     * 摩尔投票法
+     *
+     * @param array
+     * @return
+     */
+    public int MoreThanHalfNumSolution(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int count = 1;
+        int candidate = array[0];
+        for (int i = 1; i < array.length; i++) {
+            int val = array[i];
+            if (val == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    candidate = val;
+                    count = 1;
+                }
+            }
+        }
+        count = 0;
+        for (int num : array) {
+
+            if (num == candidate) {
+                count++;
+            }
+        }
+        if (count * 2 > array.length) {
+            return candidate;
+        }
+        return 0;
+    }
+
+
+    /**
+     * todo
+     * @param input
+     * @param k
+     * @return
+     */
+    public ArrayList<Integer> GetLeastNumbers_Solution(int [] input, int k) {
+        if (input == null || input.length == 0) {
+            return new ArrayList<>();
         }
         return null;
+
     }
+
 
 
 }
