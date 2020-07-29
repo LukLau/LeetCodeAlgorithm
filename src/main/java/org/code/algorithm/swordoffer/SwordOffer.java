@@ -5,6 +5,7 @@ import org.code.algorithm.datastructe.RandomListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -16,7 +17,9 @@ public class SwordOffer {
 
     public static void main(String[] args) {
         SwordOffer swordOffer = new SwordOffer();
-        swordOffer.replaceSpace(new StringBuffer(" "));
+        int[] input = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
+
+        swordOffer.GetLeastNumbersSolution(input, 10);
     }
 
     /**
@@ -740,19 +743,171 @@ public class SwordOffer {
 
 
     /**
-     * todo
      * @param input
      * @param k
      * @return
      */
-    public ArrayList<Integer> GetLeastNumbers_Solution(int [] input, int k) {
+    public ArrayList<Integer> GetLeastNumbersSolution(int[] input, int k) {
         if (input == null || input.length == 0) {
             return new ArrayList<>();
         }
-        return null;
+        if (k > input.length || k <= 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(input);
+        ArrayList<Integer> result = new ArrayList<>();
+        int count = 0;
+        for (Integer num : input) {
+            result.add(num);
+            count++;
+            if (count == k) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<Integer> GetLeastNumbersSolutionV2(int[] input, int k) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (input == null || input.length == 0 || k <= 0 || k > input.length) {
+            return result;
+        }
+        k--;
+        int partition = partition(input, 0, input.length - 1);
+        while (partition != k) {
+
+            if (partition > k) {
+                partition = partition(input, 0, partition - 1);
+            } else {
+                partition = partition(input, partition + 1, input.length - 1);
+            }
+        }
+        for (int i = 0; i <= k; i++) {
+            result.add(input[i]);
+        }
+        return result;
+    }
+
+    private int partition(int[] input, int start, int end) {
+        int pivot = input[start];
+        while (start < end) {
+            while (start < end && input[end] >= pivot) {
+                end--;
+            }
+            if (start < end) {
+                input[start] = input[end];
+                start++;
+            }
+            while (start < end && input[start] <= pivot) {
+                start++;
+            }
+            if (start < end) {
+                input[end] = input[start];
+                end--;
+            }
+        }
+        input[start] = pivot;
+        return start;
+    }
+
+
+    /**
+     * todo
+     *
+     * @param array
+     * @return
+     */
+    public int FindGreatestSumOfSubArray(int[] array) {
+        return -1;
+    }
+
+
+    /**
+     * todo
+     *
+     * @param n
+     * @return
+     */
+    public int NumberOf1Between1AndN_Solution(int n) {
+        return -1;
 
     }
 
+
+    public String PrintMinNumber(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return "";
+        }
+        String[] words = new String[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            words[i] = String.valueOf(numbers[i]);
+        }
+        Arrays.sort(words, (o1, o2) -> {
+            String tmp1 = o1 + o2;
+            String tmp2 = o2 + o1;
+            return tmp1.compareTo(tmp2);
+        });
+        StringBuilder builder = new StringBuilder();
+        for (String word : words) {
+            builder.append(word);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 获取丑数
+     *
+     * @param index
+     * @return
+     */
+    public int GetUglyNumberSolution(int index) {
+        if (index <= 0) {
+            return index;
+        }
+        if (index <= 7) {
+            return index;
+        }
+        int index2 = 0;
+        int index3 = 0;
+        int index5 = 0;
+        int[] result = new int[index];
+        result[0] = 1;
+        while (index < result.length) {
+            int val = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
+
+            if (val == result[index2] * 2) {
+                index2++;
+            }
+            if (val == result[index3] * 3) {
+                index3++;
+            }
+            index++;
+        }
+        return 0;
+    }
+
+
+    public int FirstNotRepeatingChar(String str) {
+        if (str == null || str.isEmpty()) {
+            return -1;
+        }
+        char[] words = str.toCharArray();
+        int[] hash = new int[512];
+        for (int i = 0; i < words.length; i++) {
+            int index = words[i] - 'a';
+            hash[index]++;
+        }
+
+        for (int i = 0; i < words.length; i++) {
+            int index = words[i] - 'a';
+            if (hash[index] == 1) {
+                return i;
+            }
+        }
+        return -1;
+
+
+    }
 
 
 }
