@@ -4,10 +4,7 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.RandomListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author dora
@@ -812,13 +809,21 @@ public class SwordOffer {
 
 
     /**
-     * todo
-     *
      * @param array
      * @return
      */
     public int FindGreatestSumOfSubArray(int[] array) {
-        return -1;
+        if (array == null || array.length == 0) {
+            return Integer.MIN_VALUE;
+        }
+        int result = Integer.MIN_VALUE;
+        int local = 0;
+        for (int num : array) {
+            local = local >= 0 ? local + num : num;
+            result = Math.max(result, local);
+        }
+        return result;
+
     }
 
 
@@ -861,29 +866,30 @@ public class SwordOffer {
      * @return
      */
     public int GetUglyNumberSolution(int index) {
-        if (index <= 0) {
+        if (index < 7) {
             return index;
         }
-        if (index <= 7) {
-            return index;
-        }
-        int index2 = 0;
-        int index3 = 0;
-        int index5 = 0;
-        int[] result = new int[index];
-        result[0] = 1;
-        while (index < result.length) {
-            int val = Math.min(Math.min(result[index2] * 2, result[index3] * 3), result[index5] * 5);
+        int[] numbers = new int[index];
+        numbers[0] = 1;
+        int idx2 = 0;
+        int idx3 = 0;
+        int idx5 = 0;
+        for (int i = 1; i < numbers.length; i++) {
+            int val = Math.min(Math.min(numbers[idx2] * 2, numbers[idx3] * 3), numbers[idx5] * 5);
 
-            if (val == result[index2] * 2) {
-                index2++;
+            numbers[i] = val;
+
+            if (val == numbers[idx2] * 2) {
+                idx2++;
             }
-            if (val == result[index3] * 3) {
-                index3++;
+            if (val == numbers[idx3] * 3) {
+                idx3++;
             }
-            index++;
+            if (val == numbers[idx5] * 5) {
+                idx5++;
+            }
         }
-        return 0;
+        return numbers[index - 1];
     }
 
 
@@ -891,23 +897,210 @@ public class SwordOffer {
         if (str == null || str.isEmpty()) {
             return -1;
         }
+        HashMap<Character, Integer> map = new HashMap<>();
         char[] words = str.toCharArray();
-        int[] hash = new int[512];
-        for (int i = 0; i < words.length; i++) {
-            int index = words[i] - 'a';
-            hash[index]++;
+        for (char word : words) {
+            Integer num = map.getOrDefault(word, 0);
+            num++;
+            map.put(word, num);
         }
-
         for (int i = 0; i < words.length; i++) {
-            int index = words[i] - 'a';
-            if (hash[index] == 1) {
+            char word = words[i];
+            Integer integer = map.get(word);
+            if (integer == 1) {
                 return i;
             }
         }
         return -1;
+    }
 
+
+    /**
+     * todo
+     *
+     * @param array
+     * @return
+     */
+    public int InversePairs(int[] array) {
+        return -1;
+    }
+
+
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode l1 = pHead1;
+
+        ListNode l2 = pHead2;
+        while (l1 != l2) {
+            l1 = l1 == null ? pHead2 : l1.next;
+            l2 = l2 == null ? pHead1 : l2.next;
+        }
+        return l1;
+    }
+
+
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (int num : array) {
+            if (num == k) {
+                count++;
+            }
+
+        }
+        return count;
 
     }
+
+
+    /**
+     * todo
+     *
+     * @param array
+     * @param k
+     * @return
+     */
+    public int GetNumberOfKV2(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        return -1;
+    }
+
+
+    public int TreeDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(TreeDepth(root.left), TreeDepth(root.right));
+    }
+
+
+    public boolean IsBalancedSolution(TreeNode root) {
+
+        if (root == null) {
+            return true;
+        }
+        int leftDepth = TreeDepth(root.left);
+        int rightDepth = TreeDepth(root.right);
+        if (Math.abs(leftDepth - rightDepth) <= 1) {
+            return IsBalancedSolution(root.left) && IsBalancedSolution(root.right);
+        }
+        return false;
+
+    }
+
+
+    public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        int result = 0;
+        for (int number : array) {
+            result ^= number;
+        }
+        int index = 0;
+        while (index < 32) {
+            if ((result & (1 << index)) != 0) {
+                break;
+            }
+            index++;
+        }
+        for (int number : array) {
+            if ((number & (1 << index)) == 0) {
+                num1[0] ^= number;
+            } else {
+                num2[0] ^= number;
+            }
+        }
+    }
+
+
+    /**
+     * todo
+     *
+     * @param sum
+     * @return
+     */
+    public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+        return null;
+    }
+
+
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        if (array == null || array.length == 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            if (array[left] + array[right] == sum) {
+                result.add(array[left]);
+                result.add(array[right]);
+                break;
+            }
+            while (left < right && array[left] + array[right] < sum) {
+                left++;
+            }
+            while (left < right && array[left] + array[right] > sum) {
+                right--;
+            }
+        }
+        return result;
+    }
+
+
+    public String LeftRotateString(String str, int n) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
+        if (n == 0) {
+            return str;
+        }
+        int len = str.length();
+        str += str;
+        return str.substring(n, n + len);
+
+    }
+
+
+    public String LeftRotateStringV2(String str, int n) {
+        if (str == null || str.isEmpty() || n <= 0) {
+            return str;
+        }
+        char[] words = str.toCharArray();
+        swapChars(words, 0, n - 1);
+        swapChars(words, n, words.length - 1);
+        swapChars(words, 0, words.length - 1);
+        return String.valueOf(words);
+    }
+
+    private void swapChars(char[] words, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        for (int i = start; i <= (start + end) / 2; i++) {
+            char tmp = words[i];
+            words[i] = words[start + end - i];
+            words[start + end - i] = tmp;
+        }
+    }
+
+
+    /**
+     * todo
+     * @param str
+     * @return
+     */
+    public String ReverseSentence(String str) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
+        return -1
+    }
+
 
 
 }
