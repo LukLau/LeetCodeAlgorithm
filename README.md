@@ -39,6 +39,7 @@
 |  序列号   | 题目名称  | 题目难点|
 |  ----  | ----  | --- |
 | 旋转数组最小值  | [获取旋转数组最小值](https://www.nowcoder.com/practice/9f3231a991af4f55b95579b44b7a01ba?tpId=13&tags=&title=&diffculty=0&judgeStatus=0&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | |
+|孩子们的游戏  | [孩子们玩约瑟夫环](https://www.nowcoder.com/practice/f78a359491e64a50bce2d89cff857eb6?tpId=13&tags=&title=&diffculty=0&judgeStatus=0&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking) | |
 
 
 

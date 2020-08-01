@@ -16,7 +16,7 @@ public class SwordOffer {
         SwordOffer swordOffer = new SwordOffer();
         int[] input = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
 
-        swordOffer.GetLeastNumbersSolution(input, 10);
+        swordOffer.isNumeric(new char[]{'1', '2', '3', '.', '4', '5', 'e', '+', '6'});
     }
 
     /**
@@ -1090,7 +1090,6 @@ public class SwordOffer {
 
 
     /**
-     * todo
      * @param str
      * @return
      */
@@ -1098,9 +1097,266 @@ public class SwordOffer {
         if (str == null || str.isEmpty()) {
             return "";
         }
-        return -1
+
+        String[] words = str.split(" ");
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = words.length - 1; i >= 0; i--) {
+            builder.append(words[i]);
+            if (i > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.length() != 0 ? builder.toString() : str;
     }
 
+
+    public boolean isContinuous(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        int min = 14;
+        int max = -1;
+
+        int zeroNumber = 0;
+
+        for (int number : numbers) {
+            if (number == 0) {
+                zeroNumber++;
+                continue;
+            }
+            if (min == number || max == number) {
+                return false;
+            }
+            if (number < min) {
+                min = number;
+            }
+            if (number > max) {
+                max = number;
+            }
+
+
+        }
+        if (zeroNumber >= 5) {
+            return true;
+        }
+
+        return max - min <= 4;
+    }
+
+
+    public boolean isContinuousV2(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        Arrays.sort(numbers);
+
+        if (numbers[numbers.length - 1] == 0) {
+            return true;
+        }
+        int min = 14;
+        int max = -1;
+
+        for (int i = 0; i < numbers.length; i++) {
+            int val = numbers[i];
+            if (val == 0) {
+                continue;
+            }
+            if (i > 0 && numbers[i] == numbers[i - 1]) {
+                return false;
+            }
+            if (val < min) {
+                min = val;
+            }
+            if (val > max) {
+                max = val;
+            }
+        }
+        return max - min <= 4;
+
+    }
+
+    /**
+     * todo
+     * 约瑟夫环
+     *
+     * @param n
+     * @param m
+     * @return
+     */
+    public int LastRemainingSolution(int n, int m) {
+        if (n <= 0 || m <= 0) {
+            return 0;
+        }
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            result.add(i);
+        }
+        return -1;
+    }
+
+
+    public int Sum_Solution(int n) {
+        int result = n;
+
+        boolean flag = n > 0 && ((result += Sum_Solution(n - 1)) > 0);
+
+        return result;
+    }
+
+
+    /**
+     * todo
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public int Add(int num1, int num2) {
+        return -1;
+    }
+
+
+    public int StrToInt(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+
+        if (str.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        int index = 0;
+        if (str.charAt(index) == '-' || str.charAt(index) == '+') {
+            sign = str.charAt(index) == '-' ? -1 : 1;
+            index++;
+        }
+        long result = 0;
+        while (index < str.length() && Character.isDigit(str.charAt(index))) {
+            int val = Character.getNumericValue(str.charAt(index));
+
+            result = result * 10 + val;
+
+            if (result > Integer.MAX_VALUE) {
+                return 0;
+            }
+            index++;
+        }
+        if (index != str.length()) {
+            return 0;
+        }
+        return (int) (result * sign);
+    }
+
+
+    /**
+     * todo
+     *
+     * @param numbers
+     * @param length
+     * @param duplication
+     * @return
+     */
+    public boolean duplicate(int numbers[], int length, int[] duplication) {
+        return false;
+    }
+
+
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[A.length];
+        int base = 1;
+        for (int i = 0; i < A.length; i++) {
+            result[i] = base;
+            base *= A[i];
+        }
+        base = 1;
+        for (int i = A.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= A[i];
+        }
+        return result;
+    }
+
+    /**
+     * 魔法匹配问题
+     *
+     * @param str
+     * @param pattern
+     * @return
+     */
+    public boolean match(char[] str, char[] pattern) {
+        if (str == null) {
+            return true;
+        }
+        if (pattern == null) {
+            return false;
+        }
+        boolean[][] dp = new boolean[str.length + 1][pattern.length + 1];
+
+        dp[0][0] = true;
+
+        for (int j = 1; j <= pattern.length; j++) {
+            dp[0][j] = pattern[j - 1] == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= str.length; i++) {
+            for (int j = 1; j <= pattern.length; j++) {
+                if (str[i - 1] == pattern[j - 1] || pattern[j - 1] == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern[j - 1] == '*') {
+                    if (pattern[j - 2] != '.' && str[i - 1] != pattern[j - 2]) {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j - 1] || dp[i][j - 1] || dp[i - 1][j];
+                    }
+                }
+            }
+        }
+        return dp[str.length][pattern.length];
+    }
+
+
+    public boolean isNumeric(char[] str) {
+        if (str == null || str.length == 0) {
+            return false;
+        }
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenDigit = false;
+        boolean seenNumberAfter = true;
+        for (int i = 0; i < str.length; i++) {
+            char word = str[i];
+            if (Character.isDigit(word)) {
+                seenNumber = true;
+
+                seenNumberAfter = true;
+            } else if (word == 'e' || word == 'E') {
+                if (i == 0 || seenE) {
+                    return false;
+                }
+                if (!Character.isDigit(str[i - 1])) {
+                    return false;
+                }
+                seenE = true;
+                seenNumberAfter = false;
+            } else if (word == '-' || word == '+') {
+                if (i > 0 && (str[i - 1] != 'e' && str[i - 1] != 'E')) {
+                    return false;
+                }
+            } else if (word == '.') {
+                if (seenDigit || i == 0 | seenE) {
+                    return false;
+                }
+                seenDigit = true;
+            } else {
+                return false;
+            }
+        }
+        return seenNumberAfter && seenNumber;
+    }
 
 
 }
