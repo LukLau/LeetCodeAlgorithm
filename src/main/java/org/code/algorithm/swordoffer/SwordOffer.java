@@ -2,6 +2,7 @@ package org.code.algorithm.swordoffer;
 
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.RandomListNode;
+import org.code.algorithm.datastructe.TreeLinkNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -1192,7 +1193,13 @@ public class SwordOffer {
         for (int i = 0; i < n; i++) {
             result.add(i);
         }
-        return -1;
+        int position = 0;
+        while (result.size() > 1) {
+            position = (position + m - 1) % result.size();
+
+            result.remove(position);
+        }
+        return result.size() == 1 ? result.get(0) : -1;
     }
 
 
@@ -1356,6 +1363,135 @@ public class SwordOffer {
             }
         }
         return seenNumberAfter && seenNumber;
+    }
+
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead;
+        ListNode slow = pHead;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (slow == fast) {
+                fast = pHead;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
+        if (pHead.val == pHead.next.val) {
+            ListNode node = pHead.next.next;
+            while (node != null && node.val == pHead.val) {
+                node = node.next;
+            }
+            return deleteDuplication(node);
+        } else {
+            pHead.next = deleteDuplication(pHead.next);
+            return pHead;
+        }
+    }
+
+
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) {
+            return null;
+        }
+        TreeLinkNode right = pNode.right;
+        if (right != null) {
+            while (right.left != null) {
+                right = right.left;
+            }
+            return right;
+        }
+//        if (pNode.next.left == pNode) {
+//            return pNode.next;
+//        }
+//        TreeLinkNode parentNode = pNode.next;
+//        while (parentNode.next.left == parentNode) {
+//            parentNode = parentNode.next;
+//        }
+
+        while (pNode.next != null) {
+            if (pNode.next.left == pNode) {
+                return pNode.next;
+            }
+            pNode = pNode.next;
+        }
+        return null;
+    }
+
+
+    boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) {
+            return true;
+        }
+        return isSymmetrical(pRoot.left, pRoot.right);
+
+    }
+
+    private boolean isSymmetrical(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+        return isSymmetrical(left.left, right.right) && isSymmetrical(left.right, right.left);
+    }
+
+
+    public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+        if (pRoot == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+        boolean leftToRight = true;
+        linkedList.offer(pRoot);
+        while (!linkedList.isEmpty()) {
+            int size = linkedList.size();
+            int[] nums = new int[size];
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = linkedList.poll();
+
+                int index = leftToRight ? i : size - 1 - i;
+
+                nums[index] = poll.val;
+
+                if (poll.left != null) {
+                    linkedList.offer(poll.left);
+                }
+
+                if (poll.right != null) {
+                    linkedList.offer(poll.right);
+                }
+            }
+            leftToRight = !leftToRight;
+            ArrayList<Integer> tmp = new ArrayList<>();
+
+            for (int num : nums) {
+                tmp.add(num);
+            }
+            result.add(tmp);
+        }
+        return result;
+
     }
 
 
