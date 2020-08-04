@@ -25,6 +25,12 @@
 
 ### 二分查找
 
+### 树的问题
+
+|  序列号   | 题目名称  | 题目难点|
+|  ----  | ----  | --- |
+| 297  | [Serialize and Deserialize Binary Tree](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) | |
+
 #### leet code
 |  序列号   | 题目名称  | 题目难点|
 |  ----  | ----  | --- |
@@ -67,6 +73,7 @@
 |  序列号   | 题目名称  | 题目难点|
 |  ----  | ----  | --- |
 | 1 | [数组中超过一半的数字](https://www.nowcoder.com/practice/e8a1b01a2df14cb2b228b30ee6a92163?tpId=13&tags=&title=&diffculty=0&judgeStatus=0&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)|摩尔投票法 |
+| 2|  [序列化/反序列化树木](https://www.nowcoder.com/practice/cf7e25aa97c04cc1a68c8f040e71fb84?tpId=13&&tqId=11214&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)|
 
 
 

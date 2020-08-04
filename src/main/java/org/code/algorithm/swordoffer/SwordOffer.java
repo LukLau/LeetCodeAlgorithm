@@ -1495,4 +1495,30 @@ public class SwordOffer {
     }
 
 
+    public TreeNode KthNode(TreeNode pRoot, int k) {
+        if (pRoot == null || k <= 0) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = pRoot;
+        int iteratorIndex = -1;
+        k--;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            iteratorIndex++;
+
+            if (iteratorIndex == k) {
+                return p;
+            }
+            p = p.right;
+        }
+        return null;
+    }
+
+
 }
