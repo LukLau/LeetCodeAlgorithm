@@ -17,7 +17,9 @@ public class SwordOffer {
         SwordOffer swordOffer = new SwordOffer();
         int[] input = new int[]{4, 5, 1, 6, 2, 7, 3, 8};
 
-        swordOffer.isNumeric(new char[]{'1', '2', '3', '.', '4', '5', 'e', '+', '6'});
+//        swordOffer.isNumeric(new char[]{'1', '2', '3', '.', '4', '5', 'e', '+', '6'});
+        int[] nums = new int[]{2, 3, 4, 2, 6, 2, 5, 1};
+        swordOffer.maxInWindows(nums, 3);
     }
 
     /**
@@ -398,7 +400,6 @@ public class SwordOffer {
 
 
     /**
-     * todo
      * 判断是不是子树
      *
      * @param root1
@@ -406,11 +407,22 @@ public class SwordOffer {
      * @return
      */
     public boolean HasSubtree(TreeNode root1, TreeNode root2) {
-        if (root1 == null) {
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        return isSubTree(root1, root2)
+                || HasSubtree(root1.left, root2) || HasSubtree(root1.right, root2);
+    }
+
+    private boolean isSubTree(TreeNode root1, TreeNode root2) {
+        if (root2 == null) {
             return true;
         }
-        if (root2 == null) {
+        if (root1 == null) {
             return false;
+        }
+        if (root1.val == root2.val) {
+            return isSubTree(root1.left, root2.left) && isSubTree(root1.right, root2.right);
         }
         return false;
     }
@@ -697,8 +709,6 @@ public class SwordOffer {
         if (start == words.length) {
             result.add(String.valueOf(words));
         }
-
-
     }
 
 
@@ -1198,7 +1208,7 @@ public class SwordOffer {
             position = (position + m - 1) % result.size();
 
             result.remove(position);
-        }
+        } 
         return result.size() == 1 ? result.get(0) : -1;
     }
 
@@ -1518,6 +1528,158 @@ public class SwordOffer {
             p = p.right;
         }
         return null;
+    }
+
+
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        if (num == null || num.length == 0 || size <= 0 || size > num.length) {
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for (int i = 0; i < num.length; i++) {
+            int k = i - size + 1;
+
+            if (!list.isEmpty() && list.peekFirst() < k) {
+                list.pollFirst();
+            }
+            while (!list.isEmpty() && num[list.peekLast()] <= num[i]) {
+                list.pollLast();
+            }
+            list.add(i);
+
+            if (k >= 0) {
+                result.add(num[list.peekFirst()]);
+            }
+        }
+        return result;
+    }
+
+
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * cols + j;
+                if (matrix[index] == str[0] && intervalHasPath(used, i, j, rows, cols, matrix, 0, str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean intervalHasPath(boolean[][] used, int i, int j, int rows, int cols, char[] matrix, int start, char[] str) {
+        if (start == str.length) {
+            return true;
+        }
+        if (i < 0 || i >= rows || j < 0 || j >= cols || used[i][j]) {
+            return false;
+        }
+        int index = i * cols + j;
+
+        if (matrix[index] != str[start]) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalHasPath(used, i - 1, j, rows, cols, matrix, start + 1, str) ||
+                intervalHasPath(used, i + 1, j, rows, cols, matrix, start + 1, str) ||
+                intervalHasPath(used, i, j - 1, rows, cols, matrix, start + 1, str) ||
+                intervalHasPath(used, i, j + 1, rows, cols, matrix, start + 1, str)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+
+    /**
+     * todo
+     *
+     * @param threshold
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int movingCount(int threshold, int rows, int cols) {
+        if (rows <= 0 || cols <= 0 || threshold < 0) {
+            return 0;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        return intervalMovingCount(used, 0, 0, rows, cols, threshold);
+    }
+
+    private int intervalMovingCount(boolean[][] used, int i, int j, int rows, int cols, int threshold) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols) {
+            return 0;
+        }
+        if (used[i][j]) {
+            return 0;
+        }
+        used[i][j] = true;
+        boolean notExceed = (this.getCount(i) + this.getCount(j)) <= threshold;
+
+        if (!notExceed) {
+            return 0;
+        }
+        int count = 1;
+
+        count += intervalMovingCount(used, i - 1, j, rows, cols, threshold);
+        count += intervalMovingCount(used, i + 1, j, rows, cols, threshold);
+        count += intervalMovingCount(used, i, j - 1, rows, cols, threshold);
+        count += intervalMovingCount(used, i, j + 1, rows, cols, threshold);
+
+        return count;
+    }
+
+    private int getCount(int num) {
+        int result = 0;
+        while (num != 0) {
+            result += num % 10;
+
+            num /= 10;
+        }
+        return result;
+    }
+
+
+    public int cutRope(int target) {
+        if (target <= 0) {
+            return 0;
+        }
+        if (target <= 2) {
+            return 1;
+        }
+        if (target == 3) {
+            return 2;
+        }
+        if (target == 4) {
+            return 4;
+        }
+        int[] dp = new int[target + 1];
+
+        dp[0] = dp[1];
+
+        dp[2] = 2;
+
+        dp[3] = 3;
+
+        dp[4] = 4;
+
+
+        for (int i = 5; i <= target; i++) {
+            int result = 0;
+            for (int j = 1; j <= i / 2; j++) {
+                result = Math.max(result, dp[j] * dp[i - j]);
+            }
+            dp[i] = result;
+        }
+        return dp[target];
     }
 
 
