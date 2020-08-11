@@ -1,5 +1,6 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
@@ -229,6 +230,82 @@ public class TwoPage {
         root.left = sortedArrayToBST(nums, start, mid - 1);
         root.right = sortedArrayToBST(nums, mid + 1, end);
         return root;
+    }
+
+
+    /**
+     * 109. 有序链表转换二叉搜索树
+     *
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return sortedListToBST(head, null);
+    }
+
+    private TreeNode sortedListToBST(ListNode start, ListNode end) {
+        if (start == end) {
+            return null;
+        }
+        ListNode fast = start;
+        ListNode slow = start;
+        while (fast != end && fast.next != end) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        root.left = sortedListToBST(start, slow);
+        root.right = sortedListToBST(slow.next, end);
+        return root;
+    }
+
+
+    public TreeNode sortedListToBSTV2(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode middleNode = getMiddleNode(head);
+        TreeNode root = new TreeNode(middleNode.val);
+        if (middleNode == head) {
+            return root;
+        }
+        root.left = sortedListToBSTV2(head);
+        root.right = sortedListToBSTV2(middleNode.next);
+        return root;
+    }
+
+    private ListNode getMiddleNode(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode prev = null;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if (prev != null) {
+            prev.next = null;
+        }
+        return slow;
+    }
+
+
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        if (Math.abs(left - right) > 1) {
+            return false;
+        }
+        return isBalanced(root.left) && isBalanced(root.right);
     }
 
 
