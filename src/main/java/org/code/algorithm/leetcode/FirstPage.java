@@ -16,7 +16,9 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        page.simplifyPath("\"/home//foo/\"");
+        String ip = "0000";
+
+        page.restoreIpAddresses(ip);
     }
 
     /**
@@ -2881,12 +2883,13 @@ public class FirstPage {
         for (int i = 1; i < 4 && i < length - 2; i++) {
             for (int j = i + 1; j < i + 4 && j < length - 1; j++) {
                 for (int k = j + 1; k < j + 4 && k < length; k++) {
-                    String s1 = s.substring(0, i);
-                    String s2 = s.substring(i, j);
-                    String s3 = s.substring(j, k);
-                    String s4 = s.substring(k, length);
-                    if (validIp(s1) && validIp(s1) && validIp(s1) && validIp(s1)) {
-                        String tmp = s1 + "." + s2 + "." + s3 + "." + s4;
+                    String A = s.substring(0, i);
+                    String B = s.substring(i, j);
+                    String C = s.substring(j, k);
+                    String D = s.substring(k, length);
+
+                    if (validIp(A) && validIp(B) && validIp(C) && validIp(D)) {
+                        String tmp = A + "." + B + "." + C + "." + D;
                         result.add(tmp);
                     }
                 }
