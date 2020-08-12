@@ -1,6 +1,7 @@
-package org.code.algorithm.page;
+package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -15,7 +16,9 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        page.simplifyPath("\"/home//foo/\"");
+        String ip = "0000";
+
+        page.restoreIpAddresses(ip);
     }
 
     /**
@@ -2637,7 +2640,494 @@ public class FirstPage {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
-        return -1;
+        int column = matrix[0].length;
+        int[] height = new int[column];
+        int[] left = new int[column];
+        int[] right = new int[column];
+        for (int j = 0; j < column; j++) {
+            right[j] = column;
+        }
+        int result = 0;
+
+        for (int i = 0; i < matrix.length; i++) {
+            char[] chars = matrix[i];
+            int leftEdge = 0;
+            int rightEdge = column;
+            for (int j = 0; j < column; j++) {
+                char tmp = chars[j];
+                if (tmp == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+                if (tmp == '1') {
+                    left[j] = Math.max(leftEdge, left[j]);
+                } else {
+                    left[j] = 0;
+                    leftEdge = j + 1;
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                char tmp = chars[j];
+                if (tmp == '1') {
+                    right[j] = Math.min(rightEdge, right[j]);
+                } else {
+                    right[j] = column;
+                    rightEdge = j;
+                }
+            }
+
+            for (int j = 0; j < column; j++) {
+                result = Math.max(result, height[j] * (right[j] - left[j]));
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode slow = new ListNode(0);
+        ListNode dummy1 = slow;
+
+        ListNode fast = new ListNode(0);
+        ListNode dummy2 = fast;
+        while (head != null) {
+            if (head.val <= x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        dummy2.next = null;
+
+        dummy1.next = fast.next;
+
+        fast.next = null;
+
+        return slow.next;
+    }
+
+
+    /**
+     * 87. Scramble String
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isScramble(String s1, String s2) {
+        return false;
+    }
+
+    /**
+     * 88. Merge Sorted Array
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int k = m + n - 1;
+        m--;
+        n--;
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] >= nums2[n]) {
+                nums1[k--] = nums1[m--];
+            } else {
+                nums1[k--] = nums2[n--];
+            }
+        }
+        while (n >= 0) {
+            nums1[k--] = nums2[n--];
+        }
+    }
+
+
+    /**
+     * todo
+     * 89. Gray Code
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        return null;
+    }
+
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        intervalSubSets(result, new ArrayList<Integer>(), 0, nums);
+        return result;
+
+    }
+
+    private void intervalSubSets(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            intervalSubSets(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * todo
+     * 91. Decode Ways
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        StringBuilder builder = new StringBuilder();
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char tmp = s.charAt(i);
+            char word = (char) ((tmp - 1) % 26 + 'A');
+            builder.append(word);
+        }
+        int result = builder.length();
+        return result == 0 ? 1 : result;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+
+        root.next = head;
+
+        ListNode fast = root;
+
+        ListNode slow = root;
+
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        for (int i = 0; i < m - 1; i++) {
+            slow = slow.next;
+        }
+        ListNode start = slow.next;
+
+        ListNode end = fast.next;
+
+        ListNode prev = end;
+
+        while (start != end) {
+            ListNode tmp = start.next;
+
+            start.next = prev;
+
+            prev = start;
+
+            start = tmp;
+        }
+        slow.next = prev;
+
+        return root.next;
+    }
+
+
+    /**
+     * 93. Restore IP Addresses
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        int length = s.length();
+        for (int i = 1; i < 4 && i < length - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < length - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < length; k++) {
+                    String A = s.substring(0, i);
+                    String B = s.substring(i, j);
+                    String C = s.substring(j, k);
+                    String D = s.substring(k, length);
+
+                    if (validIp(A) && validIp(B) && validIp(C) && validIp(D)) {
+                        String tmp = A + "." + B + "." + C + "." + D;
+                        result.add(tmp);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean validIp(String s) {
+        return !s.isEmpty() && s.length() <= 3 && Integer.parseInt(s) <= 255 && (s.charAt(0) != '0' || s.length() <= 1);
+    }
+
+
+    /**
+     * todo
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddressesV2(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        for (int a = 1; a <= 3; a++) {
+            for (int b = 1; b <= 3; b++) {
+                for (int c = 1; c <= 3; c++) {
+                    String s1 = s.substring(0, a);
+                    String s2 = s.substring(a, a + b);
+                    String s3 = s.substring(a + b, a + b + c);
+                    String s4 = s.substring(a + b + c);
+                    if (s1.length() + s2.length() + s3.length() + s4.length() == 12) {
+                        if (validIp(s1) && validIp(s1) && validIp(s1) && validIp(s1)) {
+                            String tmp = s1 + "." + s2 + "." + s3 + "." + s4;
+                            result.add(tmp);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 94. Binary Tree Inorder Traversal
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (p != null || !stack.isEmpty()) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            result.add(p.val);
+            p = p.right;
+        }
+        return result;
+    }
+
+    /**
+     * 95. Unique Binary Search Trees II
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        return intervalGenerateTrees(1, n);
+    }
+
+    private List<TreeNode> intervalGenerateTrees(int start, int end) {
+        List<TreeNode> result = new ArrayList<>();
+        if (start > end) {
+            result.add(null);
+            return result;
+        }
+        if (start == end) {
+            TreeNode node = new TreeNode(start);
+            result.add(node);
+            return result;
+        }
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftNodes = intervalGenerateTrees(start, i - 1);
+            List<TreeNode> rightNodes = intervalGenerateTrees(i + 1, end);
+            for (TreeNode leftNode : leftNodes) {
+                for (TreeNode rightNode : rightNodes) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = leftNode;
+                    root.right = rightNode;
+                    result.add(root);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 96. Unique Binary Search Trees
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+
+    /**
+     * 97. Interleaving String
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null || s2 == null || s3 == null) {
+            return false;
+        }
+        int m = s1.length();
+        int n = s2.length();
+        if (m + n != s3.length()) {
+            return false;
+        }
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = s1.charAt(i - 1) == s3.charAt(i - 1) && dp[i - 1][0];
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = s2.charAt(j - 1) == s3.charAt(j - 1) && dp[0][j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1))
+                        || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            if (prev != null && prev.val >= p.val) {
+                return false;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return true;
+    }
+
+
+    /**
+     * 99. Recover Binary Search Tree
+     *
+     * @param root
+     */
+    public void recoverTree(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode first = null;
+        TreeNode second = null;
+        TreeNode prev = null;
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+
+            if (prev != null && prev.val >= p.val) {
+
+                if (first == null) {
+                    first = prev;
+                }
+                if (first != null) {
+                    second = p;
+                }
+            }
+            prev = p;
+            p = p.right;
+        }
+        if (first != null) {
+            int val = first.val;
+            first.val = second.val;
+            second.val = val;
+        }
+
+
     }
 
 
