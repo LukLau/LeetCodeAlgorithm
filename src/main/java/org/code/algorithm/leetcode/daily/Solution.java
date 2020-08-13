@@ -4,6 +4,7 @@ import org.code.algorithm.datastructe.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -73,6 +74,40 @@ public class Solution {
      */
     public Node cloneGraph(Node node) {
         return null;
+    }
+
+
+    /**
+     * 20. 有效的括号
+     *
+     * @param s
+     * @return
+     * @date 2020/08/14
+     */
+    public boolean isValid(String s) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        for (char word : s.toCharArray()) {
+
+            if (word == '{') {
+                stack.push('}');
+            } else if (word == '[') {
+                stack.push(']');
+            } else if (word == '(') {
+                stack.push(')');
+            } else if (stack.isEmpty()) {
+                return false;
+            } else {
+                if (stack.peek() != word) {
+                    return false;
+                }
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+
     }
 
 

@@ -4,16 +4,15 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
 import org.code.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author dora
  * @date 2020/8/10
  */
 public class TwoPage {
+
+    private int maxPathSumValue = 0;
 
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
@@ -48,7 +47,6 @@ public class TwoPage {
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
-
     /**
      * 101 对称二叉树
      *
@@ -76,7 +74,6 @@ public class TwoPage {
         }
         return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
     }
-
 
     /**
      * 102 层次遍历
@@ -110,7 +107,6 @@ public class TwoPage {
         return ans;
     }
 
-
     /**
      * 104. 二叉树的最大深度
      *
@@ -123,7 +119,6 @@ public class TwoPage {
         }
         return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
     }
-
 
     /**
      * 105. 从前序与中序遍历序列构造二叉树
@@ -156,7 +151,6 @@ public class TwoPage {
         return root;
     }
 
-
     /**
      * 106. 从中序与后序遍历序列构造二叉树
      *
@@ -187,7 +181,6 @@ public class TwoPage {
         root.right = buildTreeV2(index + 1, inEnd, inorder, postStart + index - inStart, postEnd - 1, postorder);
         return root;
     }
-
 
     /**
      * 107. 二叉树的层次遍历 II
@@ -222,7 +215,6 @@ public class TwoPage {
         return result;
     }
 
-
     /**
      * 108. 将有序数组转换为二叉搜索树
      *
@@ -246,7 +238,6 @@ public class TwoPage {
         root.right = sortedArrayToBST(nums, mid + 1, end);
         return root;
     }
-
 
     /**
      * 109. 有序链表转换二叉搜索树
@@ -276,7 +267,6 @@ public class TwoPage {
         root.right = sortedListToBST(slow.next, end);
         return root;
     }
-
 
     public TreeNode sortedListToBSTV2(ListNode head) {
         if (head == null) {
@@ -310,7 +300,6 @@ public class TwoPage {
         return slow;
     }
 
-
     public boolean isBalanced(TreeNode root) {
         if (root == null) {
             return true;
@@ -323,7 +312,6 @@ public class TwoPage {
         return isBalanced(root.left) && isBalanced(root.right);
     }
 
-
     public boolean hasPathSum(TreeNode root, int sum) {
         if (root == null) {
             return false;
@@ -333,7 +321,6 @@ public class TwoPage {
         }
         return hasPathSum(root.left, sum - root.val) | hasPathSum(root.right, sum - root.val);
     }
-
 
     public List<List<Integer>> pathSum(TreeNode root, int sum) {
         if (root == null) {
@@ -360,7 +347,6 @@ public class TwoPage {
         tmp.remove(tmp.size() - 1);
     }
 
-
     public void flatten(TreeNode root) {
         if (root == null) {
             return;
@@ -385,7 +371,6 @@ public class TwoPage {
         }
     }
 
-
     public int numDistinct(String s, String t) {
         if (s == null || t == null) {
             return 0;
@@ -403,7 +388,6 @@ public class TwoPage {
         }
         return dp[m][n];
     }
-
 
     /**
      * 116. 填充每个节点的下一个右侧节点指针
@@ -432,7 +416,6 @@ public class TwoPage {
 
     }
 
-
     /**
      * 117. 填充每个节点的下一个右侧节点指针 II
      * todo
@@ -443,7 +426,6 @@ public class TwoPage {
     public Node connectV2(Node root) {
         return null;
     }
-
 
     public List<List<Integer>> generate(int numRows) {
         if (numRows < 0) {
@@ -470,7 +452,6 @@ public class TwoPage {
         return result;
     }
 
-
     public List<Integer> getRow(int rowIndex) {
         if (rowIndex < 0) {
             return new ArrayList<>();
@@ -493,7 +474,6 @@ public class TwoPage {
         return result;
     }
 
-
     public int minimumTotal(List<List<Integer>> triangle) {
         if (triangle == null || triangle.isEmpty()) {
             return Integer.MAX_VALUE;
@@ -515,7 +495,6 @@ public class TwoPage {
         return result.get(0);
     }
 
-
     public int maxProfit(int[] prices) {
         if (prices == null || prices.length == 0) {
             return 0;
@@ -530,7 +509,6 @@ public class TwoPage {
         }
         return result;
     }
-
 
     public int maxProfitII(int[] prices) {
         if (prices == null || prices.length == 0) {
@@ -547,7 +525,12 @@ public class TwoPage {
         return result;
     }
 
-
+    /**
+     * todo 卖股票最佳利润
+     *
+     * @param prices
+     * @return
+     */
     public int maxProfitIII(int[] prices) {
         if (prices == null || prices.length == 0) {
             return 0;
@@ -584,6 +567,133 @@ public class TwoPage {
             result = Math.max(result, leftProfit[i] + rightProfit[i + 1]);
         }
         return result;
+    }
+
+    public int maxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        intervalMaxPathSum(root);
+        return maxPathSumValue;
+    }
+
+    private int intervalMaxPathSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftValue = intervalMaxPathSum(root.left);
+        int rightValue = intervalMaxPathSum(root.right);
+
+        leftValue = Math.max(leftValue, 0);
+        rightValue = Math.max(rightValue, 0);
+
+        maxPathSumValue = Math.max(maxPathSumValue, root.val + leftValue + rightValue);
+        return root.val + Math.max(leftValue, rightValue);
+
+    }
+
+
+    public boolean isPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        int start = 0;
+        int end = s.length() - 1;
+        while (start < end) {
+            while (start < end && !Character.isLetterOrDigit(s.charAt(start))) {
+                start++;
+            }
+            while (start < end && !Character.isLetterOrDigit(s.charAt(end))) {
+                end--;
+            }
+            if (start < end) {
+                if (Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))) {
+                    return false;
+                }
+                start++;
+                end--;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 126. 单词接龙 II
+     * todo
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        return null;
+    }
+
+
+    /**
+     * 127. 单词接龙
+     * todo
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        return 0;
+    }
+
+
+    /**
+     * 128. 最长连续序列
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        int result = 0;
+
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                continue;
+            }
+            Integer leftSide = map.getOrDefault(num - 1, 0);
+            Integer rightSide = map.getOrDefault(num + 1, 0);
+
+            int value = leftSide + rightSide + 1;
+
+            result = Math.max(result, value);
+
+            map.put(num - leftSide, value);
+            map.put(num + rightSide, value);
+            map.put(num, value);
+        }
+        return result;
+    }
+
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return intervalSumNumbers(0, root);
+    }
+
+    private int intervalSumNumbers(int val, TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int tmp = val * 10 + root.val;
+        if (root.left == null && root.right == null) {
+            return tmp;
+        }
+        return intervalSumNumbers(tmp, root.left) + intervalSumNumbers(tmp, root.right);
     }
 
 
