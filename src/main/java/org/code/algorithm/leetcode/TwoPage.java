@@ -4,6 +4,7 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
 import org.code.algorithm.datastructe.TreeNode;
 
+import javax.xml.bind.NotIdentifiableEvent;
 import java.util.*;
 
 /**
@@ -24,7 +25,9 @@ public class TwoPage {
 //        root.right = right1;
 
 
-        page.getRow(3);
+//        page.minCut("abc");
+        int[] nums = new int[]{1, 0, 2};
+        page.candy(nums);
     }
 
     /**
@@ -695,6 +698,239 @@ public class TwoPage {
         }
         return intervalSumNumbers(tmp, root.left) + intervalSumNumbers(tmp, root.right);
     }
+
+
+    /**
+     * 130. 被围绕的区域
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+
+
+        // 深度优先遍历
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+
+                // 只遍历边界情况
+                if (checkEdge(i, j, board) && board[i][j] == 'O') {
+                    intervalSolve(used, i, j, board);
+                }
+            }
+        }
+        // 对于非边界连续结点设置相反的符号
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == 'O') {
+                    board[i][j] = '-';
+                }
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == '-') {
+                    board[i][j] = 'X';
+                } else if (board[i][j] == '+') {
+                    board[i][j] = 'O';
+                }
+            }
+        }
+
+    }
+
+    private boolean checkEdge(int i, int j, char[][] board) {
+        if (i == 0 || i == board.length - 1) {
+            return true;
+        }
+        return j == 0 || j == board[i].length - 1;
+    }
+
+    private void intervalSolve(boolean[][] used, int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length) {
+            return;
+        }
+        // 已经遍历过直接跳过去
+        if (used[i][j]) {
+            return;
+        }
+        used[i][j] = true;
+        if (board[i][j] == 'X') {
+            return;
+        }
+        board[i][j] = '+';
+        intervalSolve(used, i - 1, j, board);
+        intervalSolve(used, i + 1, j, board);
+        intervalSolve(used, i, j - 1, board);
+        intervalSolve(used, i, j + 1, board);
+    }
+
+
+    public void solveV2(char[][] board) {
+
+    }
+
+
+    /**
+     * todo
+     * 131. 分割回文串
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<List<String>> result = new ArrayList<>();
+
+        int index = 1;
+        while (index < s.length()) {
+            String tmp = s.substring(0, index);
+
+//            if (checkPalindrome(tmp) && )
+
+        }
+        return null;
+    }
+
+    private boolean checkPalindrome(String s) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        int start = 0;
+        int end = s.length() - 1;
+        while (start < end) {
+            if (s.charAt(start) != s.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+
+        }
+        return true;
+
+    }
+
+
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int[] cut = new int[len];
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            int minCut = i;
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+
+                    minCut = j == 0 ? 0 : Math.min(minCut, cut[j - 1] + 1);
+                }
+            }
+            cut[i] = minCut;
+        }
+        return cut[len - 1];
+    }
+
+    /**
+     * todo 图的算法
+     *
+     * @param node
+     * @return
+     */
+    public Node cloneGraph(Node node) {
+        return null;
+    }
+
+
+    /**
+     * 134. 加油站
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || gas.length == 0 || cost == null || cost.length == 0) {
+            return -1;
+        }
+        int globalCost = 0;
+        int localCost = 0;
+        int index = -1;
+        for (int i = 0; i < gas.length; i++) {
+            globalCost += gas[i] - cost[i];
+
+            localCost += gas[i] - cost[i];
+
+            if (localCost < 0) {
+                index = i;
+                localCost = 0;
+            }
+        }
+
+        return globalCost < 0 ? -1 : index + 1;
+    }
+
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[ratings.length];
+        Arrays.fill(dp, 1);
+        int result = 0;
+        for (int j = 1; j <= ratings.length; j++) {
+            if (ratings[j - 1] < ratings[j] && dp[j] < dp[j - 1] + 1) {
+                dp[j] = dp[j - 1] + 1;
+            }
+        }
+        for (int j = ratings.length - 2; j >= 0; j--) {
+            if (ratings[j] > ratings[j + 1] && dp[j] < dp[j + 1] + 1) {
+                dp[j] = dp[j + 1] + 1;
+            }
+
+        }
+        for (int candyNum : dp) {
+            result += candyNum;
+        }
+        return result;
+    }
+
+
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+
+    /**
+     * todo 137. 只出现一次的数字 II
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNumberV2(int[] nums) {
+
+        return -1;
+    }
+
+
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        return null;
+    }
+
 
 
 }
