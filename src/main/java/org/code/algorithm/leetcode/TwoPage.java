@@ -4,7 +4,6 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
 import org.code.algorithm.datastructe.TreeNode;
 
-import javax.xml.bind.NotIdentifiableEvent;
 import java.util.*;
 
 /**
@@ -18,16 +17,27 @@ public class TwoPage {
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
 
-//        Node root = new Node(1);
-//        Node left1 = new Node(2);
-//        Node right1 = new Node(3);
-//        root.left = left1;
-//        root.right = right1;
 
+        String s = "catsanddog";
 
-//        page.minCut("abc");
-        int[] nums = new int[]{1, 0, 2};
-        page.candy(nums);
+        ListNode head = new ListNode(1);
+
+        ListNode two = new ListNode(2);
+
+        head.next = two;
+
+        ListNode three = new ListNode(3);
+
+        two.next = three;
+
+        three.next = new ListNode(4);
+
+        three.next.next = new ListNode(5);
+
+//        List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
+//        page.wordBreakV2(s, wordDict);
+
+        page.reorderList(head);
     }
 
     /**
@@ -928,9 +938,192 @@ public class TwoPage {
         if (head == null) {
             return null;
         }
-        return null;
+
+        Node currentNode = head;
+        while (currentNode != null) {
+            Node tmp = new Node(currentNode.val);
+            if (currentNode.next != null) {
+                tmp.next = currentNode.next;
+            }
+            currentNode.next = tmp;
+            currentNode = tmp.next;
+        }
+        currentNode = head;
+        while (currentNode != null) {
+            Node tmp = currentNode.next;
+            if (currentNode.random != null) {
+                tmp.random = currentNode.random.next;
+            }
+            currentNode = tmp.next;
+        }
+        currentNode = head;
+
+        Node randomHead = head.next;
+        while (currentNode.next != null) {
+            Node tmp = currentNode.next;
+            currentNode.next = tmp.next;
+            currentNode = tmp;
+        }
+        return randomHead;
     }
 
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        HashMap<String, Boolean> map = new HashMap<>();
+        return intervalWordBreak(map, s, wordDict);
+    }
+
+    private boolean intervalWordBreak(HashMap<String, Boolean> map, String s, List<String> wordDict) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        for (String dict : wordDict) {
+            int index = s.indexOf(dict);
+            if (index != 0) {
+                continue;
+            }
+            String substring = s.substring(dict.length());
+            if (intervalWordBreak(map, substring, wordDict)) {
+                map.put(s, true);
+                return true;
+            }
+        }
+        map.put(s, false);
+        return false;
+    }
+
+
+    public List<String> wordBreakV2(String s, List<String> wordDict) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        return intervalWordBreakV2(map, s, wordDict);
+    }
+
+    private List<String> intervalWordBreakV2(HashMap<String, List<String>> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        if (s.isEmpty()) {
+            return Arrays.asList("");
+        }
+        List<String> result = new ArrayList<>();
+        for (String word : wordDict) {
+            int index = s.indexOf(word);
+            if (index != 0) {
+                continue;
+            }
+            List<String> tmp = intervalWordBreakV2(map, s.substring(word.length()), wordDict);
+            for (String t : tmp) {
+                result.add(word + (t.isEmpty() ? "" : " ") + t);
+            }
+        }
+        map.put(s, result);
+        return result;
+    }
+
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (slow == fast) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * todo
+     * 143. 重排链表
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+
+        // 遍历链表 取中间结点
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        // 中间结点之后的结点进行反转
+        ListNode reverseNode = reverseListNode(slow.next);
+
+        // 断开成两个链表
+        slow.next = null;
+
+        slow = head;
+
+        // 重新排序 组装
+        while (reverseNode != null) {
+            ListNode tmp = reverseNode.next;
+
+            reverseNode.next = slow.next;
+
+            slow.next = reverseNode;
+
+            slow = reverseNode.next;
+
+            reverseNode = tmp;
+
+        }
+    }
+
+    private ListNode reverseListNode(ListNode fast) {
+        ListNode prev = null;
+        while (fast != null) {
+            ListNode tmp = fast.next;
+            fast.next = prev;
+            prev = fast;
+            fast = tmp;
+        }
+        return prev;
+    }
+
+
+    /**
+     * 145. 二叉树的后序遍历
+     * todo
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> result = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (!stack.isEmpty() || p != null) {
+            if (p != null) {
+                result.addFirst(p.val);
+                stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
+                p = p.left;
+            }
+        }
+        return result;
+    }
 
 
 }
