@@ -1,6 +1,7 @@
 package org.code.algorithm.leetcode.daily;
 
 import org.code.algorithm.datastructe.Node;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,33 @@ public class Solution {
         }
         return stack.isEmpty();
 
+    }
+
+
+    /**
+     * 110. 平衡二叉树
+     *
+     * @param root
+     * @return
+     * @date 2020/08/17
+     */
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int leftDepth = depth(root.left);
+        int rightDepth = depth(root.right);
+        if (Math.abs(leftDepth - rightDepth) > 1) {
+            return false;
+        }
+        return isBalanced(root.left) && isBalanced(root.right);
+    }
+
+    public int depth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(depth(root.left), depth(root.right));
     }
 
 

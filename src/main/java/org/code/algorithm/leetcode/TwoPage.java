@@ -2,6 +2,7 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
+import org.code.algorithm.datastructe.Point;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -1123,6 +1124,94 @@ public class TwoPage {
             }
         }
         return result;
+    }
+
+
+    /**
+     * todo 链表的插入排序
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        return null;
+    }
+
+    /**
+     * todo 排序链表 O(nlogN)
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        return null;
+    }
+
+
+    /**
+     * todo
+     * 149. 直线上最多的点数
+     *
+     * @param points
+     * @return
+     */
+    public int maxPoints(int[][] points) {
+        if (points == null || points.length == 0) {
+            return 0;
+        }
+        // 封装成坐标轴点
+        Point[] array = new Point[points.length];
+        for (int i = 0; i < points.length; i++) {
+            array[i] = new Point(points[i][0], points[i][1]);
+        }
+        int result = 0;
+
+        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+
+        for (int i = 0; i < array.length; i++) {
+            map.clear();
+            int overlap = 0;
+            int max = 0;
+            for (int j = i + 1; j < array.length; j++) {
+                int x = array[j].x - array[i].x;
+                int y = array[j].y - array[i].x;
+
+                if (x == 0 && j == 0) {
+                    overlap++;
+                    continue;
+                }
+                int gcd = generateGCD(x, y);
+                if (gcd != 0) {
+                    x /= gcd;
+
+                    y /= gcd;
+                }
+                if (map.containsKey(x)) {
+                    if (map.get(x).containsKey(y)) {
+                        map.get(x).put(y, map.get(x).get(y) + 1);
+                    } else {
+                        map.get(x).put(y, 1);
+                    }
+                } else {
+                    HashMap<Integer, Integer> m = new HashMap<>();
+                    m.put(y, 1);
+                    map.put(x, m);
+                }
+                max = Math.max(max, map.get(x).get(y));
+            }
+            result = Math.max(result, max + overlap + 1);
+        }
+        return result;
+    }
+
+    private int generateGCD(int x, int y) {
+        if (y == 0) {
+            return x;
+        }
+        return generateGCD(y, x % y);
     }
 
 
