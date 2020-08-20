@@ -207,4 +207,17 @@ public class Solution {
     }
 
 
+    /**
+     * 529. 扫雷游戏
+     *
+     * @param board
+     * @param click
+     * @return
+     * @date 2020/08/20
+     */
+    public char[][] updateBoard(char[][] board, int[] click) {
+        return null;
+    }
+
+
 }

@@ -38,7 +38,8 @@ public class TwoPage {
 //        List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
 //        page.wordBreakV2(s, wordDict);
 
-        page.reorderList(head);
+//        page.reorderList(head);
+        page.reverseWords("a good   example");
     }
 
     /**
@@ -1214,7 +1215,6 @@ public class TwoPage {
     }
 
 
-
     /**
      * 使用辗转相除法
      * a % b = m
@@ -1277,6 +1277,73 @@ public class TwoPage {
                 max = Math.max(max, value);
             }
             result = Math.max(result, max + overlap + 1);
+        }
+        return result;
+
+    }
+
+
+    /**
+     * 逆波兰
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < tokens.length; i++) {
+            String token = tokens[i];
+        }
+        return -1;
+    }
+
+    public String reverseWords(String s) {
+        if (s == null) {
+            return "";
+        }
+        s = s.trim();
+
+        if (s.isEmpty()) {
+            return "";
+        }
+        String[] words = s.split(" ");
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            if (words[i].equals("")) {
+                continue;
+            }
+
+            builder.append(words[i]);
+            if (i != 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = nums[0];
+        int minValue = nums[0];
+        int maxValue = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(maxValue * nums[i], minValue * nums[i]), nums[i]);
+
+            int tmpMin = Math.min(Math.min(maxValue * nums[i], minValue * nums[i]), nums[i]);
+
+            result = Math.max(result, tmpMax);
+
+            maxValue = tmpMax;
+
+            minValue = tmpMin;
         }
         return result;
 
