@@ -1177,7 +1177,7 @@ public class TwoPage {
             int max = 0;
             for (int j = i + 1; j < array.length; j++) {
                 int x = array[j].x - array[i].x;
-                int y = array[j].y - array[i].x;
+                int y = array[j].y - array[i].y;
 
                 if (x == 0 && j == 0) {
                     overlap++;
@@ -1207,6 +1207,16 @@ public class TwoPage {
         return result;
     }
 
+    /**
+     * 使用辗转相除法
+     * a % b = m
+     * b % m = n
+     * ....
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     private int generateGCD(int x, int y) {
         if (y == 0) {
             return x;

@@ -1,5 +1,6 @@
 package org.code.algorithm.leetcode.daily;
 
+import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
 import org.code.algorithm.datastructe.TreeNode;
 
@@ -136,6 +137,73 @@ public class Solution {
             return 0;
         }
         return 1 + Math.max(depth(root.left), depth(root.right));
+    }
+
+
+    /**
+     * 109. 有序链表转换二叉搜索树
+     *
+     * @param head
+     * @return
+     * @date 2020/08/19
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return intervalSortedListToBST(head, null);
+    }
+
+    private TreeNode intervalSortedListToBST(ListNode head, ListNode tail) {
+        if (head == tail) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail && fast.next != tail) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        root.left = intervalSortedListToBST(head, slow);
+        root.right = intervalSortedListToBST(slow.next, tail);
+        return root;
+    }
+
+
+    public TreeNode sortedListToBSTV2(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode middleNode = getMiddleListNode(head);
+        TreeNode root = new TreeNode(middleNode.val);
+        if (head == middleNode) {
+            return root;
+        }
+        root.left = sortedListToBSTV2(head);
+
+        root.right = sortedListToBSTV2(middleNode.next);
+
+        return root;
+    }
+
+    private ListNode getMiddleListNode(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode prev = null;
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if (prev != null) {
+            prev.next = null;
+        }
+        return slow;
     }
 
 
