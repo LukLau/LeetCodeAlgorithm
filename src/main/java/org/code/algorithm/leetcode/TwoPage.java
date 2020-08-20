@@ -1162,6 +1162,9 @@ public class TwoPage {
         if (points == null || points.length == 0) {
             return 0;
         }
+        if (points.length <= 2) {
+            return points.length;
+        }
         // 封装成坐标轴点
         Point[] array = new Point[points.length];
         for (int i = 0; i < points.length; i++) {
@@ -1169,43 +1172,48 @@ public class TwoPage {
         }
         int result = 0;
 
-        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-
         for (int i = 0; i < array.length; i++) {
-            map.clear();
+
+            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+
             int overlap = 0;
+
             int max = 0;
             for (int j = i + 1; j < array.length; j++) {
                 int x = array[j].x - array[i].x;
                 int y = array[j].y - array[i].y;
 
                 if (x == 0 && j == 0) {
-                    overlap++;
-                    continue;
-                }
-                int gcd = generateGCD(x, y);
-                if (gcd != 0) {
-                    x /= gcd;
-
-                    y /= gcd;
-                }
-                if (map.containsKey(x)) {
-                    if (map.get(x).containsKey(y)) {
-                        map.get(x).put(y, map.get(x).get(y) + 1);
-                    } else {
-                        map.get(x).put(y, 1);
+                    if (x == 0 && y == 0) {
+                        overlap++;
+                        continue;
                     }
-                } else {
-                    HashMap<Integer, Integer> m = new HashMap<>();
-                    m.put(y, 1);
-                    map.put(x, m);
+                    int gcd = generateGCD(x, y);
+                    if (gcd != 0) {
+                        x /= gcd;
+
+                        y /= gcd;
+                    }
+                    if (map.containsKey(x)) {
+                        if (map.get(x).containsKey(y)) {
+                            map.get(x).put(y, map.get(x).get(y) + 1);
+                        } else {
+                            map.get(x).put(y, 1);
+                        }
+                    } else {
+                        Map<Integer, Integer> m = new HashMap<>();
+                        m.put(y, 1);
+                        map.put(x, m);
+                    }
+                    max = Math.max(max, map.get(x).get(y));
                 }
-                max = Math.max(max, map.get(x).get(y));
+                result = Math.max(result, max + overlap + 1);
             }
-            result = Math.max(result, max + overlap + 1);
         }
         return result;
     }
+
+
 
     /**
      * 使用辗转相除法
@@ -1222,6 +1230,56 @@ public class TwoPage {
             return x;
         }
         return generateGCD(y, x % y);
+    }
+
+
+    public int maxPointsV2(int[][] points) {
+        if (points == null || points.length == 0) {
+            return 0;
+        }
+        if (points.length <= 2) {
+            return points.length;
+        }
+        int result = 0;
+
+
+        for (int i = 0; i < points.length; i++) {
+
+            int max = 0;
+
+            int overlap = 0;
+
+
+            HashMap<String, Integer> map = new HashMap<>();
+
+            for (int j = i + 1; j < points.length; j++) {
+                int x = points[j][0] - points[i][0];
+                int y = points[j][1] - points[i][1];
+
+                if (x == 0 && y == 0) {
+                    overlap++;
+                    continue;
+                }
+                int gcd = generateGCD(x, y);
+
+                x /= gcd;
+
+                y /= gcd;
+
+                String key = x + "@" + y;
+
+                Integer value = map.getOrDefault(key, 0);
+
+                value = value + 1;
+
+                map.put(key, value);
+
+                max = Math.max(max, value);
+            }
+            result = Math.max(result, max + overlap + 1);
+        }
+        return result;
+
     }
 
 
