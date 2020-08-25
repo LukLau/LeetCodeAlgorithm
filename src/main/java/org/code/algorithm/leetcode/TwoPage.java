@@ -1438,4 +1438,31 @@ public class TwoPage {
     }
 
 
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode p1 = headA;
+
+        ListNode p2 = headB;
+        while (p1 != p2) {
+            p1 = p1 == null ? headB : p1.next;
+            p2 = p2 == null ? headA : p2.next;
+        }
+        return p1;
+
+    }
+
+
+    public int hammingWeight(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n = n & (n - 1);
+        }
+        return count;
+
+    }
+
+
 }
