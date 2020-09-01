@@ -290,24 +290,18 @@ public class TwoPageVip {
         }
         List<String> result = new ArrayList<>();
 
-        if (nums.length == 0) {
-            result.add(findRange(lower, upper));
-            return result;
-        }
-        if (nums[0] == lower + 1) {
-            result.add(findRange(lower, nums[0] - 1));
-        }
-        for (int i = 0; i <= nums.length; i++) {
-
-            long currentValue = i == nums.length ? (long) upper + 1 : nums[i];
-
-            if (currentValue > lower + 1) {
-
-                String range = findRange(lower + 1, currentValue - 1);
-
+        for (int number : nums) {
+            if (number > lower) {
+                String range = findRange(lower, number > lower + 1 ? number - 1 : lower);
                 result.add(range);
             }
-            lower = (int) currentValue;
+            if (number == upper) {
+                return result;
+            }
+            lower = number + 1;
+        }
+        if (lower <= upper) {
+            result.add(findRange(lower, upper));
         }
         return result;
         // write your code here
@@ -316,6 +310,36 @@ public class TwoPageVip {
 
     private String findRange(long lower, long upper) {
         return lower == upper ? upper + "" : lower + "->" + upper;
+    }
+
+    public int compareVersion(String version1, String version2) {
+
+        String[] split1 = version1.split("\\.");
+        String[] split2 = version2.split("\\.");
+
+        int index1 = 0;
+        int index2 = 0;
+        while (index1 < split1.length || index2 < split2.length) {
+
+            String word1 = index1 < split1.length ? split1[index1] : "0";
+
+            String word2 = index2 < split2.length ? split2[index2] : "0";
+
+
+            Integer value1 = Integer.parseInt(word1);
+            Integer value2 = Integer.parseInt(word2);
+
+            int compareTo = value1.compareTo(value2);
+
+            if (compareTo != 0) {
+                return compareTo;
+            }
+            index1++;
+            index2++;
+        }
+        return 0;
+
+
     }
 
 
