@@ -39,8 +39,11 @@ public class TwoPage {
 //        page.wordBreakV2(s, wordDict);
 
 //        page.reorderList(head);
-        int[] nums = new int[]{2, 2, 2, 0, 1};
-        page.findMinInRepeatNumsV2(nums);
+//        String word = "the sky is blue";
+//        page.reverseWords(word.toCharArray());
+
+        int[] nums = new int[]{1, 2, 3, 1};
+        page.rob(nums);
     }
 
     /**
@@ -1462,6 +1465,227 @@ public class TwoPage {
         }
         return count;
 
+    }
+
+
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while (n / 5 != 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+
+
+    public int calculateMinimumHP(int[][] dungeon) {
+        int row = dungeon.length;
+
+        int column = dungeon[0].length;
+
+        int[][] dp = new int[row][column];
+
+        for (int i = row - 1; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (i == row - 1 && j == column - 1) {
+                    dp[i][j] = Math.max(1, 1 - dungeon[i][j]);
+                } else if (i == row - 1) {
+                    dp[i][j] = Math.max(1, dp[i][j + 1] - dungeon[i][j]);
+                } else if (j == column - 1) {
+                    dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
+                } else {
+                    dp[i][j] = Math.max(1, -dungeon[i][j] + Math.min(dp[i + 1][j], dp[i][j + 1]));
+                }
+            }
+        }
+        return dp[0][0];
+    }
+
+    public int calculateMinimumHPV2(int[][] dungeon) {
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[] dp = new int[column];
+
+        for (int j = column - 1; j >= 0; j--) {
+            if (j == column - 1) {
+                dp[j] = Math.max(1, 1 - dungeon[row - 1][j]);
+            } else {
+                dp[j] = Math.max(1, dp[j + 1] - dungeon[row - 1][j]);
+            }
+        }
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0];
+    }
+
+
+    public String largestNumber(int[] nums) {
+        String[] values = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            values[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(values, (o1, o2) -> {
+            String value1 = o1 + o2;
+            String value2 = o2 + o1;
+            return value2.compareTo(value1);
+        });
+        if (values[0].equals("0")) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String value : values) {
+            builder.append(value);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @param str
+     * @return
+     */
+    public char[] reverseWords(char[] str) {
+        // write your code here
+
+
+        int index = 0;
+
+        while (index < str.length) {
+
+            int current = index;
+
+            while (current < str.length && str[current] != ' ') {
+                current++;
+            }
+            swapWord(str, index, current - 1);
+
+            index = current + 1;
+        }
+
+        swapWord(str, 0, str.length - 1);
+
+        return str;
+    }
+
+    private void swapWord(char[] word, int start, int end) {
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swap(word, i, (start + end) - i);
+        }
+    }
+
+    private void swap(char[] str, int i, int j) {
+        char word = str[i];
+        str[i] = str[j];
+        str[j] = word;
+    }
+
+
+    /**
+     * 187. Repeated DNA Sequences
+     *
+     * @param s
+     * @return
+     */
+    public List<String> findRepeatedDnaSequences(String s) {
+        return null;
+    }
+
+
+    /**
+     * 188. Best Time to Buy and Sell Stock IV
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        if (k >= prices.length * 2) {
+            return sellStock(prices);
+        }
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int tmp = -prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] + tmp);
+                tmp = Math.max(dp[i - 1][j - 1] - prices[j], tmp);
+            }
+        }
+        return dp[k][prices.length - 1];
+    }
+
+    private int sellStock(int[] prices) {
+        int result = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
+                result += prices[i] - prices[i - 1];
+            }
+        }
+        return result;
+
+    }
+
+
+    public void rotate(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        k %= nums.length;
+        k = nums.length - k;
+        swapArray(nums, 0, k - 1);
+        swapArray(nums, k, nums.length - 1);
+        swapArray(nums, 0, nums.length - 1);
+    }
+
+    private void swapArray(int[] nums, int start, int end) {
+        for (int i = start; i <= (start + end) / 2; i++) {
+            swapValue(nums, i, start + end - i);
+        }
+    }
+
+    private void swapValue(int[] nums, int i, int j) {
+        int value = nums[i];
+        nums[i] = nums[j];
+        nums[j] = value;
+    }
+
+
+    /**
+     * todo 190. Reverse Bits
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits(int n) {
+        return -1;
+    }
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length + 1];
+
+        dp[1] = nums[0];
+
+        for (int i = 2; i < dp.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i - 1]);
+        }
+        return dp[nums.length];
     }
 
 

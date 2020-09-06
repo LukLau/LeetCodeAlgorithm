@@ -338,7 +338,77 @@ public class TwoPageVip {
             index2++;
         }
         return 0;
+    }
 
+    /**
+     * todo
+     * 166. Fraction to Recurring Decimal
+     *
+     * @param numerator
+     * @param denominator
+     * @return
+     */
+    public String fractionToDecimal(int numerator, int denominator) {
+        return "";
+    }
+
+
+    public int[] twoSum(int[] numbers, int target) {
+        int[] result = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.containsKey(target - numbers[i])) {
+                Integer index1 = map.get(target - numbers[i]);
+                result[0] = index1 + 1;
+
+                result[1] = i + 1;
+                return result;
+            }
+            map.put(numbers[i], i);
+        }
+        return result;
+    }
+
+
+    public String convertToTitle(int n) {
+        StringBuilder builder = new StringBuilder();
+        while (n != 0) {
+
+            int value = (n - 1) % 26;
+
+            char word = (char) (value + 'A');
+
+            builder.append(word);
+
+            n = (n - 1) / 26;
+
+        }
+        return builder.reverse().toString();
+    }
+
+
+    /**
+     * 169 摩尔投票法
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0];
+        int count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            int value = nums[i];
+            if (value == candidate) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    count = 1;
+                    candidate = value;
+                }
+            }
+        }
+        return candidate;
 
     }
 
