@@ -1689,4 +1689,97 @@ public class TwoPage {
     }
 
 
+    /**
+     * todo
+     *
+     * @param nums
+     * @return
+     */
+    public int robV2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int robPrevious = 0;
+
+        int robCurrent = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+
+            int tmp = robPrevious;
+
+            robPrevious = Math.max(robPrevious, robCurrent);
+
+            robCurrent = tmp + nums[i];
+        }
+        return Math.max(robPrevious, robCurrent);
+    }
+
+
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        LinkedList<TreeNode> linkedList = new LinkedList<>();
+
+        linkedList.add(root);
+
+        while (!linkedList.isEmpty()) {
+
+            int size = linkedList.size();
+
+            for (int i = 0; i < size; i++) {
+
+                TreeNode node = linkedList.pollFirst();
+
+                if (node.left != null) {
+                    linkedList.add(node.left);
+                }
+                if (node.right != null) {
+                    linkedList.add(node.right);
+                }
+                if (i == size - 1) {
+                    result.add(node.val);
+                }
+            }
+        }
+        return result;
+
+    }
+
+
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (grid[i][j] == '1') {
+                    intervalIslands(i, j, grid);
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+
+    private void intervalIslands(int i, int j, char[][] grid) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
+            return;
+        }
+        if (grid[i][j] != '1') {
+            return;
+        }
+        grid[i][j] = '0';
+        intervalIslands(i - 1, j, grid);
+        intervalIslands(i + 1, j, grid);
+        intervalIslands(i, j - 1, grid);
+        intervalIslands(i, j + 1, grid);
+    }
+
+
 }
