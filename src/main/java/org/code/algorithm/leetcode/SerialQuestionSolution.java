@@ -1,11 +1,10 @@
 package org.code.algorithm.leetcode;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import org.code.algorithm.datastructe.ListNode;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * @author luk
@@ -18,11 +17,27 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-        int[] nums = new int[]{4, 5, 6, 7, 0, 1, 2};
-        solution.search(nums, 3);
+        ListNode head = new ListNode(1);
+        ListNode two = new ListNode(2);
+
+        head.next = two;
+
+        ListNode three = new ListNode(3);
+        two.next = three;
+
+        ListNode four = new ListNode(4);
+
+        three.next = four;
+
+        ListNode five = new ListNode(5);
+
+        four.next = five;
+
+        solution.reverseKGroupV2(head, 2);
+
     }
 
-    // --- 求中位数 O log(N)算法---- //
+    // ---O log(N)算法---- //
 
     /**
      * 3. Longest Substring Without Repeating Characters
@@ -47,6 +62,98 @@ public class SerialQuestionSolution {
         }
         return result;
 
+    }
+
+
+    /**
+     * 34. Find First and Last Position of Element in Sorted Array
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int[] result = new int[2];
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        if (nums[left] != target) {
+            return new int[]{-1, -1};
+        }
+        result[0] = left;
+        right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2 + 1;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        result[1] = left;
+
+        return result;
+    }
+
+
+    public int[] searchRangeV2(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int firstIndex = searchLeftIndex(nums, target, 0, nums.length - 1);
+        return nums;
+    }
+
+
+    public int searchInsert(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] > target) {
+                left = mid + 1;
+            } else {
+                right = mid + 1;
+            }
+        }
+        return left;
+
+    }
+
+
+    private int searchLeftIndex(int[] nums, int target, int left, int right) {
+        if (left > right) {
+            return -1;
+        }
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < target) {
+            return searchLeftIndex(nums, target, mid + 1, right);
+        } else if (nums[mid] > target) {
+            return searchLeftIndex(nums, target, left, mid - 1);
+        } else {
+            if (mid - 1 > 0 && nums[mid] == nums[mid - 1]) {
+                return searchLeftIndex(nums, target, left, mid - 1);
+            }
+            if (nums[mid] == target) {
+                return mid;
+            }
+        }
+        return -1;
     }
 
     // --正则表达式匹配问题 //
@@ -199,6 +306,7 @@ public class SerialQuestionSolution {
 
     /**
      * todo
+     *
      * @param head
      * @param k
      * @return
@@ -214,16 +322,64 @@ public class SerialQuestionSolution {
             }
             currentNode = currentNode.next;
         }
-        ListNode newHead = reverseKGroupV2(currentNode, k);
 
-        while (head != newHead) {
+        while (head != currentNode) {
             ListNode tmp = head.next;
-            head.next = newHead;
-            newHead = head;
+            head.next = currentNode;
+            currentNode = head;
             head = tmp;
         }
-        return newHead;
+
+        return currentNode;
+    }
+
+    // ---排列组合问题---- //
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
+        intervalCombinationSum(result, new ArrayList<Integer>(), 0, candidates, target);
+        return result;
+
+
+    }
+
+    private void intervalCombinationSum(List<List<Integer>> result, ArrayList<Integer> integers, int start, int[] candidates, int target) {
+        if (target == 0) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            integers.add(candidates[i]);
+            intervalCombinationSum(result, integers, i, candidates, target - candidates[i]);
+            integers.remove(integers.size() - 1);
+        }
     }
 
 
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(candidates);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationSum2(result, new ArrayList<>(), 0,candidates,target);
+        return result;
+
+
+    }
+
+    private void intervalCombinationSum2(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] candidates, int target) {
+        if (target == 0) {
+//            result.add(new ArrayQueue<>(tmp));
+            return;
+        }
+//        for (int i = start; i < )
+    }
 }
