@@ -1,9 +1,7 @@
 package org.code.algorithm.leetcode;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 import org.code.algorithm.datastructe.ListNode;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -17,23 +15,25 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-        ListNode head = new ListNode(1);
-        ListNode two = new ListNode(2);
+//        ListNode head = new ListNode(1);
+//        ListNode two = new ListNode(2);
+//
+//        head.next = two;
+//
+//        ListNode three = new ListNode(3);
+//        two.next = three;
+//
+//        ListNode four = new ListNode(4);
+//
+//        three.next = four;
+//
+//        ListNode five = new ListNode(5);
+//
+//        four.next = five;
+//
+//        solution.reverseKGroupV2(head, 2);
 
-        head.next = two;
-
-        ListNode three = new ListNode(3);
-        two.next = three;
-
-        ListNode four = new ListNode(4);
-
-        three.next = four;
-
-        ListNode five = new ListNode(5);
-
-        four.next = five;
-
-        solution.reverseKGroupV2(head, 2);
+        solution.multiply("2", "1");
 
     }
 
@@ -156,7 +156,6 @@ public class SerialQuestionSolution {
         return -1;
     }
 
-    // --正则表达式匹配问题 //
 
     /**
      * 4. Median of Two Sorted Arrays
@@ -168,6 +167,9 @@ public class SerialQuestionSolution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return -1;
     }
+
+
+    // --正则表达式匹配问题 //
 
     /**
      * 10. Regular Expression Matching
@@ -204,6 +206,41 @@ public class SerialQuestionSolution {
         }
         return dp[m][n];
     }
+
+
+    /**
+     * 45. Jump Game II
+     * todo
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatchV2(String s, String p) {
+        if (p.isEmpty()) {
+            return s.isEmpty();
+        }
+        int m = s.length();
+        int n = p.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = p.charAt(j - 1) == '*' && dp[0][j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m][n];
+
+
+    }
+
 
     // --旋转数组系列问题-- //
 
@@ -369,17 +406,215 @@ public class SerialQuestionSolution {
         }
         Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<>();
-        intervalCombinationSum2(result, new ArrayList<>(), 0,candidates,target);
+        intervalCombinationSum2(result, new ArrayList<>(), 0, candidates, target);
         return result;
-
-
     }
 
     private void intervalCombinationSum2(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
-//            result.add(new ArrayQueue<>(tmp));
+            result.add(new ArrayList<>(tmp));
             return;
         }
-//        for (int i = start; i < )
+        for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            tmp.add(candidates[i]);
+            intervalCombinationSum2(result, tmp, i + 1, candidates, target - candidates[i]);
+            tmp.remove(tmp.size() - 1);
+        }
     }
+
+
+    public List<List<Integer>> permute(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        intervalPermute(result, new ArrayList<Integer>(), used, nums);
+        return result;
+
+    }
+
+    private void intervalPermute(List<List<Integer>> result, ArrayList<Integer> integers, boolean[] used, int[] nums) {
+        if (integers.size() == nums.length) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            integers.add(nums[i]);
+            used[i] = true;
+            intervalPermute(result, integers, used, nums);
+            used[i] = false;
+            integers.remove(integers.size() - 1);
+        }
+
+    }
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        intervalPermuteUnique(result, new ArrayList<Integer>(), used, nums);
+        return result;
+    }
+
+    private void intervalPermuteUnique(List<List<Integer>> result, ArrayList<Integer> tmp, boolean[] used, int[] nums) {
+        if (tmp.size() == nums.length) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            used[i] = true;
+            intervalPermuteUnique(result, tmp, used, nums);
+            used[i] = false;
+            tmp.remove(tmp.size() - 1);
+        }
+
+    }
+
+
+    // ---- //
+
+
+    /**
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        for (int i = 0; i < nums.length; i--) {
+            while (i >= 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
+
+    public int trap(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int leftEdge = 0;
+        int rightEdge = 0;
+        int result = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                if (height[left] >= leftEdge) {
+                    leftEdge = height[left];
+                } else {
+                    result += leftEdge - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] >= rightEdge) {
+                    rightEdge = height[right];
+                } else {
+                    result += rightEdge - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+
+    public int trapV2(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        while (left < right) {
+            while (left < right && height[left] == 0) {
+                left++;
+            }
+            while (left < right && height[right] == 0) {
+                right--;
+            }
+            int tmp = Math.min(height[left], height[right]);
+
+            for (int i = left; i <= right; i++) {
+                if (height[i] >= tmp) {
+                    height[i] -= tmp;
+                } else {
+                    result += tmp - height[i];
+                    height[i] = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public String multiply(String num1, String num2) {
+        if (num1 == null && num2 == null) {
+            return "0";
+        }
+        int m = num1.length();
+        int n = num2.length();
+        int[] nums = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int tmp = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + nums[i + j + 1];
+
+                nums[i + j + 1] = tmp % 10;
+
+                nums[i + j] += tmp / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int num : nums) {
+            if (!(builder.length() == 0 && num == 0)) {
+                builder.append(num);
+            }
+        }
+        return builder.length() == 0 ? "0" : builder.toString();
+    }
+
+
+    // ---跳跃格子游戏系列--- //
+
+
+    public int jump(int[] nums) {
+        int step = 0;
+        int currentIndex = 0;
+        int furthest = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            currentIndex = Math.max(nums[i] + i, currentIndex);
+            if (i == furthest) {
+                step++;
+                furthest = currentIndex;
+            }
+        }
+        return step;
+    }
+
 }
