@@ -237,8 +237,17 @@ public class SerialQuestionSolution {
             }
         }
         return dp[m][n];
+    }
 
-
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int reach = 0;
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
+            reach = Math.max(i + nums[i], reach);
+        }
+        return reach >= nums.length - 1;
     }
 
 
@@ -616,5 +625,154 @@ public class SerialQuestionSolution {
         }
         return step;
     }
+
+
+    public void rotate(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        int row = matrix.length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < i; j++) {
+                swapMatrix(matrix, i, j);
+            }
+        }
+        for (int[] ints : matrix) {
+            for (int j = 0; j <= (ints.length - 1) / 2; j++) {
+                swap(ints, j, (ints.length - 1) - j);
+            }
+        }
+    }
+
+    private void swapMatrix(int[][] matrix, int i, int j) {
+        int val = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[j][i] = val;
+    }
+
+    // --数学原理--- //
+
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n < 0) {
+            n = -n;
+            x = 1 / x;
+        }
+        if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
+            return 0;
+        }
+        return n % 2 != 0 ? x * myPow(x * x, n / 2) : myPow(x * x, n / 2);
+    }
+
+    // ---- 八皇后问题----//
+
+
+    public List<List<String>> solveNQueens(int n) {
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<String>> result = new ArrayList<>();
+
+        char[][] words = new char[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                words[i][j] = '.';
+            }
+        }
+        intervalSolveNQueens(result, words, 0, n);
+        return result;
+    }
+
+    private void intervalSolveNQueens(List<List<String>> result, char[][] words, int row, int n) {
+        if (row == n) {
+            List<String> tmp = new ArrayList<>();
+            for (char[] word : words) {
+                tmp.add(String.valueOf(word));
+            }
+            result.add(tmp);
+            return;
+        }
+        for (int j = 0; j < n; j++) {
+            if (validNQueens(words, row, j)) {
+                words[row][j] = 'Q';
+                intervalSolveNQueens(result, words, row + 1, n);
+                words[row][j] = '.';
+            }
+        }
+
+    }
+
+    private boolean validNQueens(char[][] words, int row, int column) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (words[i][column] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; i--, j--) {
+            if (words[i][j] == 'Q') {
+                return false;
+            }
+        }
+        for (int i = row - 1, j = column + 1; i >= 0 && j < words.length; i--, j++) {
+            if (words[i][j] == 'Q') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        return intervalTotalNQueens(dp, 0, n);
+
+    }
+
+    private int intervalTotalNQueens(int[] dp, int row, int n) {
+        if (row == n) {
+            return 1;
+        }
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (validTotalNQueens(dp, row, j)) {
+                dp[row] = j;
+                count += intervalTotalNQueens(dp, row + 1, n);
+                dp[row] = -1;
+            }
+        }
+        return count;
+    }
+
+    private boolean validTotalNQueens(int[] dp, int row, int col) {
+        for (int i = row - 1; i >= 0; i--) {
+            if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // --合并区间问题- //
+
+
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return new int[][]{};
+        }
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return 0;
+            }
+        });
+        return null;
+    }
+
 
 }
