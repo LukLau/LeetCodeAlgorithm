@@ -33,7 +33,9 @@ public class SerialQuestionSolution {
 //
 //        solution.reverseKGroupV2(head, 2);
 
-        solution.multiply("2", "1");
+        int[][] matrix = new int[][]{{2, 3}, {2, 2}, {3, 3}, {1, 3}, {5, 7}, {2, 2}, {4, 6}};
+
+        solution.merge(matrix);
 
     }
 
@@ -497,6 +499,29 @@ public class SerialQuestionSolution {
     }
 
 
+    /**
+     * todo 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            numbers.add(i);
+        }
+        k--;
+        int[] position = new int[k + 1];
+        position[0] = 1;
+        position[1] = 1;
+
+        return "";
+
+
+    }
+
+
     // ---- //
 
 
@@ -666,6 +691,23 @@ public class SerialQuestionSolution {
         return n % 2 != 0 ? x * myPow(x * x, n / 2) : myPow(x * x, n / 2);
     }
 
+
+    /**
+     * todo
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        return false;
+
+    }
+
+
     // ---- 八皇后问题----//
 
 
@@ -765,14 +807,111 @@ public class SerialQuestionSolution {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        Arrays.sort(intervals, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return 0;
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        LinkedList<int[]> result = new LinkedList<>();
+        for (int[] interval : intervals) {
+            if (!result.isEmpty() && result.getLast()[1] >= interval[1]) {
+                result.getLast()[1] = Math.max(result.getLast()[1], interval[1]);
+            } else {
+                result.offer(interval);
             }
-        });
+        }
+        return result.toArray(new int[][]{});
+    }
+
+    /**
+     * 57. Insert Interval
+     *
+     * @param intervals
+     * @param newInterval
+     * @return
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (intervals == null || intervals.length == 0 | newInterval == null || newInterval.length == 0) {
+            return new int[][]{};
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        LinkedList<int[]> ans = new LinkedList<>();
+        int index = 0;
+        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
+            ans.offer(intervals[index++]);
+        }
+        while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(intervals[index][0], newInterval[0]);
+            newInterval[1] = Math.max(intervals[index][1], newInterval[1]);
+
+            index++;
+        }
+        ans.offer(newInterval);
+
+        while (index < intervals.length) {
+            ans.offer(intervals[index++]);
+        }
+        return ans.toArray(new int[][]{});
+    }
+
+    // --最小路径-- //
+
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[][] dp = new int[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = grid[i][j];
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] + grid[i][j];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + grid[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[row - 1][column - 1];
+    }
+
+
+    // --链表相关接口-- //
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        ListNode current = head;
+        int count = 1;
+        while (current.next != null) {
+            count++;
+            current = current.next;
+        }
+        current.next = head;
+        k %= count;
+        if (k != 0) {
+            for (int i = 0; i < count - k; i++) {
+                current = current.next;
+                head = head.next;
+            }
+        }
+        current.next = null;
+        return head;
+    }
+
+
+    public List<String> fullJustify(String[] words, int maxWidth) {
         return null;
     }
+
 
 
 }
