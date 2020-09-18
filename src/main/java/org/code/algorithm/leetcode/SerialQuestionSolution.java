@@ -35,7 +35,7 @@ public class SerialQuestionSolution {
 
         int[][] matrix = new int[][]{{2, 3}, {2, 2}, {3, 3}, {1, 3}, {5, 7}, {2, 2}, {4, 6}};
 
-        solution.merge(matrix);
+        solution.simplifyPath("/home/");
 
     }
 
@@ -693,6 +693,23 @@ public class SerialQuestionSolution {
 
 
     /**
+     * 牛顿二分法
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double result = x;
+        while (result * result - x > precision) {
+            result = (result + x / result) / 2;
+        }
+        return (int) result;
+
+    }
+
+
+    /**
      * todo
      * 65. Valid Number
      *
@@ -908,10 +925,145 @@ public class SerialQuestionSolution {
     }
 
 
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
     public List<String> fullJustify(String[] words, int maxWidth) {
-        return null;
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+
+        int startIndex = 0;
+
+        while (startIndex < words.length) {
+            int endIndex = startIndex;
+            int line = 0;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            boolean lastRow = endIndex == words.length;
+            int countOfWord = endIndex - startIndex;
+            int blankRow = maxWidth - line + 1;
+            StringBuilder builder = new StringBuilder();
+            if (countOfWord == 1) {
+                builder.append(words[startIndex]);
+            } else {
+                int blankNum = lastRow ? 1 : 1 + blankRow / (countOfWord - 1);
+                int extraBlankNum = lastRow ? 0 : blankRow % (countOfWord - 1);
+                builder.append(constructRow(words, startIndex, endIndex, blankNum, extraBlankNum));
+            }
+            startIndex = endIndex;
+
+            result.add(trimRow(builder.toString(), maxWidth));
+        }
+        return result;
     }
 
+    private String trimRow(String word, int maxWidth) {
+        while (word.length() < maxWidth) {
+            word += " ";
+        }
+        while (word.length() > maxWidth) {
+            word = word.substring(0, word.length() - 1);
+        }
+        return word;
+    }
+
+    private String constructRow(String[] words, int start, int end, int blankNum, int extraBlankNum) {
+        StringBuilder result = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            result.append(words[i]);
+            int tmp = blankNum;
+            while (tmp-- > 0) {
+                result.append(" ");
+            }
+            if (extraBlankNum-- > 0) {
+                result.append(" ");
+            }
+        }
+        return result.toString();
+    }
+
+
+    public List<String> fullJustifyV2(String[] words, int maxWidth) {
+        if (words == null || words.length == 0 || maxWidth <= 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        for (int i = 0, k; i < words.length; i += k) {
+            k = 0;
+            int line = 0;
+            while (i + k < words.length && line + words[i + k].length() <= maxWidth - k) {
+                line += words[i + k].length();
+                k++;
+            }
+            boolean lastRow = i + k == words.length;
+
+            int blankLine = maxWidth - line;
+
+            int intervalCount = k - 1;
+
+            StringBuilder builder = new StringBuilder();
+
+            for (int j = 0; j < k; j++) {
+
+                builder.append(words[i + j]);
+                if (lastRow) {
+                    builder.append(" ");
+                } else {
+                    int blankWord = blankLine / intervalCount + (j < blankLine % intervalCount ? 1 : 0);
+
+                    while (blankWord-- > 0) {
+                        builder.append(" ");
+                    }
+                }
+            }
+            result.add(trimRow(builder.toString(), maxWidth));
+        }
+        return result;
+    }
+
+
+    public String simplifyPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "/";
+        }
+        List<String> skip = Arrays.asList(".", "", "/");
+        String[] words = path.split("/");
+        LinkedList<String> ans = new LinkedList<>();
+        for (String word : words) {
+            if ("..".equals(word)) {
+                ans.pollFirst();
+            } else if (!skip.contains(word)) {
+                ans.add(word);
+            }
+        }
+        if (ans.isEmpty()) {
+            return "/";
+        }
+        StringBuilder result = new StringBuilder();
+        for (String word : ans) {
+            result.append("/").append(word);
+        }
+        return result.toString();
+    }
+
+    // --编辑距离问题- //
+
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2 == null) {
+            return 0;
+        }
+        int m = word1.length();
+        int n = word2.length();
+        return -1;
+    }
 
 
 }
