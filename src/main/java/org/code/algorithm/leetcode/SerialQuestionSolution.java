@@ -35,7 +35,7 @@ public class SerialQuestionSolution {
 
         int[][] matrix = new int[][]{{2, 3}, {2, 2}, {3, 3}, {1, 3}, {5, 7}, {2, 2}, {4, 6}};
 
-        solution.simplifyPath("/home/");
+        solution.searchV2(new int[]{1, 1}, 0);
 
     }
 
@@ -294,6 +294,43 @@ public class SerialQuestionSolution {
         return nums[left] == target ? left : -1;
     }
 
+    /**
+     * 81. Search in Rotated Sorted Array II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean searchV2(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[left] == nums[right]) {
+                left++;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target;
+    }
+
 
     /**
      * 23. Merge k Sorted Lists
@@ -519,6 +556,44 @@ public class SerialQuestionSolution {
         return "";
 
 
+    }
+
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombine(result, new ArrayList<Integer>(), 1, n, k);
+        return result;
+    }
+
+    private void intervalCombine(List<List<Integer>> result, ArrayList<Integer> integers, int start, int n, int k) {
+        if (integers.size() == k) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            integers.add(i);
+            intervalCombine(result, integers, i + 1, n, k);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalSubsets(result, new ArrayList<Integer>(), 0, nums);
+        return result;
+
+    }
+
+    private void intervalSubsets(List<List<Integer>> result, ArrayList<Integer> integers, int start, int[] nums) {
+        result.add(new ArrayList<>(integers));
+        for (int i = start; i < nums.length; i++) {
+            integers.add(nums[i]);
+            intervalSubsets(result, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
     }
 
 
@@ -1062,7 +1137,142 @@ public class SerialQuestionSolution {
         }
         int m = word1.length();
         int n = word2.length();
-        return -1;
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            int value = matrix[i][j];
+            if (value == target) {
+                return true;
+            } else if (value < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return false;
+    }
+
+
+    // ---双指针问题系列-- //
+
+
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int redNum = 0;
+        int blueNum = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (i < blueNum && nums[i] == 2) {
+                swap(nums, i, blueNum--);
+            }
+            while (i > redNum && nums[i] == 0) {
+                swap(nums, i, redNum++);
+            }
+        }
+    }
+
+
+    // --滑动窗口问题- //
+
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int result = Integer.MAX_VALUE;
+        int begin = 0;
+        int end = 0;
+        int head = 0;
+        int n = t.length();
+        int m = s.length();
+        int[] hash = new int[256];
+        for (int i = 0; i < n; i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+        while (end < m) {
+            if (hash[s.charAt(end++) - '0']-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (end - begin < result) {
+                    result = end - begin;
+                    head = begin;
+                }
+                if (hash[s.charAt(begin++) - '0']++ == 0) {
+                    n++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return "";
+    }
+
+
+    // --dfs优先遍历----- //
+
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && intervalExist(i, j, 0, board, word, used)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private boolean intervalExist(int i, int j, int k, char[][] board, String word, boolean[][] used) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalExist(i - 1, j, k + 1, board, word, used) ||
+                intervalExist(i + 1, j, k + 1, board, word, used) ||
+                intervalExist(i, j - 1, k + 1, board, word, used) ||
+                intervalExist(i, j + 1, k + 1, board, word, used)) {
+            return true;
+        }
+        used[i][j] = false;
+
+        return false;
     }
 
 
