@@ -1,9 +1,12 @@
 package org.code.algorithm.leetcode.daily;
 
+import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -72,6 +75,147 @@ public class Solution {
      * @return
      */
     public Node cloneGraph(Node node) {
+        return null;
+    }
+
+
+    /**
+     * 20. 有效的括号
+     *
+     * @param s
+     * @return
+     * @date 2020/08/14
+     */
+    public boolean isValid(String s) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        for (char word : s.toCharArray()) {
+
+            if (word == '{') {
+                stack.push('}');
+            } else if (word == '[') {
+                stack.push(']');
+            } else if (word == '(') {
+                stack.push(')');
+            } else if (stack.isEmpty()) {
+                return false;
+            } else {
+                if (stack.peek() != word) {
+                    return false;
+                }
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+
+    }
+
+
+    /**
+     * 110. 平衡二叉树
+     *
+     * @param root
+     * @return
+     * @date 2020/08/17
+     */
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int leftDepth = depth(root.left);
+        int rightDepth = depth(root.right);
+        if (Math.abs(leftDepth - rightDepth) > 1) {
+            return false;
+        }
+        return isBalanced(root.left) && isBalanced(root.right);
+    }
+
+    public int depth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(depth(root.left), depth(root.right));
+    }
+
+
+    /**
+     * 109. 有序链表转换二叉搜索树
+     *
+     * @param head
+     * @return
+     * @date 2020/08/19
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return intervalSortedListToBST(head, null);
+    }
+
+    private TreeNode intervalSortedListToBST(ListNode head, ListNode tail) {
+        if (head == tail) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail && fast.next != tail) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        root.left = intervalSortedListToBST(head, slow);
+        root.right = intervalSortedListToBST(slow.next, tail);
+        return root;
+    }
+
+
+    public TreeNode sortedListToBSTV2(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode middleNode = getMiddleListNode(head);
+        TreeNode root = new TreeNode(middleNode.val);
+        if (head == middleNode) {
+            return root;
+        }
+        root.left = sortedListToBSTV2(head);
+
+        root.right = sortedListToBSTV2(middleNode.next);
+
+        return root;
+    }
+
+    private ListNode getMiddleListNode(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode prev = null;
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if (prev != null) {
+            prev.next = null;
+        }
+        return slow;
+    }
+
+
+    /**
+     * 529. 扫雷游戏
+     *
+     * @param board
+     * @param click
+     * @return
+     * @date 2020/08/20
+     */
+    public char[][] updateBoard(char[][] board, int[] click) {
         return null;
     }
 
