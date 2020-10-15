@@ -613,23 +613,23 @@ public class TwoPage {
 
 
     public boolean isPalindrome(String s) {
-        if (s == null || s.isEmpty()) {
-            return true;
+        if (s == null) {
+            return false;
         }
-        int start = 0;
+        s = s.trim();
+        int begin = 0;
         int end = s.length() - 1;
-        while (start < end) {
-            while (start < end && !Character.isLetterOrDigit(s.charAt(start))) {
-                start++;
+        while (begin < end) {
+            while (begin < end && !Character.isLetterOrDigit(s.charAt(begin))) {
+                begin++;
             }
-            while (start < end && !Character.isLetterOrDigit(s.charAt(end))) {
+            while (begin < end && !Character.isLetterOrDigit(s.charAt(end))) {
                 end--;
             }
-            if (start < end) {
-                if (Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))) {
-                    return false;
-                }
-                start++;
+            if (Character.toLowerCase(s.charAt(begin)) != Character.toLowerCase(s.charAt(end))) {
+                return false;
+            } else {
+                begin++;
                 end--;
             }
         }

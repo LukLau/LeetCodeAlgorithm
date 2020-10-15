@@ -1,7 +1,7 @@
 package org.code.algorithm.leetcode;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -257,6 +257,97 @@ public class DynamicProgramSolution {
             result = Math.max(result, leftSell[i] + rightSell[i + 1]);
         }
         return result;
+    }
+
+
+    /**
+     * 132. Palindrome Partitioning II
+     *
+     * @param s
+     * @return
+     */
+    public int minCut(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int n = s.length();
+        boolean[][] palindrome = new boolean[n][n];
+        int[] dp = new int[n];
+        for (int i = 0; i < n; i++) {
+            int minCut = i;
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || palindrome[j + 1][i - 1])) {
+                    palindrome[j][i] = true;
+                    minCut = Math.min(minCut, j == 0 ? 0 : dp[j - 1] + 1);
+                }
+            }
+            dp[i] = minCut;
+        }
+        return dp[n - 1];
+    }
+
+
+    /**
+     * 134. Gas Station
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas == null || cost == null) {
+            return -1;
+        }
+        int remainGas = 0;
+        int localGas = 0;
+        int resultIndex = 0;
+        for (int i = 0; i < gas.length; i++) {
+            remainGas += gas[i] - cost[i];
+            localGas += gas[i] - cost[i];
+            if (localGas < 0) {
+                resultIndex = i + 1;
+
+                localGas = 0;
+            }
+        }
+        return remainGas >= 0 ? resultIndex : -1;
+    }
+
+
+    /**
+     * 135. Candy
+     *
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) {
+            return 0;
+        }
+        int n = ratings.length;
+        int[] dp = new int[n];
+
+        Arrays.fill(dp, 1);
+
+        int result = 0;
+
+        for (int i = 1; i < ratings.length; i++) {
+            if (ratings[i] > ratings[i - 1] && dp[i] < dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+        }
+        for (int i = ratings.length - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
+                dp[i] = dp[i + 1] + 1;
+            }
+        }
+
+
+        for (int cost : dp) {
+            result += cost;
+        }
+        return result;
+
     }
 
 
