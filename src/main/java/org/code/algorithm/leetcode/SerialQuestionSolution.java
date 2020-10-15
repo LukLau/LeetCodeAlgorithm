@@ -2,6 +2,8 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -15,26 +17,8 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-//        ListNode head = new ListNode(1);
-//        ListNode two = new ListNode(2);
-//
-//        head.next = two;
-//
-//        ListNode three = new ListNode(3);
-//        two.next = three;
-//
-//        ListNode four = new ListNode(4);
-//
-//        three.next = four;
-//
-//        ListNode five = new ListNode(5);
-//
-//        four.next = five;
-//
-//        solution.reverseKGroupV2(head, 2);
-
-        solution.multiply("2", "1");
-
+        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
+        solution.maximalRectangle(matrix);
     }
 
     // ---O log(N)算法---- //
@@ -292,6 +276,43 @@ public class SerialQuestionSolution {
         return nums[left] == target ? left : -1;
     }
 
+    /**
+     * 81. Search in Rotated Sorted Array II
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean searchV2(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[left] == nums[right]) {
+                left++;
+            } else if (nums[left] <= nums[mid]) {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return nums[left] == target;
+    }
+
 
     /**
      * 23. Merge k Sorted Lists
@@ -497,6 +518,90 @@ public class SerialQuestionSolution {
     }
 
 
+    /**
+     * todo 60. Permutation Sequence
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            numbers.add(i);
+        }
+        k--;
+        int[] position = new int[k + 1];
+        position[0] = 1;
+        position[1] = 1;
+
+        return "";
+
+
+    }
+
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombine(result, new ArrayList<Integer>(), 1, n, k);
+        return result;
+    }
+
+    private void intervalCombine(List<List<Integer>> result, ArrayList<Integer> integers, int start, int n, int k) {
+        if (integers.size() == k) {
+            result.add(new ArrayList<>(integers));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            integers.add(i);
+            intervalCombine(result, integers, i + 1, n, k);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalSubsets(result, new ArrayList<Integer>(), 0, nums);
+        return result;
+
+    }
+
+    private void intervalSubsets(List<List<Integer>> result, ArrayList<Integer> integers, int start, int[] nums) {
+        result.add(new ArrayList<>(integers));
+        for (int i = start; i < nums.length; i++) {
+            integers.add(nums[i]);
+            intervalSubsets(result, integers, i + 1, nums);
+            integers.remove(integers.size() - 1);
+        }
+    }
+
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
+        return result;
+    }
+
+    private void intervalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            intervalSubsetsWithDup(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
     // ---- //
 
 
@@ -666,6 +771,82 @@ public class SerialQuestionSolution {
         return n % 2 != 0 ? x * myPow(x * x, n / 2) : myPow(x * x, n / 2);
     }
 
+
+    /**
+     * 牛顿二分法
+     *
+     * @param x
+     * @return
+     */
+    public int mySqrt(int x) {
+        double precision = 0.00001;
+        double result = x;
+        while (result * result - x > precision) {
+            result = (result + x / result) / 2;
+        }
+        return (int) result;
+
+    }
+
+
+    /**
+     * todo
+     * 65. Valid Number
+     *
+     * @param s
+     * @return
+     */
+    public boolean isNumber(String s) {
+        if (s == null) {
+            return false;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return false;
+        }
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenAfterE = true;
+        boolean seenDigit = false;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            char word = words[i];
+            if (Character.isDigit(word)) {
+                seenAfterE = true;
+                seenNumber = true;
+            } else if (word == 'e' || word == 'E') {
+                if (seenE || i == 0) {
+                    return false;
+                }
+                if (!seenNumber) {
+                    return false;
+                }
+                if (!Character.isDigit(words[i - 1]) && words[i - 1] != '.') {
+                    return false;
+                }
+                seenE = true;
+                seenAfterE = false;
+            } else if (word == '.') {
+                // if (i != 0 && !Character.isDigit(words[i - 1])) {
+                //     return false;
+                // }
+                if (seenDigit || seenE) {
+                    return false;
+                }
+                seenDigit = true;
+            } else if (word == '-' || word == '+') {
+                if (i != 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        }
+        return seenAfterE && seenNumber;
+    }
+
+
     // ---- 八皇后问题----//
 
 
@@ -766,6 +947,666 @@ public class SerialQuestionSolution {
             return new int[][]{};
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        LinkedList<int[]> result = new LinkedList<>();
+        for (int[] interval : intervals) {
+            if (!result.isEmpty() && result.getLast()[1] >= interval[1]) {
+                result.getLast()[1] = Math.max(result.getLast()[1], interval[1]);
+            } else {
+                result.offer(interval);
+            }
+        }
+        return result.toArray(new int[][]{});
+    }
+
+    /**
+     * 57. Insert Interval
+     *
+     * @param intervals
+     * @param newInterval
+     * @return
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (intervals == null || intervals.length == 0 | newInterval == null || newInterval.length == 0) {
+            return new int[][]{};
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        LinkedList<int[]> ans = new LinkedList<>();
+        int index = 0;
+        while (index < intervals.length && intervals[index][1] < newInterval[0]) {
+            ans.offer(intervals[index++]);
+        }
+        while (index < intervals.length && intervals[index][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(intervals[index][0], newInterval[0]);
+            newInterval[1] = Math.max(intervals[index][1], newInterval[1]);
+
+            index++;
+        }
+        ans.offer(newInterval);
+
+        while (index < intervals.length) {
+            ans.offer(intervals[index++]);
+        }
+        return ans.toArray(new int[][]{});
+    }
+
+    // --最小路径-- //
+
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[][] dp = new int[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = grid[i][j];
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] + grid[i][j];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + grid[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[row - 1][column - 1];
+    }
+
+
+    // --链表相关接口-- //
+
+    /**
+     * 61. Rotate List
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null) {
+            return null;
+        }
+        ListNode current = head;
+        int count = 1;
+        while (current.next != null) {
+            count++;
+            current = current.next;
+        }
+        current.next = head;
+        k %= count;
+        if (k != 0) {
+            for (int i = 0; i < count - k; i++) {
+                current = current.next;
+                head = head.next;
+            }
+        }
+        current.next = null;
+        return head;
+    }
+
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode smallList = new ListNode(0);
+        ListNode dummy1 = smallList;
+        ListNode bigList = new ListNode(0);
+        ListNode dummy2 = bigList;
+        while (head != null) {
+            if (head.val < x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        dummy1.next = bigList.next;
+
+        bigList.next = null;
+
+        dummy2.next = null;
+
+        return smallList.next;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        for (int i = 0; i < m - 1; i++) {
+            dummy = dummy.next;
+        }
+        ListNode start = dummy.next;
+
+        ListNode then = start.next;
+
+        for (int i = 0; i < n - m; i++) {
+            start.next = then.next;
+
+            then.next = dummy.next;
+
+            dummy.next = then;
+
+            then = start.next;
+        }
+        return root.next;
+    }
+
+
+    // ----- //
+
+    /**
+     * 68. Text Justification
+     *
+     * @param words
+     * @param maxWidth
+     * @return
+     */
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        if (words == null || words.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+
+        int startIndex = 0;
+
+        while (startIndex < words.length) {
+            int endIndex = startIndex;
+            int line = 0;
+            while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
+                line += words[endIndex].length() + 1;
+                endIndex++;
+            }
+            boolean lastRow = endIndex == words.length;
+            int countOfWord = endIndex - startIndex;
+            int blankRow = maxWidth - line + 1;
+            StringBuilder builder = new StringBuilder();
+            if (countOfWord == 1) {
+                builder.append(words[startIndex]);
+            } else {
+                int blankNum = lastRow ? 1 : 1 + blankRow / (countOfWord - 1);
+                int extraBlankNum = lastRow ? 0 : blankRow % (countOfWord - 1);
+                builder.append(constructRow(words, startIndex, endIndex, blankNum, extraBlankNum));
+            }
+            startIndex = endIndex;
+
+            result.add(trimRow(builder.toString(), maxWidth));
+        }
+        return result;
+    }
+
+    private String trimRow(String word, int maxWidth) {
+        while (word.length() < maxWidth) {
+            word += " ";
+        }
+        while (word.length() > maxWidth) {
+            word = word.substring(0, word.length() - 1);
+        }
+        return word;
+    }
+
+    private String constructRow(String[] words, int start, int end, int blankNum, int extraBlankNum) {
+        StringBuilder result = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            result.append(words[i]);
+            int tmp = blankNum;
+            while (tmp-- > 0) {
+                result.append(" ");
+            }
+            if (extraBlankNum-- > 0) {
+                result.append(" ");
+            }
+        }
+        return result.toString();
+    }
+
+
+    public List<String> fullJustifyV2(String[] words, int maxWidth) {
+        if (words == null || words.length == 0 || maxWidth <= 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        for (int i = 0, k; i < words.length; i += k) {
+            k = 0;
+            int line = 0;
+            while (i + k < words.length && line + words[i + k].length() <= maxWidth - k) {
+                line += words[i + k].length();
+                k++;
+            }
+            boolean lastRow = i + k == words.length;
+
+            int blankLine = maxWidth - line;
+
+            int intervalCount = k - 1;
+
+            StringBuilder builder = new StringBuilder();
+
+            for (int j = 0; j < k; j++) {
+
+                builder.append(words[i + j]);
+                if (lastRow) {
+                    builder.append(" ");
+                } else {
+                    int blankWord = blankLine / intervalCount + (j < blankLine % intervalCount ? 1 : 0);
+
+                    while (blankWord-- > 0) {
+                        builder.append(" ");
+                    }
+                }
+            }
+            result.add(trimRow(builder.toString(), maxWidth));
+        }
+        return result;
+    }
+
+
+    public String simplifyPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "/";
+        }
+        List<String> skip = Arrays.asList(".", "", "/");
+        String[] words = path.split("/");
+        LinkedList<String> ans = new LinkedList<>();
+        for (String word : words) {
+            if ("..".equals(word)) {
+                ans.pollFirst();
+            } else if (!skip.contains(word)) {
+                ans.add(word);
+            }
+        }
+        if (ans.isEmpty()) {
+            return "/";
+        }
+        StringBuilder result = new StringBuilder();
+        for (String word : ans) {
+            result.append("/").append(word);
+        }
+        return result.toString();
+    }
+
+    // --编辑距离问题- //
+
+    public int minDistance(String word1, String word2) {
+        if (word1 == null || word2 == null) {
+            return 0;
+        }
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = 0;
+        int j = column - 1;
+        while (i < row && j >= 0) {
+            int value = matrix[i][j];
+            if (value == target) {
+                return true;
+            } else if (value < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return false;
+    }
+
+
+    // ---双指针问题系列-- //
+
+
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        int redNum = 0;
+        int blueNum = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (i < blueNum && nums[i] == 2) {
+                swap(nums, i, blueNum--);
+            }
+            while (i > redNum && nums[i] == 0) {
+                swap(nums, i, redNum++);
+            }
+        }
+    }
+
+
+    // --滑动窗口问题- //
+
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int result = Integer.MAX_VALUE;
+        int begin = 0;
+        int end = 0;
+        int head = 0;
+        int n = t.length();
+        int m = s.length();
+        int[] hash = new int[256];
+        for (int i = 0; i < n; i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+        while (end < m) {
+            if (hash[s.charAt(end++) - '0']-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (end - begin < result) {
+                    result = end - begin;
+                    head = begin;
+                }
+                if (hash[s.charAt(begin++) - '0']++ == 0) {
+                    n++;
+                }
+            }
+        }
+        if (result != Integer.MAX_VALUE) {
+            return s.substring(head, head + result);
+        }
+        return "";
+    }
+
+
+    // --dfs优先遍历----- //
+
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && intervalExist(i, j, 0, board, word, used)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private boolean intervalExist(int i, int j, int k, char[][] board, String word, boolean[][] used) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalExist(i - 1, j, k + 1, board, word, used) ||
+                intervalExist(i + 1, j, k + 1, board, word, used) ||
+                intervalExist(i, j - 1, k + 1, board, word, used) ||
+                intervalExist(i, j + 1, k + 1, board, word, used)) {
+            return true;
+        }
+        used[i][j] = false;
+
+        return false;
+    }
+
+
+    // --唯一路径问题-- //
+
+
+    /**
+     * 62. Unique Paths
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        if (m < 0 || n < 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[j] = j == 0 ? dp[j] : dp[j] + dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int row = obstacleGrid.length;
+        int column = obstacleGrid[0].length;
+        int[] dp = new int[column];
+
+        dp[0] = 1;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                } else {
+                    dp[j] = j == 0 ? dp[j] : dp[j - 1] + dp[j];
+                }
+            }
+        }
+        return dp[column - 1];
+    }
+
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSumV2(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[] dp = new int[column];
+        dp[0] = grid[0][0];
+        for (int j = 1; j < column; j++) {
+            dp[j] = dp[j - 1] + grid[0][j];
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                dp[j] = grid[i][j] + (j == 0 ? dp[j] : Math.min(dp[j - 1], dp[j]));
+            }
+        }
+        return dp[column - 1];
+    }
+
+    // --移除重复元素链表 - //
+
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
+            }
+            return deleteDuplicates(current);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+
+        int result = 0;
+
+        for (int i = 0; i <= heights.length; i++) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < height) {
+                stack.push(i);
+            } else {
+                int rightEdge = heights[stack.pop()];
+                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, rightEdge * side);
+                i--;
+            }
+        }
+        return result;
+    }
+
+    //--动态规划问题---- //
+
+    /**
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int result = 0;
+
+        int row = matrix.length;
+
+        int column = matrix[0].length;
+
+        int[][] dp = new int[row][column];
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '0') {
+                    dp[i][j] = -1;
+                    continue;
+                }
+                dp[i][j] = j;
+                if (j != 0 && dp[i][j - 1] >= 0) {
+                    dp[i][j] = dp[i][j - 1];
+                }
+                int width = dp[i][j];
+                for (int k = i; k >= 0 && matrix[k][j] == '1'; k--) {
+                    width = Math.max(width, dp[k][j]);
+                    result = Math.max(result, (j - width + 1) * (i - k + 1));
+                }
+            }
+        }
+        return result;
+    }
+
+    public int maximalRectangleV2(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[] height = new int[column];
+        int[] left = new int[column];
+        int[] right = new int[column];
+        Arrays.fill(right, column);
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            int leftSide = 0;
+            int rightSide = column;
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '0') {
+                    height[j] = 0;
+                    left[j] = 0;
+                    leftSide = j + 1;
+                } else {
+                    height[j]++;
+                    left[j] = Math.max(leftSide, left[j]);
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '0') {
+                    right[j] = column;
+                    rightSide = j;
+                } else {
+                    right[j] = Math.min(right[j], rightSide);
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                if (height[j] == 0) {
+                    continue;
+                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
+            }
+        }
+        return result;
+    }
+
+
+    // ---格雷码---- //
+
+
+    /**
+     * todo
+     * 89. Gray Code
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        List<Integer> result = new ArrayList<>();
         return null;
     }
 

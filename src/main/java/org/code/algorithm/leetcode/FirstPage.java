@@ -2722,6 +2722,7 @@ public class FirstPage {
 
 
     /**
+     * todo
      * 87. Scramble String
      *
      * @param s1
@@ -2729,6 +2730,38 @@ public class FirstPage {
      * @return
      */
     public boolean isScramble(String s1, String s2) {
+        if (s1 == null || s2 == null) {
+            return false;
+        }
+        int m = s1.length();
+        int n = s2.length();
+        if (m != n) {
+            return false;
+        }
+        if (s1.equals(s2)) {
+            return true;
+        }
+
+        int[] hash = new int[256];
+
+        for (int i = 0; i < m; i++) {
+            hash[s1.charAt(i) - 'a']++;
+            hash[s2.charAt(i) - 'a']--;
+        }
+        for (int i = 0; i < hash.length; i++) {
+            if (hash[i] != 0) {
+                return false;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+                return true;
+            }
+            if (isScramble(s1.substring(i), s2.substring(0, m - i))
+                    && isScramble(s1.substring(0, i), s2.substring(m - i))) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -3126,8 +3159,6 @@ public class FirstPage {
             first.val = second.val;
             second.val = val;
         }
-
-
     }
 
 
