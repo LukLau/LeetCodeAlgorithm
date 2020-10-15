@@ -765,14 +765,11 @@ public class SerialQuestionSolution {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
-        Arrays.sort(intervals, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return 0;
-            }
-        });
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
         return null;
     }
+
+
 
 
 }
