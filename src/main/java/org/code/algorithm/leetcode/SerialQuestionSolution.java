@@ -2,8 +2,6 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 
-import javax.validation.constraints.NotNull;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -1610,6 +1608,84 @@ public class SerialQuestionSolution {
         return null;
     }
 
+
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode split = slow.next;
+
+        slow.next = null;
+
+        ListNode reverseList = reverseList(split);
+
+        slow = head;
+
+        while (slow != null && reverseList != null) {
+            ListNode tmp = slow.next;
+
+            ListNode reverseNext = reverseList.next;
+
+            slow.next = reverseList;
+
+            reverseList.next = tmp;
+
+            slow = tmp;
+
+            reverseList = reverseNext;
+        }
+
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode node = head.next;
+            head.next = prev;
+            prev = head;
+            head = node;
+        }
+        return prev;
+    }
 
 
 

@@ -1311,19 +1311,15 @@ public class TwoPage {
         }
         s = s.trim();
 
-        if (s.isEmpty()) {
-            return "";
-        }
         String[] words = s.split(" ");
-
         StringBuilder builder = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            if (words[i].equals("")) {
+            String word = words[i];
+            if ("".equals(word)) {
                 continue;
             }
-
-            builder.append(words[i]);
-            if (i != 0) {
+            builder.append(word);
+            if (i > 0) {
                 builder.append(" ");
             }
         }
