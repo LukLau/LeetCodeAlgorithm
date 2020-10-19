@@ -15,8 +15,10 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
-        solution.maximalRectangle(matrix);
+//        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
+//        solution.maximalRectangle(matrix);
+        int[] nums = new int[]{2, 3, 4, 5, 1};
+        solution.findMin(nums);
     }
 
     // ---O log(N)算法---- //
@@ -148,6 +150,56 @@ public class SerialQuestionSolution {
      */
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return -1;
+    }
+
+
+    // --查找数组中的最小值---- //
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+    }
+
+
+    /**
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinWithRepeat(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] < nums[right]) {
+                right = mid;
+            } else if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } else {
+                right--;
+            }
+        }
+        return nums[left];
     }
 
 
@@ -1687,6 +1739,40 @@ public class SerialQuestionSolution {
         return prev;
     }
 
+
+    // ---逆波兰系列--- //
+
+    /**
+     * 逆波兰
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        List<String> sign = Arrays.asList("+", "-", "*", "/");
+        for (String token : tokens) {
+            if (sign.contains(token)) {
+                Integer firstNum = stack.pop();
+                Integer secondNum = stack.pop();
+                if ("+".equals(token)) {
+                    stack.push(firstNum + secondNum);
+                } else if ("-".equals(token)) {
+                    stack.push(secondNum - firstNum);
+                } else if ("*".equals(token)) {
+                    stack.push(firstNum * secondNum);
+                } else {
+                    stack.push(secondNum / firstNum);
+                }
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
+    }
 
 
 }

@@ -98,4 +98,27 @@ public class MathSolution {
     }
 
 
+    /**
+     * 152. Maximum Product Subarray
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int maxValue = nums[0];
+        int minValue = nums[0];
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int currentValue = nums[i];
+            int tmpMaxValue = Math.max(Math.max(maxValue * currentValue, minValue * currentValue), currentValue);
+            int tmpMinValue = Math.min(Math.min(maxValue * currentValue, minValue * currentValue), currentValue);
+
+            result = Math.max(result, tmpMaxValue);
+            maxValue = tmpMaxValue;
+            minValue = tmpMinValue;
+        }
+        return result;
+    }
+
+
 }
