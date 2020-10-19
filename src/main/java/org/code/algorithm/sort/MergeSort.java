@@ -17,33 +17,32 @@ public class MergeSort {
 
     private void merge(int[] nums, int low, int mid, int high) {
         int[] tmp = new int[high - low + 1];
-        int leftSide = low;
-        int rightSide = mid + 1;
-        int index = 0;
-        while (leftSide <= mid && rightSide <= high) {
-            if (nums[leftSide] <= nums[rightSide]) {
-                tmp[index++] = nums[leftSide++];
+        int i = low;
+        int j = mid + 1;
+        int k = 0;
+        while (i <= mid && j <= high) {
+            if (nums[i] <= nums[j]) {
+                tmp[k++] = nums[i++];
             } else {
-                tmp[index++] = nums[rightSide++];
+                tmp[k++] = nums[j++];
             }
         }
-        while (leftSide <= mid) {
-            tmp[index++] = nums[leftSide++];
+        while (i <= mid) {
+            tmp[k++] = nums[i++];
         }
-        while (rightSide <= high) {
-            tmp[index++] = nums[rightSide++];
+        while (j <= high) {
+            tmp[k++] = nums[j++];
         }
         if (tmp.length >= 0) {
             System.arraycopy(tmp, 0, nums, low, tmp.length);
         }
     }
 
-
     public static void main(String[] args) {
-        MergeSort sort = new MergeSort();
-        int[] nums = new int[]{-1, -2, -1, 3, 43, 2, 4, 54545};
+        MergeSort mergeSort = new MergeSort();
 
-        sort.mergeSort(nums, 0, nums.length - 1);
+        int[] nums = new int[]{-1, 4, -1, 343, 4, -2};
+        mergeSort.mergeSort(nums, 0, nums.length - 1);
 
         for (int num : nums) {
             System.out.println(num);

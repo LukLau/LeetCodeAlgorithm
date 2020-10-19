@@ -18,6 +18,8 @@ public class TwoPage {
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
 
+        String[] tokens = new String[]{"4", "3", "-"};
+
 
 //        String s = "catsanddog";
 //
@@ -43,7 +45,6 @@ public class TwoPage {
 //        page.reverseWords(word.toCharArray());
 
         int[] nums = new int[]{1, 2, 3, 1};
-        page.rob(nums);
     }
 
     /**
@@ -613,23 +614,23 @@ public class TwoPage {
 
 
     public boolean isPalindrome(String s) {
-        if (s == null || s.isEmpty()) {
-            return true;
+        if (s == null) {
+            return false;
         }
-        int start = 0;
+        s = s.trim();
+        int begin = 0;
         int end = s.length() - 1;
-        while (start < end) {
-            while (start < end && !Character.isLetterOrDigit(s.charAt(start))) {
-                start++;
+        while (begin < end) {
+            while (begin < end && !Character.isLetterOrDigit(s.charAt(begin))) {
+                begin++;
             }
-            while (start < end && !Character.isLetterOrDigit(s.charAt(end))) {
+            while (begin < end && !Character.isLetterOrDigit(s.charAt(end))) {
                 end--;
             }
-            if (start < end) {
-                if (Character.toLowerCase(s.charAt(start)) != Character.toLowerCase(s.charAt(end))) {
-                    return false;
-                }
-                start++;
+            if (Character.toLowerCase(s.charAt(begin)) != Character.toLowerCase(s.charAt(end))) {
+                return false;
+            } else {
+                begin++;
                 end--;
             }
         }
@@ -676,9 +677,7 @@ public class TwoPage {
             return 0;
         }
         HashMap<Integer, Integer> map = new HashMap<>();
-
         int result = 0;
-
         for (int num : nums) {
             if (map.containsKey(num)) {
                 continue;
@@ -686,13 +685,15 @@ public class TwoPage {
             Integer leftSide = map.getOrDefault(num - 1, 0);
             Integer rightSide = map.getOrDefault(num + 1, 0);
 
-            int value = leftSide + rightSide + 1;
+            int tmp = leftSide + rightSide + 1;
 
-            result = Math.max(result, value);
+            result = Math.max(result, tmp);
 
-            map.put(num - leftSide, value);
-            map.put(num + rightSide, value);
-            map.put(num, value);
+            map.put(num - leftSide, tmp);
+
+            map.put(num + rightSide, tmp);
+
+            map.put(num, tmp);
         }
         return result;
     }
@@ -1287,43 +1288,21 @@ public class TwoPage {
     }
 
 
-    /**
-     * 逆波兰
-     *
-     * @param tokens
-     * @return
-     */
-    public int evalRPN(String[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            return 0;
-        }
-        int result = 0;
-        Stack<Integer> stack = new Stack<>();
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i];
-        }
-        return -1;
-    }
-
     public String reverseWords(String s) {
         if (s == null) {
             return "";
         }
         s = s.trim();
 
-        if (s.isEmpty()) {
-            return "";
-        }
         String[] words = s.split(" ");
-
         StringBuilder builder = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            if (words[i].equals("")) {
+            String word = words[i];
+            if ("".equals(word)) {
                 continue;
             }
-
-            builder.append(words[i]);
-            if (i != 0) {
+            builder.append(word);
+            if (i > 0) {
                 builder.append(" ");
             }
         }

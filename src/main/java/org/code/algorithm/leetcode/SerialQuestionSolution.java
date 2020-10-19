@@ -15,28 +15,10 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-//        ListNode head = new ListNode(1);
-//        ListNode two = new ListNode(2);
-//
-//        head.next = two;
-//
-//        ListNode three = new ListNode(3);
-//        two.next = three;
-//
-//        ListNode four = new ListNode(4);
-//
-//        three.next = four;
-//
-//        ListNode five = new ListNode(5);
-//
-//        four.next = five;
-//
-//        solution.reverseKGroupV2(head, 2);
-
-        int[][] matrix = new int[][]{{2, 3}, {2, 2}, {3, 3}, {1, 3}, {5, 7}, {2, 2}, {4, 6}};
-
-        solution.searchV2(new int[]{1, 1}, 0);
-
+//        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
+//        solution.maximalRectangle(matrix);
+        int[] nums = new int[]{2, 3, 4, 5, 1};
+        solution.findMin(nums);
     }
 
     // ---O log(N)算法---- //
@@ -168,6 +150,56 @@ public class SerialQuestionSolution {
      */
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return -1;
+    }
+
+
+    // --查找数组中的最小值---- //
+
+    /**
+     * 153. Find Minimum in Rotated Sorted Array
+     *
+     * @param nums
+     * @return
+     */
+    public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= nums[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums[left];
+    }
+
+
+    /**
+     * 154. Find Minimum in Rotated Sorted Array II
+     *
+     * @param nums
+     * @return
+     */
+    public int findMinWithRepeat(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] < nums[right]) {
+                right = mid;
+            } else if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } else {
+                right--;
+            }
+        }
+        return nums[left];
     }
 
 
@@ -597,6 +629,29 @@ public class SerialQuestionSolution {
     }
 
 
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
+        return result;
+    }
+
+    private void intervalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
+        result.add(new ArrayList<>(tmp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            tmp.add(nums[i]);
+            intervalSubsetsWithDup(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+
     // ---- //
 
 
@@ -792,11 +847,53 @@ public class SerialQuestionSolution {
      * @return
      */
     public boolean isNumber(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
             return false;
         }
-        return false;
+        s = s.trim();
+        if (s.isEmpty()) {
+            return false;
+        }
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenAfterE = true;
+        boolean seenDigit = false;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            char word = words[i];
+            if (Character.isDigit(word)) {
+                seenAfterE = true;
+                seenNumber = true;
+            } else if (word == 'e' || word == 'E') {
+                if (seenE || i == 0) {
+                    return false;
+                }
+                if (!seenNumber) {
+                    return false;
+                }
+                if (!Character.isDigit(words[i - 1]) && words[i - 1] != '.') {
+                    return false;
+                }
+                seenE = true;
+                seenAfterE = false;
+            } else if (word == '.') {
+                // if (i != 0 && !Character.isDigit(words[i - 1])) {
+                //     return false;
+                // }
+                if (seenDigit || seenE) {
+                    return false;
+                }
+                seenDigit = true;
+            } else if (word == '-' || word == '+') {
+                if (i != 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
 
+        }
+        return seenAfterE && seenNumber;
     }
 
 
@@ -999,6 +1096,78 @@ public class SerialQuestionSolution {
         return head;
     }
 
+
+    /**
+     * 86. Partition List
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        if (head == null) {
+            return null;
+        }
+        ListNode smallList = new ListNode(0);
+        ListNode dummy1 = smallList;
+        ListNode bigList = new ListNode(0);
+        ListNode dummy2 = bigList;
+        while (head != null) {
+            if (head.val < x) {
+                dummy1.next = head;
+                dummy1 = dummy1.next;
+            } else {
+                dummy2.next = head;
+                dummy2 = dummy2.next;
+            }
+            head = head.next;
+        }
+        dummy1.next = bigList.next;
+
+        bigList.next = null;
+
+        dummy2.next = null;
+
+        return smallList.next;
+    }
+
+
+    /**
+     * 92. Reverse Linked List II
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode root = new ListNode(0);
+        root.next = head;
+        ListNode dummy = root;
+        for (int i = 0; i < m - 1; i++) {
+            dummy = dummy.next;
+        }
+        ListNode start = dummy.next;
+
+        ListNode then = start.next;
+
+        for (int i = 0; i < n - m; i++) {
+            start.next = then.next;
+
+            then.next = dummy.next;
+
+            dummy.next = then;
+
+            then = start.next;
+        }
+        return root.next;
+    }
+
+
+    // ----- //
 
     /**
      * 68. Text Justification
@@ -1273,6 +1442,336 @@ public class SerialQuestionSolution {
         used[i][j] = false;
 
         return false;
+    }
+
+
+    // --唯一路径问题-- //
+
+
+    /**
+     * 62. Unique Paths
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        if (m < 0 || n < 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[j] = j == 0 ? dp[j] : dp[j] + dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+
+
+    /**
+     * 63. Unique Paths II
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid == null || obstacleGrid.length == 0) {
+            return 0;
+        }
+        int row = obstacleGrid.length;
+        int column = obstacleGrid[0].length;
+        int[] dp = new int[column];
+
+        dp[0] = 1;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                } else {
+                    dp[j] = j == 0 ? dp[j] : dp[j - 1] + dp[j];
+                }
+            }
+        }
+        return dp[column - 1];
+    }
+
+
+    /**
+     * 64. Minimum Path Sum
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSumV2(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        int[] dp = new int[column];
+        dp[0] = grid[0][0];
+        for (int j = 1; j < column; j++) {
+            dp[j] = dp[j - 1] + grid[0][j];
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                dp[j] = grid[i][j] + (j == 0 ? dp[j] : Math.min(dp[j - 1], dp[j]));
+            }
+        }
+        return dp[column - 1];
+    }
+
+    // --移除重复元素链表 - //
+
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        if (head.val == head.next.val) {
+            ListNode current = head.next;
+            while (current != null && current.val == head.val) {
+                current = current.next;
+            }
+            return deleteDuplicates(current);
+        }
+        head.next = deleteDuplicates(head.next);
+        return head;
+    }
+
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+
+        int result = 0;
+
+        for (int i = 0; i <= heights.length; i++) {
+            int height = i == heights.length ? 0 : heights[i];
+            if (stack.isEmpty() || heights[stack.peek()] < height) {
+                stack.push(i);
+            } else {
+                int rightEdge = heights[stack.pop()];
+                int side = stack.isEmpty() ? i : i - stack.peek() - 1;
+                result = Math.max(result, rightEdge * side);
+                i--;
+            }
+        }
+        return result;
+    }
+
+    //--动态规划问题---- //
+
+    /**
+     * 85. Maximal Rectangle
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int result = 0;
+
+        int row = matrix.length;
+
+        int column = matrix[0].length;
+
+        int[][] dp = new int[row][column];
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '0') {
+                    dp[i][j] = -1;
+                    continue;
+                }
+                dp[i][j] = j;
+                if (j != 0 && dp[i][j - 1] >= 0) {
+                    dp[i][j] = dp[i][j - 1];
+                }
+                int width = dp[i][j];
+                for (int k = i; k >= 0 && matrix[k][j] == '1'; k--) {
+                    width = Math.max(width, dp[k][j]);
+                    result = Math.max(result, (j - width + 1) * (i - k + 1));
+                }
+            }
+        }
+        return result;
+    }
+
+    public int maximalRectangleV2(char[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int[] height = new int[column];
+        int[] left = new int[column];
+        int[] right = new int[column];
+        Arrays.fill(right, column);
+        int result = 0;
+        for (int i = 0; i < row; i++) {
+            int leftSide = 0;
+            int rightSide = column;
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '0') {
+                    height[j] = 0;
+                    left[j] = 0;
+                    leftSide = j + 1;
+                } else {
+                    height[j]++;
+                    left[j] = Math.max(leftSide, left[j]);
+                }
+            }
+            for (int j = column - 1; j >= 0; j--) {
+                if (matrix[i][j] == '0') {
+                    right[j] = column;
+                    rightSide = j;
+                } else {
+                    right[j] = Math.min(right[j], rightSide);
+                }
+            }
+            for (int j = 0; j < column; j++) {
+                if (height[j] == 0) {
+                    continue;
+                }
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
+            }
+        }
+        return result;
+    }
+
+
+    // ---格雷码---- //
+
+
+    /**
+     * todo
+     * 89. Gray Code
+     *
+     * @param n
+     * @return
+     */
+    public List<Integer> grayCode(int n) {
+        List<Integer> result = new ArrayList<>();
+        return null;
+    }
+
+
+    /**
+     * 142. Linked List Cycle II
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast.next;
+                    slow = slow.next;
+                }
+                return fast;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 143. Reorder List
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode split = slow.next;
+
+        slow.next = null;
+
+        ListNode reverseList = reverseList(split);
+
+        slow = head;
+
+        while (slow != null && reverseList != null) {
+            ListNode tmp = slow.next;
+
+            ListNode reverseNext = reverseList.next;
+
+            slow.next = reverseList;
+
+            reverseList.next = tmp;
+
+            slow = tmp;
+
+            reverseList = reverseNext;
+        }
+
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode node = head.next;
+            head.next = prev;
+            prev = head;
+            head = node;
+        }
+        return prev;
+    }
+
+
+    // ---逆波兰系列--- //
+
+    /**
+     * 逆波兰
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        List<String> sign = Arrays.asList("+", "-", "*", "/");
+        for (String token : tokens) {
+            if (sign.contains(token)) {
+                Integer firstNum = stack.pop();
+                Integer secondNum = stack.pop();
+                if ("+".equals(token)) {
+                    stack.push(firstNum + secondNum);
+                } else if ("-".equals(token)) {
+                    stack.push(secondNum - firstNum);
+                } else if ("*".equals(token)) {
+                    stack.push(firstNum * secondNum);
+                } else {
+                    stack.push(secondNum / firstNum);
+                }
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
     }
 
 
