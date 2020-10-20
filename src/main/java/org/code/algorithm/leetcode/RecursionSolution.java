@@ -102,6 +102,24 @@ public class RecursionSolution {
 
     /**
      * todo
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        return -1;
+    }
+
+
+    /**
+     * todo
      * 131. Palindrome Partitioning
      *
      * @param s

@@ -277,6 +277,15 @@ public class DynamicProgramSolution {
 
         int[] dp = new int[len];
 
+        for (int i = 1; i < len; i++) {
+
+            int cost = -prices[i];
+
+            for (int j = 1; j < k; j++) {
+
+            }
+        }
+
 
         return -1;
     }
@@ -428,6 +437,27 @@ public class DynamicProgramSolution {
             }
         }
         return dp[0];
+    }
+
+
+    // ---房屋大盗---//
+
+    /**
+     * 198. House Robber
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        int robPre = 0;
+        int robCurrent = 0;
+        for (int num : nums) {
+            int tmp = robPre;
+            robPre = Math.max(robCurrent, robPre);
+            robCurrent = tmp + num;
+        }
+        return Math.max(robPre, robCurrent);
+
     }
 
 
