@@ -1,7 +1,6 @@
 package org.code.algorithm.leetcode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 数学解决方案
@@ -95,6 +94,10 @@ public class MathSolution {
 
     public static void main(String[] args) {
         MathSolution solution = new MathSolution();
+        int[] nums = new int[]{3, 2, 3};
+
+        solution.majorityElement(nums);
+
     }
 
 
@@ -118,6 +121,169 @@ public class MathSolution {
             minValue = tmpMinValue;
         }
         return result;
+    }
+
+
+    /**
+     * 161 One Edit Distance
+     *
+     * @param s: a string
+     * @param t: a string
+     * @return: true if they are both one edit distance apart or false
+     */
+    public boolean isOneEditDistance(String s, String t) {
+        // write your code here
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.equals(t)) {
+            return false;
+        }
+        int m = s.length();
+        int n = t.length();
+        int diff = Math.abs(m - n);
+        if (diff > 1) {
+            return false;
+        }
+        if (m < n) {
+            return isOneEditDistance(t, s);
+        }
+        if (diff == 1) {
+            for (int i = 0; i < n; i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return s.substring(i + 1).equals(t.substring(i));
+                }
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                count++;
+            }
+            if (count > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 163 Missing Ranges
+     *
+     * @param nums:  a sorted integer array
+     * @param lower: An integer
+     * @param upper: An integer
+     * @return: a list of its missing ranges
+     */
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        // write your code here
+        if (nums == null) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+
+        for (int num : nums) {
+            if (num > lower) {
+                String range = constructRange(lower, num - 1);
+
+                result.add(range);
+            }
+            if (num == upper) {
+                return result;
+            }
+            lower = num + 1;
+        }
+        if (lower <= upper) {
+            String word = constructRange(lower, upper);
+            result.add(word);
+        }
+        return result;
+    }
+
+    private String constructRange(int start, int end) {
+        return start == end ? start + "" : start + "->" + end;
+    }
+
+
+    /**
+     * 摩尔投票法
+     * 169. Majority Element
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0];
+        int count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+            }
+            if (count == 0) {
+                candidate = num;
+                count = 1;
+            }
+        }
+        return candidate;
+    }
+
+
+    /**
+     * 根据5的个数有关
+     * 172. Factorial Trailing Zeroes
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while ((n / 5) != 0) {
+            count += (n / 5);
+            n /= 5;
+        }
+        return count;
+    }
+
+
+    public String largestNumber(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return "";
+        }
+        String[] words = new String[nums.length];
+        for (int i = 0; i < words.length; i++) {
+            words[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(words, (o1, o2) -> {
+            String word1 = o1 + o2;
+            String word2 = o2 + o1;
+            return word2.compareTo(word1);
+        });
+        if ("0".equals(words[0])) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String word : words) {
+            builder.append(word);
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * todo
+     * 187. Repeated DNA Sequences
+     *
+     * @param s
+     * @return
+     */
+    public List<String> findRepeatedDnaSequences(String s) {
+        return null;
     }
 
 

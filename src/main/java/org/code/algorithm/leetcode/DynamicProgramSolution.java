@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class DynamicProgramSolution {
 
+
     /**
      * 97. Interleaving String
      *
@@ -261,6 +262,27 @@ public class DynamicProgramSolution {
 
 
     /**
+     * todo
+     * 188. Best Time to Buy and Sell Stock IV
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int maxProfitIV(int k, int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int len = prices.length;
+
+        int[] dp = new int[len];
+
+
+        return -1;
+    }
+
+
+    /**
      * 132. Palindrome Partitioning II
      *
      * @param s
@@ -348,6 +370,64 @@ public class DynamicProgramSolution {
         }
         return result;
 
+    }
+
+
+    /**
+     * 174. Dungeon Game
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[][] dp = new int[row][column];
+        for (int i = row - 1; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (i == row - 1 && j == column - 1) {
+                    dp[i][j] = Math.max(1, 1 - dungeon[i][j]);
+                } else if (i == row - 1) {
+                    dp[i][j] = Math.max(1, dp[i][j + 1] - dungeon[i][j]);
+                } else if (j == column - 1) {
+                    dp[i][j] = Math.max(1, dp[i + 1][j] - dungeon[i][j]);
+                } else {
+                    dp[i][j] = Math.max(1, Math.min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]);
+                }
+            }
+        }
+        return dp[0][0];
+    }
+
+
+    public int calculateMinimumHPV2(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0) {
+            return 0;
+        }
+        int row = dungeon.length;
+        int column = dungeon[0].length;
+        int[] dp = new int[column];
+        for (int i = column - 1; i >= 0; i--) {
+            if (i == column - 1) {
+                dp[i] = Math.max(1, 1 - dungeon[row - 1][i]);
+            } else {
+                dp[i] = Math.max(1, dp[i + 1] - dungeon[row - 1][i]);
+            }
+        }
+        for (int i = row - 2; i >= 0; i--) {
+            for (int j = column - 1; j >= 0; j--) {
+                if (j == column - 1) {
+                    dp[j] = Math.max(1, dp[j] - dungeon[i][j]);
+                } else {
+                    dp[j] = Math.max(1, Math.min(dp[j], dp[j + 1]) - dungeon[i][j]);
+                }
+
+            }
+        }
+        return dp[0];
     }
 
 

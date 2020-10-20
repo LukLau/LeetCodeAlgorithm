@@ -533,7 +533,30 @@ public class TreeSolution {
         if (root == null || root.left == null) {
             return root;
         }
-        return null;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (p != null) {
+            stack.push(p);
+            p = p.left;
+        }
+        TreeNode newRoot = stack.peek();
+
+        while (!stack.isEmpty()) {
+            TreeNode popNode = stack.pop();
+
+            TreeNode peekNode = stack.isEmpty() ? null : stack.peek();
+
+            if (peekNode != null) {
+                popNode.left = peekNode.right;
+
+                popNode.right = peekNode;
+
+                peekNode.left = null;
+
+                peekNode.right = null;
+            }
+        }
+        return newRoot;
     }
 
 
