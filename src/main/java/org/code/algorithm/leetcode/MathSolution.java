@@ -96,8 +96,9 @@ public class MathSolution {
         MathSolution solution = new MathSolution();
         int[] nums = new int[]{3, 2, 3};
 
-        solution.majorityElement(nums);
+        int n = 19;
 
+        solution.isHappy(8);
     }
 
 
@@ -297,6 +298,12 @@ public class MathSolution {
         return -1;
     }
 
+    /**
+     * 一个数  二进制中1的个数
+     *
+     * @param n
+     * @return
+     */
     public int hammingWeight(int n) {
         int count = 0;
         while (n != 0) {
@@ -304,6 +311,64 @@ public class MathSolution {
             n = n & (n - 1);
         }
         return count;
+    }
+
+
+    /**
+     * todo
+     * 201. Bitwise AND of Numbers Range
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int rangeBitwiseAnd(int m, int n) {
+        return -1;
+    }
+
+
+    /**
+     * 202. Happy Number
+     *
+     * @param n
+     * @return
+     */
+    public boolean isHappy(int n) {
+        Set<Integer> repeat = new HashSet<>();
+        while (n != 1) {
+            int tmp = n;
+            int value = 0;
+
+            while (tmp != 0) {
+                int remain = tmp % 10;
+
+                value += remain * remain;
+
+                tmp /= 10;
+            }
+            if (value == 1) {
+                return true;
+            }
+
+            if (repeat.contains(value)) {
+                return false;
+            }
+            repeat.add(value);
+            n = value;
+        }
+        return true;
+    }
+
+    /**
+     * 207. Course Schedule
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+
+
     }
 
 

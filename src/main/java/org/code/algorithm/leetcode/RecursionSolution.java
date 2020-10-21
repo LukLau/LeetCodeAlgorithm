@@ -114,7 +114,27 @@ public class RecursionSolution {
         int row = grid.length;
         int column = grid[0].length;
         boolean[][] used = new boolean[row][column];
-        return -1;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (!used[i][j] && grid[i][j] == '1') {
+                    count++;
+                    intervalNumIsLands(used, i, j, grid);
+                }
+            }
+        }
+        return count;
+    }
+
+    private void intervalNumIsLands(boolean[][] used, int i, int j, char[][] grid) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length || used[i][j] || grid[i][j] != '1') {
+            return;
+        }
+        used[i][j] = true;
+        intervalNumIsLands(used, i - 1, j, grid);
+        intervalNumIsLands(used, i + 1, j, grid);
+        intervalNumIsLands(used, i, j - 1, grid);
+        intervalNumIsLands(used, i, j + 1, grid);
     }
 
 
@@ -308,6 +328,30 @@ public class RecursionSolution {
 
         }
         return -1;
+    }
+
+
+    /**
+     * 206. Reverse Linked List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode next = head.next;
+
+        ListNode node = reverseList(next);
+
+        next.next = head;
+
+        head.next = null;
+
+        return node;
+
+
     }
 
 
