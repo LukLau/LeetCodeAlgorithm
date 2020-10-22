@@ -96,5 +96,28 @@ public class ThreePage {
         return prev;
     }
 
+    /**
+     * 209. Minimum Size Subarray Sum
+     */
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int result = Integer.MAX_VALUE;
+        int end = 0;
+        int value = 0;
+        int begin = 0;
+        while (end < nums.length) {
+            value += nums[end];
+
+            while (value >= s) {
+                result = Math.min(result, end - begin + 1);
+                value -= nums[begin++];
+            }
+            end++;
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+
 
 }

@@ -359,17 +359,5 @@ public class MathSolution {
         return true;
     }
 
-    /**
-     * 207. Course Schedule
-     *
-     * @param numCourses
-     * @param prerequisites
-     * @return
-     */
-    public boolean canFinish(int numCourses, int[][] prerequisites) {
-
-
-    }
-
 
 }

@@ -1,9 +1,9 @@
 package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.Trie;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,8 +14,10 @@ import java.util.List;
 public class RecursionSolution {
     public static void main(String[] args) {
         RecursionSolution solution = new RecursionSolution();
-        List<String> wordDict = Arrays.asList("a");
-        solution.wordBreakV2("ab", wordDict);
+        char[][] board = new char[][]{{'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'}};
+        String[] words = new String[]{"oath", "pea", "eat", "rain"};
+
+        solution.findWords(board, words);
     }
 
 
@@ -350,8 +352,34 @@ public class RecursionSolution {
         head.next = null;
 
         return node;
+    }
 
 
+    /**
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+
+            }
+        }
+        return result;
     }
 
 
