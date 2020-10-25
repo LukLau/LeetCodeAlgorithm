@@ -92,7 +92,6 @@ public class TreeSolution {
             }
         }
         return result;
-
     }
 
     // --生成二叉搜索树- //
@@ -500,6 +499,64 @@ public class TreeSolution {
         }
         return root;
 
+    }
+
+
+    /**
+     * 156 Binary Tree Upside Down
+     * Medium
+     *
+     * @param root: the root of binary tree
+     * @return: new root
+     */
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        // write your code here
+        if (root == null || root.left == null) {
+            return root;
+        }
+        TreeNode leftNode = root.left;
+
+        TreeNode newRoot = upsideDownBinaryTree(root.left);
+
+        leftNode.left = root.right;
+
+        leftNode.right = root;
+
+        root.left = null;
+
+        root.right = null;
+
+        return newRoot;
+    }
+
+    public TreeNode upsideDownBinaryTreeV2(TreeNode root) {
+        if (root == null || root.left == null) {
+            return root;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        while (p != null) {
+            stack.push(p);
+            p = p.left;
+        }
+        TreeNode newRoot = stack.peek();
+
+        while (!stack.isEmpty()) {
+            TreeNode popNode = stack.pop();
+
+            TreeNode peekNode = stack.isEmpty() ? null : stack.peek();
+
+            if (peekNode != null) {
+                popNode.left = peekNode.right;
+
+                popNode.right = peekNode;
+
+                peekNode.left = null;
+
+                peekNode.right = null;
+            }
+        }
+        return newRoot;
     }
 
 

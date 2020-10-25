@@ -4,37 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * todo
+ * LRU last recently used
  *
  * @author dora
  * @date 2020/8/17
  */
 public class LRUCache {
-
-    private Map<Integer, Node> map = new HashMap<>();
-
     private Node head;
 
     private Node tail;
 
     private int capacity;
 
+    private Map<Integer, Node> map;
+
 
     public LRUCache(int capacity) {
-        this.capacity = capacity;
+
         head = new Node();
         tail = new Node();
 
         head.next = tail;
         tail.prev = head;
-    }
 
-    public static void main(String[] args) {
-        LRUCache cache = new LRUCache(1);
-
-        cache.put(2, 1);
-
-        cache.get(2);
+        map = new HashMap<>();
+        this.capacity = capacity;
     }
 
     public int get(int key) {
@@ -42,66 +36,87 @@ public class LRUCache {
         if (node == null) {
             return -1;
         }
-        removeNode(node);
-
-        moveToFirst(node);
-
+        intervalLru(node);
         return node.val;
     }
 
+    private void intervalLru(Node node) {
+        removeNode(node);
+
+        addToFirst(node);
+    }
+
     private void removeNode(Node node) {
-        Node prev = node.prev;
+        Node prevNode = node.prev;
 
-        Node next = node.next;
+        Node nextNode = node.next;
 
-        prev.next = next;
+        prevNode.next = nextNode;
 
-        next.prev = prev;
+        nextNode.prev = prevNode;
 
         node.next = null;
 
         node.prev = null;
     }
 
-    private void moveToFirst(Node node) {
-        Node next = head.next;
+    private void addToFirst(Node node) {
+        Node previousFirst = head.next;
 
         head.next = node;
 
         node.prev = head;
 
-        node.next = next;
+        node.next = previousFirst;
 
-        next.prev = node;
+        previousFirst.prev = node;
     }
 
-    private Node getTailNode() {
-        Node tmp = tail.prev;
+    private Node popTailNode() {
+        Node lastNode = tail.prev;
 
-        removeNode(tmp);
+        lastNode.prev.next = tail;
 
-        return tmp;
+        tail.prev = lastNode.prev;
+
+        lastNode.prev = null;
+
+        lastNode.next = null;
+
+        return lastNode;
     }
 
     public void put(int key, int value) {
         Node node = map.get(key);
+
         if (node != null) {
             node.val = value;
-            removeNode(node);
-            moveToFirst(node);
+            intervalLru(node);
             return;
         }
-        Node newNode = new Node(value, key);
-
         if (map.size() == capacity) {
-
-            Node tailNode = getTailNode();
+            Node tailNode = popTailNode();
 
             map.remove(tailNode.key);
         }
-        map.put(key, newNode);
-        moveToFirst(newNode);
+        node = new Node(key, value);
 
+        map.put(key, node);
+
+        addToFirst(node);
+    }
+
+    public static void main(String[] args) {
+        LRUCache cache = new LRUCache(2);
+        cache.put(1, 1);
+        cache.put(2, 2);
+        cache.get(1);
+        cache.put(3, 3);
+        cache.get(2);
+        cache.put(4, 4);
+        cache.get(1);
+        cache.get(3);
+        cache.get(4);
     }
 
 }

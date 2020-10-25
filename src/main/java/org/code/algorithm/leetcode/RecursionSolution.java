@@ -1,6 +1,10 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.Trie;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -8,6 +12,13 @@ import java.util.List;
  * @date 2020/10/8
  */
 public class RecursionSolution {
+    public static void main(String[] args) {
+        RecursionSolution solution = new RecursionSolution();
+        char[][] board = new char[][]{{'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'}};
+        String[] words = new String[]{"oath", "pea", "eat", "rain"};
+
+        solution.findWords(board, words);
+    }
 
 
     /**
@@ -93,6 +104,44 @@ public class RecursionSolution {
 
     /**
      * todo
+     * 200. Number of Islands
+     *
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        boolean[][] used = new boolean[row][column];
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (!used[i][j] && grid[i][j] == '1') {
+                    count++;
+                    intervalNumIsLands(used, i, j, grid);
+                }
+            }
+        }
+        return count;
+    }
+
+    private void intervalNumIsLands(boolean[][] used, int i, int j, char[][] grid) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length || used[i][j] || grid[i][j] != '1') {
+            return;
+        }
+        used[i][j] = true;
+        intervalNumIsLands(used, i - 1, j, grid);
+        intervalNumIsLands(used, i + 1, j, grid);
+        intervalNumIsLands(used, i, j - 1, grid);
+        intervalNumIsLands(used, i, j + 1, grid);
+    }
+
+
+    /**
+     * todo
      * 131. Palindrome Partitioning
      *
      * @param s
@@ -145,14 +194,192 @@ public class RecursionSolution {
      * @return
      */
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
+            return true;
+        }
+        HashMap<String, Boolean> map = new HashMap<>();
+
+        return intervalWordBreak(map, s, wordDict);
+    }
+
+    private boolean intervalWordBreak(HashMap<String, Boolean> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return false;
+        }
+        if (s.isEmpty()) {
             return true;
         }
         for (String word : wordDict) {
-            s.startsWith(word);
+            if (!s.startsWith(word)) {
+                continue;
+            }
+            String tmp = s.substring(word.length());
+            boolean wordBreak = intervalWordBreak(map, tmp, wordDict);
+
+            if (wordBreak) {
+                return true;
+            }
+            map.put(tmp, false);
         }
         return false;
+    }
 
+
+    /**
+     * 140. Word Break II
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreakV2(String s, List<String> wordDict) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        return intervalWordBreakV2(map, s, wordDict);
+    }
+
+    private List<String> intervalWordBreakV2(HashMap<String, List<String>> map, String s, List<String> wordDict) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        List<String> result = new ArrayList<>();
+        if (s.isEmpty()) {
+            result.add(s);
+            return result;
+        }
+        for (String word : wordDict) {
+            boolean startsWith = s.startsWith(word);
+
+            if (!startsWith) {
+                continue;
+            }
+            List<String> wordBreakV2 = intervalWordBreakV2(map, s.substring(word.length()), wordDict);
+            for (String tmp : wordBreakV2) {
+                result.add(word + (tmp.isEmpty() ? "" : " " + tmp));
+            }
+        }
+        map.put(s, result);
+        return result;
+    }
+
+
+    /**
+     * 148. Sort List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode fastHead = slow.next;
+
+        slow.next = null;
+
+        ListNode sortList1 = sortList(head);
+
+        ListNode sortList2 = sortList(fastHead);
+
+        return mergeList(sortList1, sortList2);
+    }
+
+    private ListNode mergeList(ListNode node1, ListNode node2) {
+        if (node1 == null && node2 == null) {
+            return null;
+        }
+        if (node1 == null) {
+            return node2;
+        }
+        if (node2 == null) {
+            return node1;
+        }
+        if (node1.val <= node2.val) {
+            node1.next = mergeList(node1.next, node2);
+            return node1;
+        } else {
+            node2.next = mergeList(node1, node2.next);
+            return node2;
+        }
+    }
+
+
+    // --波兰数系列- //
+
+    /**
+     * todo
+     * 150. Evaluate Reverse Polish Notation
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        if (tokens == null || tokens.length == 0) {
+            return 0;
+        }
+        List<Integer> signIndex = new ArrayList<>();
+        for (String token : tokens) {
+
+        }
+        return -1;
+    }
+
+
+    /**
+     * 206. Reverse Linked List
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode next = head.next;
+
+        ListNode node = reverseList(next);
+
+        next.next = head;
+
+        head.next = null;
+
+        return node;
+    }
+
+
+    /**
+     * 212. Word Search II
+     *
+     * @param board
+     * @param words
+     * @return
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        if (board == null || board.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+
+            }
+        }
+        return result;
     }
 
 

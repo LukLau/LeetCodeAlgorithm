@@ -18,6 +18,8 @@ public class TwoPage {
     public static void main(String[] args) {
         TwoPage page = new TwoPage();
 
+        String[] tokens = new String[]{"4", "3", "-"};
+
 
 //        String s = "catsanddog";
 //
@@ -43,7 +45,6 @@ public class TwoPage {
 //        page.reverseWords(word.toCharArray());
 
         int[] nums = new int[]{1, 2, 3, 1};
-        page.rob(nums);
     }
 
     /**
@@ -1287,43 +1288,21 @@ public class TwoPage {
     }
 
 
-    /**
-     * 逆波兰
-     *
-     * @param tokens
-     * @return
-     */
-    public int evalRPN(String[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            return 0;
-        }
-        int result = 0;
-        Stack<Integer> stack = new Stack<>();
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i];
-        }
-        return -1;
-    }
-
     public String reverseWords(String s) {
         if (s == null) {
             return "";
         }
         s = s.trim();
 
-        if (s.isEmpty()) {
-            return "";
-        }
         String[] words = s.split(" ");
-
         StringBuilder builder = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            if (words[i].equals("")) {
+            String word = words[i];
+            if ("".equals(word)) {
                 continue;
             }
-
-            builder.append(words[i]);
-            if (i != 0) {
+            builder.append(word);
+            if (i > 0) {
                 builder.append(" ");
             }
         }
