@@ -6,6 +6,7 @@ import org.code.algorithm.datastructe.Trie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author dora
@@ -376,10 +377,39 @@ public class RecursionSolution {
         boolean[][] used = new boolean[row][column];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-
+                String prefixWord = String.valueOf(board[i][j]);
+                if (trie.startsWith(prefixWord)) {
+                    intervalFindWords(result, trie, used, i, j, board, "");
+                }
             }
         }
-        return result;
+        return result.stream().distinct().collect(Collectors.toList());
+    }
+
+    private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, int i, int j, char[][] board, String prefixWord) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+            return;
+        }
+        prefixWord += board[i][j];
+        if (!trie.startsWith(prefixWord)) {
+            return;
+        }
+        if (trie.search(prefixWord)) {
+            result.add(prefixWord);
+        }
+        used[i][j] = true;
+
+        intervalFindWords(result, trie, used, i - 1, j, board, prefixWord);
+
+        intervalFindWords(result, trie, used, i + 1, j, board, prefixWord);
+
+
+        intervalFindWords(result, trie, used, i, j - 1, board, prefixWord);
+
+        intervalFindWords(result, trie, used, i, j + 1, board, prefixWord);
+
+        used[i][j] = false;
+
     }
 
 
