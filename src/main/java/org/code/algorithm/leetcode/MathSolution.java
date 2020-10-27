@@ -10,6 +10,15 @@ import java.util.*;
  */
 public class MathSolution {
 
+    public static void main(String[] args) {
+        MathSolution solution = new MathSolution();
+        int[] nums = new int[]{3, 2, 3};
+
+        int n = 19;
+
+        solution.isHappy(8);
+    }
+
     /**
      * 136. Single Number
      *
@@ -34,7 +43,6 @@ public class MathSolution {
     public int singleNumberV2(int[] nums) {
         return -1;
     }
-
 
     /**
      * 149. Max Points on a Line
@@ -84,23 +92,12 @@ public class MathSolution {
         return result;
     }
 
-
     private int gcd(int x, int y) {
         if (y == 0) {
             return x;
         }
         return gcd(y, x % y);
     }
-
-    public static void main(String[] args) {
-        MathSolution solution = new MathSolution();
-        int[] nums = new int[]{3, 2, 3};
-
-        int n = 19;
-
-        solution.isHappy(8);
-    }
-
 
     /**
      * 152. Maximum Product Subarray
@@ -233,6 +230,18 @@ public class MathSolution {
 
 
     /**
+     * todo
+     * 229. Majority Element II
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> majorityElementII(int[] nums) {
+        return null;
+    }
+
+
+    /**
      * 根据5的个数有关
      * 172. Factorial Trailing Zeroes
      *
@@ -355,6 +364,27 @@ public class MathSolution {
             }
             repeat.add(value);
             n = value;
+        }
+        return true;
+    }
+
+
+    /**
+     * 231. Power of Two
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        if (n == 0) {
+            return false;
+        }
+        while (n != 0) {
+            int tmp = n & (n - 1);
+            if (tmp != 0) {
+                return false;
+            }
+            n >>= 1;
         }
         return true;
     }

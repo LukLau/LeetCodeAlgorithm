@@ -263,4 +263,42 @@ public class ThreePage {
     }
 
 
+    /**
+     * 228. Summary Ranges
+     *
+     * @param nums
+     * @return
+     */
+    public List<String> summaryRanges(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        if (nums.length == 1) {
+            result.add(String.valueOf(nums[0]));
+            return result;
+        }
+        int previousIndex = Integer.MAX_VALUE;
+
+        for (int i = 0; i < nums.length; i++) {
+            if (i == 0) {
+                previousIndex = i;
+            } else if (nums[i] != nums[i - 1] + 1) {
+                String range = nums[i - 1] == nums[previousIndex] ? String.valueOf(nums[previousIndex]) : nums[previousIndex] + "->" + nums[i - 1];
+
+                result.add(range);
+
+                previousIndex = i;
+            }
+        }
+        result.add(constructRange(nums, previousIndex, nums.length - 1));
+
+        return result;
+    }
+
+    private String constructRange(int[] nums, int start, int end) {
+        return start == end ? String.valueOf(nums[start]) : nums[start] + "->" + nums[end];
+    }
+
+
 }

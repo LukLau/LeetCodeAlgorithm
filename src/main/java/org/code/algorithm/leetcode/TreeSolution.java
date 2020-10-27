@@ -15,6 +15,10 @@ import java.util.Stack;
  */
 public class TreeSolution {
 
+    public static void main(String[] args) {
+        TreeSolution solution = new TreeSolution();
+    }
+
 
     //---普通题- //
 
@@ -557,6 +561,45 @@ public class TreeSolution {
             }
         }
         return newRoot;
+    }
+
+
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode tmp = root.left;
+
+        root.left = root.right;
+
+        root.right = tmp;
+
+        invertTree(root.left);
+
+        invertTree(root.right);
+
+        return root;
+    }
+
+
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+
+        int iteratorCount = 0;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            iteratorCount++;
+            if (iteratorCount == k) {
+                return p.val;
+            }
+            p = p.right;
+        }
+        return -1;
     }
 
 

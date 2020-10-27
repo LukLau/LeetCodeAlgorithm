@@ -1856,14 +1856,66 @@ public class SerialQuestionSolution {
             if (Character.isDigit(word)) {
                 int tmp = 0;
                 while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
-                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex));
-                    endIndex++;
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
                 }
                 result += sign * tmp;
+            } else {
+                if (word == '+') {
+                    sign = 1;
+                } else if (word == '-') {
+                    sign = -1;
+                } else if (word == '(') {
+                    stack.push(result);
+                    stack.push(sign);
+                    sign = 1;
+                    result = 0;
+                } else {
+                    result = stack.pop() * result + stack.pop();
+                }
+                endIndex++;
             }
         }
-        return -1;
+        return result;
 
+    }
+
+
+    /**
+     * 227. Basic Calculator II
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        Stack<Character> signStack = new Stack<>();
+        Stack<Integer> numStack = new Stack<>();
+        int sign = 1;
+        char[] words = s.toCharArray();
+        int end = 0;
+        while (end < words.length) {
+            char word = words[end];
+            if (Character.isDigit(word)) {
+                int tmp = 0;
+                while (end < words.length && Character.isDigit(words[end])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[end++]);
+                }
+                numStack.push(tmp);
+            } else {
+                signStack.push(word);
+            }
+        }
+        int result = 0;
+        while (!signStack.isEmpty()) {
+            Character word = signStack.pop();
+            if (word == '+') {
+
+
+            }
+        }
+        return signStack.pop();
     }
 
 
