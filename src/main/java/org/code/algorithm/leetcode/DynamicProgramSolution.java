@@ -457,7 +457,38 @@ public class DynamicProgramSolution {
             robCurrent = tmp + num;
         }
         return Math.max(robPre, robCurrent);
+    }
 
+
+    /**
+     * 213. House Robber II
+     *
+     * @param nums
+     * @return
+     */
+    public int robII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        return Math.max(intervalRobII(nums, 0, nums.length - 2), intervalRobII(nums, 1, nums.length - 1));
+    }
+
+    private int intervalRobII(int[] nums, int start, int end) {
+        if (start > end) {
+            return 0;
+        }
+        int robPre = 0;
+        int robCurrent = 0;
+        for (int i = start; i <= end; i++) {
+            int tmp = robPre;
+            robPre = Math.max(robCurrent, robPre);
+
+            robCurrent = tmp + nums[i];
+        }
+        return Math.max(robPre, robCurrent);
     }
 
 

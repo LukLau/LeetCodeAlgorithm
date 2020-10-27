@@ -18,7 +18,7 @@ public class SerialQuestionSolution {
 //        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
 //        solution.maximalRectangle(matrix);
         int[] nums = new int[]{2, 3, 4, 5, 1};
-        solution.findMin(nums);
+        solution.combinationSum3(3, 7);
     }
 
     // ---O log(N)算法---- //
@@ -671,6 +671,36 @@ public class SerialQuestionSolution {
             }
             tmp.add(nums[i]);
             intervalSubsetsWithDup(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        if (k <= 0 || n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationSum3(result, new ArrayList<Integer>(), 1, k, n);
+        return result;
+
+    }
+
+    private void intervalCombinationSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int value) {
+        if (tmp.size() == k && value == 0) {
+            result.add(new ArrayList<>(tmp));
+        }
+        for (int i = start; i <= 9 && i <= value; i++) {
+            tmp.add(i);
+            if (tmp.size() <= k) {
+                intervalCombinationSum3(result, tmp, i + 1, k, value - i);
+            }
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -1796,6 +1826,44 @@ public class SerialQuestionSolution {
             }
         }
         return stack.pop();
+    }
+
+    // ---计算器系列--- //
+
+
+    /**
+     * todo
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null) {
+            return 0;
+        }
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int result = 0;
+        int sign = 1;
+        Stack<Integer> stack = new Stack<>();
+        int endIndex = 0;
+        int len = s.length();
+        while (endIndex < len) {
+            char word = s.charAt(endIndex);
+
+            if (Character.isDigit(word)) {
+                int tmp = 0;
+                while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
+                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex));
+                    endIndex++;
+                }
+                result += sign * tmp;
+            }
+        }
+        return -1;
+
     }
 
 
