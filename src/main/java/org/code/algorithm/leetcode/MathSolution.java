@@ -389,5 +389,16 @@ public class MathSolution {
         return true;
     }
 
+    /**
+     * todo
+     * 233. Number of Digit One
+     *
+     * @param n
+     * @return
+     */
+    public int countDigitOne(int n) {
+        return -1;
+    }
+
 
 }

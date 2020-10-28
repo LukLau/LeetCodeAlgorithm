@@ -300,5 +300,169 @@ public class ThreePage {
         return start == end ? String.valueOf(nums[start]) : nums[start] + "->" + nums[end];
     }
 
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode prev = slow;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        prev.next = null;
+
+        ListNode reverseNode = reverseNode(slow);
+
+        while (head != null) {
+            if (head.val != reverseNode.val) {
+                return false;
+            }
+            head = head.next;
+            reverseNode = reverseNode.next;
+        }
+        return true;
+    }
+
+    private ListNode reverseNode(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = prev;
+            prev = head;
+
+            head = tmp;
+        }
+        return prev;
+    }
+
+    // ---公共祖先问题--- //
+
+    /**
+     * 235. Lowest Common Ancestor of a Binary Search Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == p || root == q) {
+            return root;
+        }
+        if (root.val > p.val && root.val > q.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (root.val < p.val && root.val < q.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
+        }
+    }
+
+    /**
+     * 236. Lowest Common Ancestor of a Binary Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p || root == q) {
+            return root;
+        }
+
+        TreeNode leftNode = lowestCommonAncestorII(root.left, p, q);
+
+        TreeNode rightNode = lowestCommonAncestorII(root.right, p, q);
+        if (leftNode != null && rightNode != null) {
+            return root;
+        } else if (leftNode == null) {
+            return rightNode;
+        } else {
+            return leftNode;
+        }
+    }
+
+
+    /**
+     * 238. Product of Array Except Self
+     *
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int baseNum = 1;
+        int[] result = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = baseNum;
+            baseNum *= nums[i];
+        }
+        baseNum = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            result[i] *= baseNum;
+            baseNum *= nums[i];
+        }
+        return result;
+    }
+
+
+    /**
+     * todo
+     * 241. Different Ways to Add Parentheses
+     *
+     * @param input
+     * @return
+     */
+    public List<Integer> diffWaysToCompute(String input) {
+        if (input == null || input.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Integer> sign = new ArrayList<>();
+        int len = input.length();
+        for (int i = 0; i < len; i++) {
+            char word = input.charAt(i);
+            if (!Character.isDigit(word)) {
+                sign.add(i);
+            }
+        }
+        return intervalDiffWays(input, sign, 0, sign.get(sign.size() - 1));
+    }
+
+    private List<Integer> intervalDiffWays(String input, List<Integer> signIndex, int start, Integer end) {
+        if (start > end) {
+            return new ArrayList<>();
+        }
+        List<Integer> result = new ArrayList<>();
+        for (int i = start; i <= end; i = i + 2) {
+            char sign = input.charAt(signIndex.get(i));
+
+            List<Integer> leftNum = intervalDiffWays(input, signIndex, start, i - 2);
+
+            List<Integer> rightNum = intervalDiffWays(input, signIndex, i + 2, end);
+
+            for (Integer left : leftNum) {
+                for (Integer right : rightNum) {
+                    if (sign == '+') {
+                        result.add(left + right);
+                    } else if (sign == '-') {
+                        result.add(left - right);
+                    } else if (sign == '*') {
+                        result.add(left * right);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

@@ -15,10 +15,8 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-//        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
-//        solution.maximalRectangle(matrix);
-        int[] nums = new int[]{2, 3, 4, 5, 1};
-        solution.combinationSum3(3, 7);
+        String s = " 3+5 / 2 ";
+        solution.calculateII(s);
     }
 
     // ---O log(N)算法---- //
@@ -1221,6 +1219,28 @@ public class SerialQuestionSolution {
     }
 
 
+    /**
+     * 237. Delete Node in a Linked List
+     *
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        if (node.next.next == null) {
+            node.val = node.next.val;
+            node.next = null;
+        } else {
+            ListNode tmp = node.next;
+
+            node.val = tmp.val;
+
+            node.next = tmp.next;
+
+            tmp.next = null;
+        }
+
+    }
+
+
     // ----- //
 
     /**
@@ -1401,6 +1421,28 @@ public class SerialQuestionSolution {
         return false;
     }
 
+    public boolean searchMatrixII(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < column) {
+            int val = matrix[i][j];
+            if (val == target) {
+                return true;
+            } else if (val < target) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return false;
+
+    }
+
 
     // ---双指针问题系列-- //
 
@@ -1456,6 +1498,42 @@ public class SerialQuestionSolution {
             return s.substring(head, head + result);
         }
         return "";
+    }
+
+
+    /**
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+
+
+        for (int i = 0; i < nums.length; i++) {
+            int index = i - k + 1;
+            while (!linkedList.isEmpty() && index > linkedList.peekFirst()) {
+                linkedList.pollFirst();
+            }
+            while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.add(i);
+            if (index >= 0) {
+                result.add(nums[linkedList.peekFirst()]);
+            }
+        }
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < ans.length; i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
     }
 
 
@@ -1842,23 +1920,23 @@ public class SerialQuestionSolution {
         if (s == null) {
             return 0;
         }
+        s = s.trim();
         if (s.isEmpty()) {
             return 0;
         }
-        int result = 0;
         int sign = 1;
-        Stack<Integer> stack = new Stack<>();
+        int result = 0;
         int endIndex = 0;
+        Stack<Integer> stack = new Stack<>();
         int len = s.length();
         while (endIndex < len) {
             char word = s.charAt(endIndex);
-
             if (Character.isDigit(word)) {
                 int tmp = 0;
                 while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
                     tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
                 }
-                result += sign * tmp;
+                result += tmp * sign;
             } else {
                 if (word == '+') {
                     sign = 1;
@@ -1869,53 +1947,64 @@ public class SerialQuestionSolution {
                     stack.push(sign);
                     sign = 1;
                     result = 0;
-                } else {
+                } else if (word == ')') {
                     result = stack.pop() * result + stack.pop();
                 }
                 endIndex++;
             }
         }
         return result;
-
     }
 
 
     /**
+     * todo
      * 227. Basic Calculator II
      *
      * @param s
      * @return
      */
     public int calculateII(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
             return 0;
         }
-        Stack<Character> signStack = new Stack<>();
-        Stack<Integer> numStack = new Stack<>();
-        int sign = 1;
-        char[] words = s.toCharArray();
-        int end = 0;
-        while (end < words.length) {
-            char word = words[end];
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+
+        char sign = '+';
+
+        int len = s.length();
+
+        int tmp = 0;
+        for (int i = 0; i < len; i++) {
+            char word = s.charAt(i);
             if (Character.isDigit(word)) {
-                int tmp = 0;
-                while (end < words.length && Character.isDigit(words[end])) {
-                    tmp = tmp * 10 + Character.getNumericValue(words[end++]);
+                tmp = tmp * 10 + Character.getNumericValue(s.charAt(i));
+            }
+            if (i == s.length() - 1 || (!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ')) {
+                if (sign == '+') {
+                    stack.push(tmp);
+                } else if (sign == '-') {
+                    stack.push(-tmp);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * tmp);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / tmp);
                 }
-                numStack.push(tmp);
-            } else {
-                signStack.push(word);
+                sign = s.charAt(i);
+                tmp = 0;
             }
         }
+
         int result = 0;
-        while (!signStack.isEmpty()) {
-            Character word = signStack.pop();
-            if (word == '+') {
 
-
-            }
+        for (Integer integer : stack) {
+            result += integer;
         }
-        return signStack.pop();
+        return result;
     }
 
 
