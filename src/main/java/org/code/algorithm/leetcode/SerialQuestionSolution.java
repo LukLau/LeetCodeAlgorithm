@@ -2007,5 +2007,47 @@ public class SerialQuestionSolution {
         return result;
     }
 
+    // --- 单词最短距离系列 ---//
+
+
+    /**
+     * 243 Shortest Word Distance
+     *
+     * @param words: a list of words
+     * @param word1: a string
+     * @param word2: a string
+     * @return: the shortest distance between word1 and word2 in the list
+     */
+    public int shortestDistance(String[] words, String word1, String word2) {
+        // Write your code here
+
+        int result = Integer.MAX_VALUE;
+
+        int leftEdge = -1;
+
+        int rightEdge = -1;
+
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            int preLeft = leftEdge;
+
+            int preRight = rightEdge;
+
+            if (word.equals(word1)) {
+                leftEdge = i;
+            } else if (word.equals(word2)) {
+                rightEdge = i;
+            }
+            if (leftEdge != -1 && rightEdge != -1) {
+                if (preLeft != leftEdge) {
+                    result = Math.min(result, Math.abs(i - rightEdge));
+                } else if (preRight != rightEdge) {
+                    result = Math.min(result, Math.abs(leftEdge - i));
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

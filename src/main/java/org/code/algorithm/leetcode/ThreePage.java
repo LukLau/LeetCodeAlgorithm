@@ -426,42 +426,78 @@ public class ThreePage {
         if (input == null || input.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Integer> sign = new ArrayList<>();
+        List<String> params = new ArrayList<>();
         int len = input.length();
-        for (int i = 0; i < len; i++) {
-            char word = input.charAt(i);
-            if (!Character.isDigit(word)) {
-                sign.add(i);
+        int endIndex = 0;
+        while (endIndex < len) {
+            char tmp = input.charAt(endIndex);
+            if (Character.isDigit(tmp)) {
+                int value = 0;
+                while (endIndex < len && Character.isDigit(input.charAt(endIndex))) {
+                    value = value * 10 + Character.getNumericValue(input.charAt(endIndex++));
+                }
+                params.add(String.valueOf(value));
+            } else {
+                params.add(String.valueOf(tmp));
+                endIndex++;
             }
         }
-        return intervalDiffWays(input, sign, 0, sign.get(sign.size() - 1));
+        return intervalDiffWays(params, 0, params.size() - 1);
     }
 
-    private List<Integer> intervalDiffWays(String input, List<Integer> signIndex, int start, Integer end) {
-        if (start > end) {
-            return new ArrayList<>();
-        }
+    private List<Integer> intervalDiffWays(List<String> params, int start, int end) {
         List<Integer> result = new ArrayList<>();
-        for (int i = start; i <= end; i = i + 2) {
-            char sign = input.charAt(signIndex.get(i));
+        if (start == end) {
+            result.add(Integer.parseInt(params.get(start)));
+            return result;
+        }
+        for (int i = start + 1; i <= end - 1; i = i + 2) {
+            String sign = params.get(i);
+            List<Integer> leftNums = intervalDiffWays(params, start, i - 1);
+            List<Integer> rightNums = intervalDiffWays(params, i + 1, end);
+            for (Integer leftNum : leftNums) {
+                for (Integer rightNum : rightNums) {
 
-            List<Integer> leftNum = intervalDiffWays(input, signIndex, start, i - 2);
-
-            List<Integer> rightNum = intervalDiffWays(input, signIndex, i + 2, end);
-
-            for (Integer left : leftNum) {
-                for (Integer right : rightNum) {
-                    if (sign == '+') {
-                        result.add(left + right);
-                    } else if (sign == '-') {
-                        result.add(left - right);
-                    } else if (sign == '*') {
-                        result.add(left * right);
+                    if ("+".equals(sign)) {
+                        result.add(leftNum + rightNum);
+                    } else if ("-".equals(sign)) {
+                        result.add(leftNum - rightNum);
+                    } else if ("*".equals(sign)) {
+                        result.add(leftNum * rightNum);
+                    } else if ("/".equals(sign)) {
+                        result.add(leftNum / rightNum);
                     }
                 }
             }
         }
         return result;
+    }
+
+
+    public boolean isAnagram(String s, String t) {
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.equals(t)) {
+            return true;
+        }
+        int m = s.length();
+        int n = t.length();
+        if (m != n) {
+            return false;
+        }
+        int[] hash = new int[256];
+        for (int i = 0; i < m; i++) {
+            hash[s.charAt(i) - 'a']--;
+            hash[t.charAt(i) - 'a']++;
+        }
+        for (int num : hash) {
+            if (num != 0) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
 
