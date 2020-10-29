@@ -2061,12 +2061,47 @@ public class SerialQuestionSolution {
      * @return: if a person could attend all meetings
      */
     public boolean canAttendMeetings(List<Interval> intervals) {
-        if (intervals == null || intervals.isEmpty()) {
+        if (intervals == null) {
             return false;
         }
+        int size = intervals.size();
+        if (size <= 1) {
+            return true;
+        }
         intervals.sort(Comparator.comparingInt(o -> o.start));
+
+        int endTime = intervals.get(0).end;
+        for (int i = 1; i < size; i++) {
+            Interval current = intervals.get(i);
+            if (endTime <= current.start) {
+                endTime = current.end;
+            } else {
+                return false;
+            }
+        }
+        return true;
         // Write your code here
-        return false;
+    }
+
+
+    /**
+     * todo
+     * 253 Meeting Rooms II
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: the minimum number of conference rooms required
+     */
+    public int minMeetingRooms(List<Interval> intervals) {
+        if (intervals == null) {
+            return 0;
+        }
+        int size = intervals.size();
+        if (size <= 1) {
+            return size;
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.end));
+        return -1;
+        // Write your code here
     }
 
 
