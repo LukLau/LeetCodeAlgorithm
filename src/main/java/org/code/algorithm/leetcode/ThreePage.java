@@ -18,7 +18,7 @@ public class ThreePage {
 
         char[][] matrix = new char[][]{{'0', '1'}};
 
-        page.maximalSquare(matrix);
+        System.out.println(page.findStrobogrammatic(3));
     }
 
 
@@ -498,6 +498,164 @@ public class ThreePage {
         }
         return true;
 
+    }
+
+
+    /**
+     * 246 Strobogrammatic Number
+     *
+     * @param num: a string
+     * @return: true if a number is strobogrammatic or false
+     */
+    public boolean isStrobogrammatic(String num) {
+        // write your code here
+        if (num == null || num.isEmpty()) {
+            return false;
+        }
+        if (num.length() == 1) {
+            return "0".equals(num) || "8".equals(num) || "1".equals(num);
+        }
+        Map<Character, Character> map = getMap();
+        int len = num.length();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            char word = num.charAt(i);
+            if (!map.containsKey(word)) {
+                return false;
+            }
+            builder.append(map.get(word));
+        }
+        return builder.reverse().toString().equals(num);
+    }
+
+
+    /**
+     * 247 Strobogrammatic Number II
+     *
+     * @param n: the length of strobogrammatic number
+     * @return: All strobogrammatic numbers
+     */
+    public List<String> findStrobogrammatic(int n) {
+        // write your code here
+        if (n == 0) {
+            return Arrays.asList("");
+        }
+        if (n == 1) {
+            return Arrays.asList("0", "1", "8");
+        }
+        Map<Character, Character> map = getMap();
+        char[] nums = new char[]{'0', '1', '6', '8', '9'};
+        char[] odds = new char[]{'0', '1', '8'};
+        List<String> result = new ArrayList<>();
+        intervalFindStrobogrammatic(result, nums, n / 2, "");
+        List<String> ans = new ArrayList<>();
+        boolean isOdd = n % 2 != 0;
+        for (String s : result) {
+            char[] chars = s.toCharArray();
+            String reverse = "";
+            for (char word : chars) {
+                Character character = map.get(word);
+                reverse += character;
+            }
+            reverse = new StringBuilder(reverse).reverse().toString();
+            if (isOdd) {
+                for (char odd : odds) {
+                    String tmp = s + odd + reverse;
+                    ans.add(tmp);
+                }
+            } else {
+                s += reverse;
+                ans.add(s);
+            }
+        }
+        return ans;
+    }
+
+
+    public List<String> findStrobogrammaticII(int n) {
+        if (n == 0) {
+            return Arrays.asList("");
+        }
+        if (n == 1) {
+            return Arrays.asList("0", "1", "8");
+        }
+
+        return intervalFind(n, n);
+    }
+
+    private List<String> intervalFind(int m, int n) {
+        if (n == 0) {
+            return Collections.singletonList("");
+        }
+        if (n == 1) {
+            return Arrays.asList("0", "1", "8");
+        }
+        List<String> result = new ArrayList<>();
+
+        List<String> items = intervalFind(m - 2, n);
+
+        for (String item : items) {
+            if (m != n) {
+                result.add("0" + item + "0");
+            }
+            result.add("1" + item + "1");
+            result.add("6" + item + "9");
+            result.add("8" + item + "8");
+            result.add("9" + item + "6");
+        }
+        return result;
+    }
+
+
+    private void intervalFindStrobogrammatic(List<String> result, char[] items, int n, String s) {
+        if (s.length() == n && !s.startsWith("0")) {
+            result.add(s);
+            return;
+        }
+        if (s.length() < n) {
+            for (char item : items) {
+                if (!s.startsWith("0")) {
+                    intervalFindStrobogrammatic(result, items, n, s + item);
+                }
+            }
+        }
+    }
+
+    private Map<Character, Character> getMap() {
+        HashMap<Character, Character> hashMap = new HashMap<>();
+        hashMap.put('0', '0');
+        hashMap.put('1', '1');
+        hashMap.put('6', '9');
+        hashMap.put('8', '8');
+        hashMap.put('9', '6');
+        return hashMap;
+    }
+
+
+    /**
+     * https://www.cnblogs.com/grandyang/p/5203228.html
+     * todo
+     * 248 Strobogrammatic Number III
+     *
+     * @param low
+     * @param high
+     * @return
+     */
+    public int strobogrammaticInRange(String low, String high) {
+        return -1;
+    }
+
+
+    /**
+     * todo
+     * 250 Count Univalue Subtrees
+     *
+     * @param root: the given tree
+     * @return: the number of uni-value subtrees.
+     */
+    public int countUnivalSubtrees(TreeNode root) {
+        // write your code here
+        return -1;
     }
 
 

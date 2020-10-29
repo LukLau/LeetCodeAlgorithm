@@ -1,5 +1,6 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.Interval;
 import org.code.algorithm.datastructe.ListNode;
 
 import java.util.*;
@@ -2047,6 +2048,25 @@ public class SerialQuestionSolution {
             }
         }
         return result;
+    }
+
+
+    // ---会议室问题---//
+
+    /**
+     * todo
+     * 252 Meeting Rooms
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: if a person could attend all meetings
+     */
+    public boolean canAttendMeetings(List<Interval> intervals) {
+        if (intervals == null || intervals.isEmpty()) {
+            return false;
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+        // Write your code here
+        return false;
     }
 
 
