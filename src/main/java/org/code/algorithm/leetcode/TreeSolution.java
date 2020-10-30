@@ -603,4 +603,22 @@ public class TreeSolution {
     }
 
 
+    /**
+     * todo
+     * 255 Verify Preorder Sequence in Binary Search Tree
+     *
+     * @param preorder: List[int]
+     * @return: return a boolean
+     */
+    public boolean verifyPreorder(int[] preorder) {
+        // write your code here
+        if (preorder == null || preorder.length == 0) {
+            return false;
+        }
+        return false;
+
+
+    }
+
+
 }

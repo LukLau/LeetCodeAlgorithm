@@ -17,7 +17,8 @@ public class SerialQuestionSolution {
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
         String s = " 3+5 / 2 ";
-        solution.calculateII(s);
+
+        solution.getFactors(100);
     }
 
     // ---O log(N)算法---- //
@@ -702,6 +703,57 @@ public class SerialQuestionSolution {
             }
             tmp.remove(tmp.size() - 1);
         }
+    }
+
+
+    /**
+     * todo
+     * 254 Factor Combinations
+     *
+     * @param n: a integer
+     * @return: return a 2D array
+     */
+    public List<List<Integer>> getFactors(int n) {
+        // write your code here
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalGetFactors(result, new ArrayList<Integer>(), 2, n / 2, 1, n);
+        return result;
+    }
+
+    private void intervalGetFactors(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int end, int value, int n) {
+        if (value == n) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        if (value > n) {
+            return;
+        }
+        for (int i = start; i <= end && (i * value <= n); i++) {
+            if (n % i != 0) {
+                continue;
+            }
+            tmp.add(i);
+            intervalGetFactors(result, tmp, i, end, i * value, n);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    //计算最大质因数
+    public static int getTheLargestPrimeFactor(int n) {
+        int returnFactor = 1;
+        for (int factor = 2; n > 1; factor++) {
+            if (n % factor == 0) {
+                n = n / factor;
+                returnFactor = factor;
+                while (n % factor == 0) {
+                    n = n / factor;
+                }
+            }
+        }
+        return returnFactor;
     }
 
 
@@ -2054,7 +2106,6 @@ public class SerialQuestionSolution {
     // ---会议室问题---//
 
     /**
-     * todo
      * 252 Meeting Rooms
      *
      * @param intervals: an array of meeting time intervals
@@ -2099,8 +2150,23 @@ public class SerialQuestionSolution {
         if (size <= 1) {
             return size;
         }
-        intervals.sort(Comparator.comparingInt(o -> o.end));
-        return -1;
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+        PriorityQueue<Interval> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.end));
+
+        priorityQueue.offer(intervals.get(0));
+        for (int i = 1; i < size; i++) {
+            Interval poll = priorityQueue.poll();
+            Interval current = intervals.get(i);
+            if (current.start >= poll.end) {
+                poll.end = current.end;
+            } else {
+                priorityQueue.offer(current);
+            }
+            priorityQueue.offer(poll);
+        }
+        return priorityQueue.size();
+
+
         // Write your code here
     }
 
