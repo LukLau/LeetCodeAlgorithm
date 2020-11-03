@@ -19,6 +19,9 @@ public class MathSolution {
         solution.isHappy(8);
     }
 
+
+    // --- 单个数字问题 ---//
+
     /**
      * 136. Single Number
      *
@@ -43,6 +46,42 @@ public class MathSolution {
     public int singleNumberV2(int[] nums) {
         return -1;
     }
+
+
+    /**
+     * 260. Single Number III
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumberIII(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+//        int baseIndex = 0;
+//        for (int i = 0; i < 32; i++) {
+//            if ((result & (1 << i)) != 0) {
+//                baseIndex = i;
+//                break;
+//            }
+//        }
+        result &= -result;
+        int[] answer = new int[2];
+        for (int num : nums) {
+            int tmp = num & result;
+            if (tmp != 0) {
+                answer[0] ^= num;
+            } else {
+                answer[1] ^= num;
+            }
+        }
+        return answer;
+    }
+
 
     /**
      * 149. Max Points on a Line

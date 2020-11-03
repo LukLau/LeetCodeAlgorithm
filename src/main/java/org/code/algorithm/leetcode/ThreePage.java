@@ -16,8 +16,7 @@ public class ThreePage {
 
         int[] nums = new int[]{3, 1, 0, -2};
 
-
-        page.threeSumSmaller(nums, 4);
+        page.threeSumSmaller(nums, 2);
     }
 
 
@@ -659,6 +658,7 @@ public class ThreePage {
 
 
     /**
+     * todo
      * 259 3Sum Smaller
      * Medium
      *
@@ -671,33 +671,31 @@ public class ThreePage {
             return 0;
         }
         Arrays.sort(nums);
-        int end = nums.length - 1;
-
         int result = 0;
         int start = 0;
+        int end = nums.length - 1;
         while (start < end - 1) {
+
             if (start > 0 && nums[start] == nums[start - 1]) {
                 start++;
                 continue;
+            }
+            if (nums[start] >= target) {
+                break;
             }
             int left = start + 1;
             int right = end;
             while (left < right) {
                 int val = nums[start] + nums[left] + nums[right];
                 if (val < target) {
-                    result++;
-                    while (left != right && nums[left] == nums[left + 1]) {
-                        left++;
-                    }
-                    while (left != right && nums[right] == nums[right - 1]) {
-                        right--;
-                    }
+                    result += right - left;
+                    left++;
+                } else {
+                    right--;
                 }
-                right--;
             }
             start++;
         }
-        // Write your code here
         return result;
     }
 

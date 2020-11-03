@@ -23,6 +23,21 @@ public class SerialQuestionSolution {
 
     // ---O log(N)算法---- //
 
+    //计算最大质因数
+    public static int getTheLargestPrimeFactor(int n) {
+        int returnFactor = 1;
+        for (int factor = 2; n > 1; factor++) {
+            if (n % factor == 0) {
+                n = n / factor;
+                returnFactor = factor;
+                while (n % factor == 0) {
+                    n = n / factor;
+                }
+            }
+        }
+        return returnFactor;
+    }
+
     /**
      * 3. Longest Substring Without Repeating Characters
      *
@@ -47,7 +62,6 @@ public class SerialQuestionSolution {
         return result;
 
     }
-
 
     /**
      * 34. Find First and Last Position of Element in Sorted Array
@@ -89,7 +103,6 @@ public class SerialQuestionSolution {
         return result;
     }
 
-
     public int[] searchRangeV2(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
             return new int[]{-1, -1};
@@ -97,7 +110,6 @@ public class SerialQuestionSolution {
         int firstIndex = searchLeftIndex(nums, target, 0, nums.length - 1);
         return nums;
     }
-
 
     public int searchInsert(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
@@ -118,7 +130,6 @@ public class SerialQuestionSolution {
         return left;
 
     }
-
 
     private int searchLeftIndex(int[] nums, int target, int left, int right) {
         if (left > right) {
@@ -141,6 +152,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // --查找数组中的最小值---- //
+
     /**
      * 4. Median of Two Sorted Arrays
      *
@@ -151,9 +164,6 @@ public class SerialQuestionSolution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return -1;
     }
-
-
-    // --查找数组中的最小值---- //
 
     /**
      * 153. Find Minimum in Rotated Sorted Array
@@ -177,7 +187,6 @@ public class SerialQuestionSolution {
         }
         return nums[left];
     }
-
 
     /**
      * 154. Find Minimum in Rotated Sorted Array II
@@ -203,6 +212,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // --正则表达式匹配问题 //
+
     /**
      * 162. Find Peak Element
      *
@@ -225,9 +236,6 @@ public class SerialQuestionSolution {
         }
         return left;
     }
-
-
-    // --正则表达式匹配问题 //
 
     /**
      * 10. Regular Expression Matching
@@ -265,7 +273,6 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
-
     /**
      * 45. Jump Game II
      * todo
@@ -297,6 +304,9 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
+
+    // --旋转数组系列问题-- //
+
     public boolean canJump(int[] nums) {
         if (nums == null || nums.length == 0) {
             return false;
@@ -307,9 +317,6 @@ public class SerialQuestionSolution {
         }
         return reach >= nums.length - 1;
     }
-
-
-    // --旋转数组系列问题-- //
 
     /**
      * 30. Substring with Concatenation of All Words
@@ -387,7 +394,6 @@ public class SerialQuestionSolution {
         return nums[left] == target;
     }
 
-
     /**
      * 23. Merge k Sorted Lists
      *
@@ -420,7 +426,6 @@ public class SerialQuestionSolution {
         return root.next;
     }
 
-
     public ListNode reverseKGroup(ListNode head, int k) {
         if (head == null || head.next == null) {
             return head;
@@ -444,6 +449,7 @@ public class SerialQuestionSolution {
         return head;
     }
 
+    // ---排列组合问题---- //
 
     /**
      * todo
@@ -474,8 +480,6 @@ public class SerialQuestionSolution {
         return currentNode;
     }
 
-    // ---排列组合问题---- //
-
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
@@ -503,7 +507,6 @@ public class SerialQuestionSolution {
         }
     }
 
-
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
@@ -528,7 +531,6 @@ public class SerialQuestionSolution {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     public List<List<Integer>> permute(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -591,7 +593,6 @@ public class SerialQuestionSolution {
 
     }
 
-
     /**
      * todo 60. Permutation Sequence
      *
@@ -652,7 +653,6 @@ public class SerialQuestionSolution {
         }
     }
 
-
     public List<List<Integer>> subsetsWithDup(int[] nums) {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
@@ -705,7 +705,6 @@ public class SerialQuestionSolution {
         }
     }
 
-
     /**
      * todo
      * 254 Factor Combinations
@@ -741,24 +740,8 @@ public class SerialQuestionSolution {
         }
     }
 
-    //计算最大质因数
-    public static int getTheLargestPrimeFactor(int n) {
-        int returnFactor = 1;
-        for (int factor = 2; n > 1; factor++) {
-            if (n % factor == 0) {
-                n = n / factor;
-                returnFactor = factor;
-                while (n % factor == 0) {
-                    n = n / factor;
-                }
-            }
-        }
-        return returnFactor;
-    }
-
 
     // ---- //
-
 
     /**
      * @param nums
@@ -2203,6 +2186,70 @@ public class SerialQuestionSolution {
             result = Math.min(result, dp[row - 1][j]);
         }
         return result;
+        // write your code here
+    }
+
+
+    public int minCostV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int row = costs.length;
+        int column = costs[0].length;
+
+        for (int i = 1; i < costs.length; i++) {
+            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
+            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
+            costs[i][2] += Math.min(costs[i - 1][0], costs[i - 1][1]);
+        }
+        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
+        // write your code here
+    }
+
+
+    /**
+     * todo
+     * 265
+     * Paint House II
+     *
+     * @param costs: n x k cost matrix
+     * @return: an integer, the minimum cost to paint all houses
+     */
+    public int minCostII(int[][] costs) {
+        // write your code here
+        return -1;
+    }
+
+
+    /**
+     * 266
+     * Palindrome Permutation
+     *
+     * @param s: the given string
+     * @return: if a permutation of the string could form a palindrome
+     */
+    public boolean canPermutePalindrome(String s) {
+        if (s == null) {
+            return false;
+        }
+        int len = s.length();
+        if (len <= 0) {
+            return true;
+        }
+        boolean occurOdd = false;
+        int[] hash = new int[256];
+        for (char word : s.toCharArray()) {
+            hash[word]++;
+        }
+        for (int num : hash) {
+            if (num % 2 != 0) {
+                if (occurOdd) {
+                    return false;
+                }
+                occurOdd = true;
+            }
+        }
+        return true;
         // write your code here
     }
 

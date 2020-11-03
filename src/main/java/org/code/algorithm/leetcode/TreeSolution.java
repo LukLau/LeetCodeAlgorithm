@@ -641,6 +641,28 @@ public class TreeSolution {
     }
 
 
+    public boolean verifyPreorderV2(int[] preorder) {
+        // write your code here
+
+        if (preorder == null || preorder.length == 0) {
+            return false;
+        }
+        Stack<Integer> stack = new Stack<>();
+        int low = Integer.MIN_VALUE;
+        for (int val : preorder) {
+
+            if (val < low) {
+                return false;
+            }
+            while (!stack.isEmpty() && val > stack.peek()) {
+                low = stack.pop();
+            }
+            stack.push(val);
+        }
+        return true;
+    }
+
+
     /**
      * 257
      * Binary Tree Paths
