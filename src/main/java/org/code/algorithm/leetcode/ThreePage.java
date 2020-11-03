@@ -14,11 +14,10 @@ public class ThreePage {
     public static void main(String[] args) {
         ThreePage page = new ThreePage();
 
-        int[] nums = new int[]{1, 2, 3, 1};
+        int[] nums = new int[]{3, 1, 0, -2};
 
-        char[][] matrix = new char[][]{{'0', '1'}};
 
-        System.out.println(page.findStrobogrammatic(3));
+        page.threeSumSmaller(nums, 4);
     }
 
 
@@ -656,6 +655,50 @@ public class ThreePage {
     public int countUnivalSubtrees(TreeNode root) {
         // write your code here
         return -1;
+    }
+
+
+    /**
+     * 259 3Sum Smaller
+     * Medium
+     *
+     * @param nums:   an array of n integers
+     * @param target: a target
+     * @return: the number of index triplets satisfy the condition nums[i] + nums[j] + nums[k] < target
+     */
+    public int threeSumSmaller(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int end = nums.length - 1;
+
+        int result = 0;
+        int start = 0;
+        while (start < end - 1) {
+            if (start > 0 && nums[start] == nums[start - 1]) {
+                start++;
+                continue;
+            }
+            int left = start + 1;
+            int right = end;
+            while (left < right) {
+                int val = nums[start] + nums[left] + nums[right];
+                if (val < target) {
+                    result++;
+                    while (left != right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+                    while (left != right && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+                }
+                right--;
+            }
+            start++;
+        }
+        // Write your code here
+        return result;
     }
 
 

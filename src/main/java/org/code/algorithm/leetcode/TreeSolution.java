@@ -615,9 +615,65 @@ public class TreeSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return false;
+        return intervalVerifyPreorder(preorder, 0, preorder.length - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private boolean intervalVerifyPreorder(int[] preorder, int start, int end, int minValue, int maxValue) {
+        if (start == end) {
+            return true;
+        }
+        if (start > end) {
+            return false;
+        }
+        int rootValue = preorder[start];
+        if (rootValue <= minValue || rootValue >= maxValue) {
+            return false;
+        }
+        int bigIndex = -1;
+        for (int i = start + 1; i <= end; i++) {
+            if (preorder[i] > rootValue) {
+                bigIndex = i;
+                break;
+            }
+        }
+        return intervalVerifyPreorder(preorder, start + 1, bigIndex - 1, Integer.MIN_VALUE, rootValue) &&
+                intervalVerifyPreorder(preorder, bigIndex, end, rootValue, Integer.MAX_VALUE);
+    }
 
 
+    /**
+     * 257
+     * Binary Tree Paths
+     *
+     * @param root: the root of the binary tree
+     * @return: all root-to-leaf paths
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        intervalBinaryTreePaths(result, root, "");
+        return result;
+    }
+
+    private void intervalBinaryTreePaths(List<String> result, TreeNode root, String s) {
+        if (root == null) {
+            return;
+        }
+        if (s.isEmpty()) {
+            s = s + root.val;
+        } else {
+            s = s + "->" + root.val;
+        }
+        if (root.left == null && root.right == null) {
+            result.add(s);
+            return;
+        }
+
+        intervalBinaryTreePaths(result, root.left, s);
+        intervalBinaryTreePaths(result, root.right, s);
     }
 
 

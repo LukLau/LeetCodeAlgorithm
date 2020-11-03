@@ -2170,5 +2170,41 @@ public class SerialQuestionSolution {
         // Write your code here
     }
 
+    // --- 画房子问题---//
+
+    /**
+     * todo
+     * 256 Paint House
+     *
+     * @param costs: n x 3 cost matrix
+     * @return: An integer, the minimum cost to paint all houses
+     */
+    public int minCost(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int result = Integer.MAX_VALUE;
+
+        int column = costs[0].length;
+
+        int row = costs.length;
+        int[][] dp = new int[row][column];
+        System.arraycopy(costs[0], 0, dp[0], 0, costs[0].length);
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (j == 0) {
+                    dp[i][j] = Math.min(dp[i - 1][1], dp[i - 1][2]) + costs[i][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][(j + 1) % column], dp[i - 1][(j + 2) % column]) + costs[i][j];
+                }
+            }
+        }
+        for (int j = 0; j < column; j++) {
+            result = Math.min(result, dp[row - 1][j]);
+        }
+        return result;
+        // write your code here
+    }
+
 
 }
