@@ -2217,7 +2217,68 @@ public class SerialQuestionSolution {
      */
     public int minCostII(int[][] costs) {
         // write your code here
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int row = costs.length;
+        int column = costs[0].length;
+
+        int firstSmallIndex = -1;
+        int secondSmallIndex = -1;
+        for (int i = 0; i < row; i++) {
+            int lastFirstIndex = firstSmallIndex;
+            int lastSecondIndex = secondSmallIndex;
+            firstSmallIndex = -1;
+            secondSmallIndex = -1;
+            for (int j = 0; j < column; j++) {
+
+                if (lastFirstIndex >= 0) {
+                    if (j != lastFirstIndex) {
+                        costs[i][j] += costs[i - 1][lastFirstIndex];
+                    } else {
+                        costs[i][j] += costs[i - 1][lastSecondIndex];
+                    }
+                }
+
+                if (firstSmallIndex < 0 || costs[i][j] < costs[i][firstSmallIndex]) {
+                    secondSmallIndex = firstSmallIndex;
+                    firstSmallIndex = j;
+                } else if (secondSmallIndex < 0 || costs[i][j] < costs[i][secondSmallIndex]) {
+                    secondSmallIndex = j;
+                }
+            }
+        }
+        return costs[row - 1][firstSmallIndex];
+    }
+
+
+    /**
+     * 优化上面空间
+     *
+     * @param costs
+     * @return
+     */
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int column = costs[0].length;
+        int row = costs.length;
+        int minValue1 = -1;
+        int minValue2 = -1;
+        int idx = -1;
+        for (int i = 0; i < row; i++) {
+
+
+            for (int j = 0; j < column; j++) {
+
+//                costs[i][j] += (j == idx ? costs[i-1][j] : costs[]);
+
+
+            }
+        }
         return -1;
+
     }
 
 

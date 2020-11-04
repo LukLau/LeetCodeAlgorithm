@@ -446,4 +446,21 @@ public class MathSolution {
     }
 
 
+    // --- 丑数系列 ---//
+
+    /**
+     * todo
+     * 263. Ugly Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isUgly(int num) {
+        if (num < 7) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

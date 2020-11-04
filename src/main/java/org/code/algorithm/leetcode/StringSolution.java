@@ -1,6 +1,6 @@
 package org.code.algorithm.leetcode;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author luk
@@ -47,6 +47,72 @@ public class StringSolution {
             result = Math.max(result, num);
         }
         return result;
+    }
+
+
+    // ---回文系列---//
+
+
+    /**
+     * @param s: the given string
+     * @return: all the palindromic permutations (without duplicates) of it
+     */
+    public List<String> generatePalindromes(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null || s.isEmpty()) {
+            return result;
+        }
+
+        Map<Character, Integer> map = new HashMap<>();
+
+        char[] words = s.toCharArray();
+        for (char word : words) {
+            Integer count = map.getOrDefault(word, 0);
+
+            count++;
+
+            map.put(word, count);
+        }
+        StringBuilder midString = new StringBuilder();
+        StringBuilder edgeString = new StringBuilder();
+        for (Map.Entry<Character, Integer> characterIntegerEntry : map.entrySet()) {
+            Integer value = characterIntegerEntry.getValue();
+            char word = characterIntegerEntry.getKey();
+            if (value % 2 == 1) {
+                midString.append(word);
+            }
+            int count = value / 2;
+            for (int i = 0; i < count; i++) {
+                edgeString.append(word);
+            }
+            if (midString.length() > 1) {
+                return result;
+            }
+        }
+        generateCombine(words, 0, midString.toString(), result);
+        return result;
+    }
+
+    private void generateCombine(char[] words, int start, String s, List<String> result) {
+        if (start == words.length) {
+            String word = String.valueOf(words) + s + new StringBuilder(String.valueOf(words)).reverse().toString();
+            result.add(word);
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swap(words, i, start + 1);
+            generateCombine(words, start, s, result);
+            swap(words, i, start + 1);
+        }
+    }
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[j] = words[i];
+        words[i] = tmp;
     }
 
 }
