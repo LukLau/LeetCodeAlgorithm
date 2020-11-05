@@ -699,4 +699,33 @@ public class TreeSolution {
     }
 
 
+    /**
+     * @param root:   the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     */
+    public int closestValue(TreeNode root, double target) {
+        // write your code here
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        double result = -1;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (prev == null) {
+                result = p.val;
+            } else {
+                result = Math.abs(result - target) - Math.abs(p.val - target) < 0 ? result : p.val;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return (int) result;
+    }
+
+
 }

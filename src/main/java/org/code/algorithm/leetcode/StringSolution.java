@@ -8,6 +8,12 @@ import java.util.*;
  */
 public class StringSolution {
 
+    public static void main(String[] args) {
+        StringSolution solution = new StringSolution();
+        String word = "aabb";
+        solution.generatePalindromes(word);
+    }
+
     // ---kmp问题--- //
 
     /**
@@ -62,9 +68,7 @@ public class StringSolution {
         if (s == null || s.isEmpty()) {
             return result;
         }
-
         Map<Character, Integer> map = new HashMap<>();
-
         char[] words = s.toCharArray();
         for (char word : words) {
             Integer count = map.getOrDefault(word, 0);
@@ -89,12 +93,12 @@ public class StringSolution {
                 return result;
             }
         }
-        generateCombine(words, 0, midString.toString(), result);
+        generateCombine(edgeString.toString().toCharArray(), 0, midString.toString(), result);
         return result;
     }
 
     private void generateCombine(char[] words, int start, String s, List<String> result) {
-        if (start == words.length) {
+        if (start == words.length - 1) {
             String word = String.valueOf(words) + s + new StringBuilder(String.valueOf(words)).reverse().toString();
             result.add(word);
             return;
@@ -103,16 +107,16 @@ public class StringSolution {
             if (i > start && words[i] == words[start]) {
                 continue;
             }
-            swap(words, i, start + 1);
-            generateCombine(words, start, s, result);
-            swap(words, i, start + 1);
+            swap(words, i, start);
+            generateCombine(words, start + 1, s, result);
+            swap(words, i, start);
         }
     }
 
     private void swap(char[] words, int i, int j) {
         char tmp = words[i];
-        words[j] = words[i];
-        words[i] = tmp;
+        words[i] = words[j];
+        words[j] = tmp;
     }
 
 }
