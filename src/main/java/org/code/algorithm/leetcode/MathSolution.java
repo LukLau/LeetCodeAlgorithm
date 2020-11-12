@@ -446,4 +446,31 @@ public class MathSolution {
     }
 
 
+    public int missingNumber(int[] nums) {
+        int len = nums.length;
+        int result = (len) * (len + 1) / 2;
+        for (int num : nums) {
+            result -= num;
+        }
+        return result;
+    }
+
+
+    // --- 丑数系列 ---//
+
+    /**
+     * todo
+     * 263. Ugly Number
+     *
+     * @param num
+     * @return
+     */
+    public boolean isUgly(int num) {
+        if (num < 7) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

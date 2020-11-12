@@ -53,4 +53,29 @@ public class GraphSolution {
     }
 
 
+    /**
+     * todo
+     * <p>
+     * 261
+     * Graph Valid Tree
+     * 判断图是否是一个有效树
+     *
+     * @param n:     An integer
+     * @param edges: a list of undirected edges
+     * @return: true if it's a valid tree, or false
+     */
+    public boolean validTree(int n, int[][] edges) {
+        if (edges == null) {
+            return false;
+        }
+        if (n == 1 && edges.length == 0) {
+            return true;
+        }
+        if (edges.length != n - 1) {
+            return false;
+        }
+        return true;
+    }
+
+
 }
