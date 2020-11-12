@@ -4,10 +4,7 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.Node;
 import org.code.algorithm.datastructe.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @author dora
@@ -696,6 +693,29 @@ public class TreeSolution {
 
         intervalBinaryTreePaths(result, root.left, s);
         intervalBinaryTreePaths(result, root.right, s);
+    }
+
+
+    /**
+     * @param root:   the given BST
+     * @param target: the given target
+     * @param k:      the given k
+     * @return: k values in the BST that are closest to the target
+     */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        // write your code here
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, (o1, o2) -> o2 - o1);
+        TreeNode p = root;
+        while (p != null) {
+            int size = priorityQueue.size();
+            if (size < k) {
+//                priorityQueue.offer()
+            }
+        }
+        return null;
     }
 
 
