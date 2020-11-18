@@ -728,4 +728,36 @@ public class TreeSolution {
     }
 
 
+    /**
+     * 285 Inorder Successor in BST
+     *
+     * @param root: The root of the BST.
+     * @param p:    You need find the successor node of p.
+     * @return: Successor of p.
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        if (root == null || p == null) {
+            return null;
+        }
+        // write your code here
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode current = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || current != null) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.pop();
+
+            if (prev != null && prev == p) {
+                return current;
+            }
+            prev = current;
+            current = current.right;
+        }
+        return null;
+    }
+
+
 }

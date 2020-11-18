@@ -3,6 +3,7 @@ package org.code.algorithm.leetcode;
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
+import javax.sound.midi.Soundbank;
 import java.util.*;
 
 /**
@@ -16,7 +17,13 @@ public class ThreePage {
 
         int[] nums = new int[]{3, 1, 0, -2};
 
-        page.threeSumSmaller(nums, 2);
+        int[] sort = new int[]{3, 5, 2, 1, 6, 4};
+
+        page.wiggleSort(sort);
+
+        for (int num : sort) {
+            System.out.println(num);
+        }
     }
 
 
@@ -701,6 +708,7 @@ public class ThreePage {
 
 
     /**
+     * todo
      * 269 Alien Dictionary
      * Hard
      *
@@ -710,6 +718,101 @@ public class ThreePage {
     public String alienOrder(String[] words) {
         // Write your code here
         return null;
+    }
+
+
+    /**
+     * 272
+     * Closest Binary Search Tree Value II
+     *
+     * @param root:   the given BST
+     * @param target: the given target
+     * @param k:      the given k
+     * @return: k values in the BST that are closest to the target
+     */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        // write your code here
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> result = new PriorityQueue<>();
+        TreeNode p = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (result.size() < k) {
+                result.add(p.val);
+            } else if ((Math.abs(p.val - target) < Math.abs(result.peek() - target))) {
+                result.poll();
+                result.offer(p.val);
+            }
+            p = p.right;
+        }
+        return new ArrayList<>(result);
+    }
+
+
+    //---H-index系列---//
+
+    /**
+     * 274. H-Index
+     *
+     * @param citations
+     * @return
+     */
+    public int hIndex(int[] citations) {
+        if (citations == null || citations.length == 0) {
+            return 0;
+        }
+        int indexValue = 0;
+        int indexCount = 1;
+        for (int i = 0; i < citations.length; i++) {
+            int current = citations[i];
+            if (current >= indexValue) {
+                indexCount++;
+            }
+        }
+        return indexCount;
+    }
+
+
+    /**
+     * todo 数学归纳法
+     * 276 paint Fence
+     *
+     * @param n: non-negative integer, n posts
+     * @param k: non-negative integer, k colors
+     * @return: an integer, the total number of ways
+     */
+    public int numWays(int n, int k) {
+        // write your code here
+        return -1;
+    }
+
+
+    /**
+     * 280 Wiggle Sort
+     *
+     * @param nums
+     */
+    public void wiggleSort(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length - 1; i = i + 2) {
+            swapValue(nums, i, i + 1);
+        }
+    }
+
+    private void swapValue(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
     }
 
 
