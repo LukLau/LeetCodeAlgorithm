@@ -3,7 +3,6 @@ package org.code.algorithm.leetcode;
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 
 /**
@@ -19,11 +18,8 @@ public class ThreePage {
 
         int[] sort = new int[]{3, 5, 2, 1, 6, 4};
 
-        page.wiggleSort(sort);
-
-        for (int num : sort) {
-            System.out.println(num);
-        }
+        int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+        page.gameOfLife(board);
     }
 
 
@@ -813,6 +809,165 @@ public class ThreePage {
         int val = nums[i];
         nums[i] = nums[j];
         nums[j] = val;
+    }
+
+
+    /**
+     * 286 Walls and Gates
+     *
+     * @param rooms: m x n 2D grid
+     * @return: nothing
+     */
+    public void wallsAndGates(int[][] rooms) {
+        if (rooms == null || rooms.length == 0) {
+            return;
+        }
+        int row = rooms.length;
+        int column = rooms[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (rooms[i][j] == 0) {
+                    intervalWallsAndGates(rooms, i, j, 0);
+                }
+            }
+        }
+
+    }
+
+    private void intervalWallsAndGates(int[][] rooms, int i, int j, int distance) {
+        if (i < 0 || i >= rooms.length || j < 0 || j >= rooms[i].length) {
+            return;
+        }
+        if (rooms[i][j] == -1) {
+            return;
+        }
+        if (rooms[i][j] > distance || rooms[i][j] == distance) {
+            rooms[i][j] = distance;
+            intervalWallsAndGates(rooms, i - 1, j, distance + 1);
+            intervalWallsAndGates(rooms, i + 1, j, distance + 1);
+            intervalWallsAndGates(rooms, i, j - 1, distance + 1);
+            intervalWallsAndGates(rooms, i, j + 1, distance + 1);
+        }
+    }
+
+
+    /**
+     * todo
+     * 287. Find the Duplicate Number
+     *
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        return -1;
+    }
+
+
+    /**
+     * 289. Game of Life
+     *
+     * @param board: the given board
+     * @return: nothing
+     */
+    public void gameOfLife(int[][] board) {
+        // Write your code here
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                intervalGameOfLife(i, j, board);
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] > 0) {
+                    board[i][j] = 1;
+                } else {
+                    board[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    private void intervalGameOfLife(int currentRow, int currentColumn, int[][] board) {
+        int liveCount = 0;
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for (int i = 0; i < matrix.length; i++) {
+            int row = currentRow + matrix[i][0];
+            int column = currentColumn + matrix[i][1];
+            if (row < 0 || row >= board.length || column < 0 || column >= board[currentRow].length) {
+                continue;
+            }
+            if (Math.abs(board[row][column]) == 1) {
+                liveCount++;
+            }
+        }
+//        int[][] line = new int[][]{z};
+//        for (int i = 0; i < line.length; i++) {
+//            int row = currentRow + line[i][0];
+//            int column = currentColumn + line[i][1];
+//            if (row < 0 || row >= board.length || column < 0 || column >= board[currentRow].length) {
+//                continue;
+//            }
+//            if (board[row][column] == 1) {
+//                liveCount++;
+//            }
+//        }
+        boolean currentLive = board[currentRow][currentColumn] == 1;
+
+        if (currentLive && (liveCount < 2 || liveCount > 3)) {
+            board[currentRow][currentColumn] = -1;
+        }
+        if (board[currentRow][currentColumn] == 0 && liveCount == 3) {
+            // 2 signifies the cell is now live but was originally dead.
+            board[currentRow][currentColumn] = 2;
+        }
+    }
+
+
+    /**
+     * 290. Word Pattern
+     *
+     * @param pattern
+     * @param str
+     * @return
+     */
+    public boolean wordPattern(String pattern, String str) {
+        String[] words = str.split(" ");
+
+        int length = pattern.length();
+        if (length != words.length) {
+            return false;
+        }
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            if (!Objects.equals(map.put(String.valueOf(pattern.charAt(i)), i), map.put(words[i], i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 290.
+     * todo
+     *
+     * @param pattern: a string,denote pattern string
+     * @param str:     a string, denote matching string
+     * @return: a boolean
+     */
+    public boolean wordPatternMatch(String pattern, String str) {
+        // write your code here
+        return false;
+
     }
 
 

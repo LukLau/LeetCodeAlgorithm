@@ -14,6 +14,9 @@ public class TreeSolution {
 
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
+        int[][] matrix = new int[][]{{2147483647, -1, 0, 2147483647},
+                {2147483647, 2147483647, 2147483647, -1}, {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
+
     }
 
 
