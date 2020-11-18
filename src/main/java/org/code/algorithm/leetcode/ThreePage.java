@@ -19,7 +19,7 @@ public class ThreePage {
         int[] sort = new int[]{3, 5, 2, 1, 6, 4};
 
         int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
-        page.gameOfLife(board);
+        page.generatePossibleNextMoves("++++");
     }
 
 
@@ -966,8 +966,70 @@ public class ThreePage {
      */
     public boolean wordPatternMatch(String pattern, String str) {
         // write your code here
-        return false;
+        Map<Character, String> map = new HashMap<>();
+        return intervalWordPatternMatch(pattern, str, map);
+    }
 
+    private boolean intervalWordPatternMatch(String pattern, String str, Map<Character, String> map) {
+        if (pattern.length() == 0) {
+            return str.length() == 0;
+        }
+        char ch = pattern.charAt(0);
+        if (map.containsKey(ch)) {
+            String word = map.get(ch);
+            if (!str.startsWith(word)) {
+                return false;
+            }
+            return intervalWordPatternMatch(pattern.substring(1), str.substring(word.length()), map);
+        }
+        for (int i = 0; i < str.length(); i++) {
+            String word = str.substring(0, i + 1);
+
+            map.put(ch, word);
+
+            if (intervalWordPatternMatch(pattern.substring(1), str.substring(i + 1), map)) {
+                return true;
+            }
+            map.remove(ch);
+        }
+        return false;
+    }
+
+
+    /**
+     * @param s: the given string
+     * @return: all the possible states of the string after one valid move
+     */
+    public List<String> generatePossibleNextMoves(String s) {
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+
+        for (int i = 0; i < s.length() - 1; i++) {
+            int index = s.indexOf("++", i);
+            if (index == -1) {
+                return result;
+            }
+            StringBuilder builder = new StringBuilder();
+            String word = s.substring(0, index);
+            builder.append(word);
+            builder.append("--");
+            builder.append(s.substring(index + 2));
+            result.add(builder.toString());
+
+        }
+        return result;
+    }
+
+
+    /**
+     *
+     * @param s
+     * @return
+     */
+    public boolean canWin(String s) {
+        return false;
     }
 
 
