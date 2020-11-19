@@ -274,22 +274,16 @@ public class DynamicProgramSolution {
             return 0;
         }
         int len = prices.length;
-
-        int[] dp = new int[len];
-
-        for (int i = 1; i < len; i++) {
-
-            int cost = -prices[i];
-
-            for (int j = 1; j < k; j++) {
-
+        int[][] dp = new int[k + 1][len];
+        for (int i = 1; i <= k; i++) {
+            int cost = -prices[0];
+            for (int j = 1; j < len; j++) {
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] + cost);
+                cost = Math.max(cost, dp[i - 1][j - 1] - prices[j]);
             }
         }
-
-
-        return -1;
+        return dp[k][len - 1];
     }
-
 
     /**
      * 132. Palindrome Partitioning II

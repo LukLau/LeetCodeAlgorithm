@@ -997,6 +997,8 @@ public class ThreePage {
 
 
     /**
+     * 293 Flip Game
+     *
      * @param s: the given string
      * @return: all the possible states of the string after one valid move
      */
@@ -1017,19 +1019,48 @@ public class ThreePage {
             builder.append("--");
             builder.append(s.substring(index + 2));
             result.add(builder.toString());
-
+            i = index;
         }
         return result;
     }
 
 
     /**
+     * todo
+     * 294 Flip Game II
      *
      * @param s
      * @return
      */
     public boolean canWin(String s) {
-        return false;
+        if (s == null || s.isEmpty()) {
+            return true;
+        }
+        List<String> result = generatePossibleNextMoves(s);
+        return result.size() % 2 != 0;
+    }
+
+
+    public String getHint(String secret, String guess) {
+        int bulls = 0;
+        int crows = 0;
+        int len = secret.length();
+        int[] nums = new int[10];
+        for (int i = 0; i < len; i++) {
+            char s = secret.charAt(i);
+            char g = guess.charAt(i);
+            if (s == g) {
+                bulls++;
+            } else {
+                if (nums[Character.getNumericValue(s)]-- > 0) {
+                    crows++;
+                }
+                if (nums[Character.getNumericValue(g)]++ < 0) {
+                    crows++;
+                }
+            }
+        }
+        return bulls + "A" + crows + "B";
     }
 
 

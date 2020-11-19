@@ -473,4 +473,23 @@ public class MathSolution {
     }
 
 
+    /**
+     * todo 使用曼哈顿距离
+     * 296 Best Meeting Point
+     *
+     * @param grid: a 2D grid
+     * @return: the minimize travel distance
+     */
+    public int minTotalDistance(int[][] grid) {
+        // Write your code here
+        // Write your code here
+        if (grid == null || grid.length == 0) {
+            return -1;
+        }
+        int row = grid.length;
+        int column = grid[0].length;
+        return -1;
+    }
+
+
 }
