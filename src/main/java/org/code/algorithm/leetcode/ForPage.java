@@ -11,6 +11,17 @@ import java.util.*;
 public class ForPage {
 
 
+    public static void main(String[] args) {
+        ForPage page = new ForPage();
+        int[][] matrix = new int[][]{{1, 1}, {0, 1}, {3, 3}, {3, 4}};
+        Point[] points = new Point[matrix.length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            points[i] = new Point(matrix[i][0], matrix[i][1]);
+        }
+        page.numIslands2V2(4, 5, points);
+    }
+
     /**
      * todo
      * 301. Remove Invalid Parentheses
@@ -76,7 +87,6 @@ public class ForPage {
         return count == 0;
     }
 
-
     /**
      * 302 Smallest Rectangle Enclosing Black Pixels
      *
@@ -105,7 +115,6 @@ public class ForPage {
         }
         return (right - left + 1) * (bottom - up + 1);
     }
-
 
     /**
      * todo
@@ -140,8 +149,9 @@ public class ForPage {
         return i;
     }
 
-
     /**
+     * todo
+     *
      * @param n:         An integer
      * @param m:         An integer
      * @param operators: an array of point
@@ -179,13 +189,46 @@ public class ForPage {
         return result;
     }
 
-    private int intervalNumIslands2(int x, int y, int[][] matrix, int count) {
-        return -1;
+    public List<Integer> numIslands2V2(int n, int m, Point[] operators) {
+        if (operators == null || operators.length == 0) {
+            return new ArrayList<>();
+        }
+        int[][] matrix = new int[n][m];
+        List<Integer> result = new ArrayList<>();
+//        Map<Point, Integer> map = new HashMap<>();
+        int[][] params = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        for (Point operator : operators) {
+            int x = operator.x;
+            int y = operator.y;
+            matrix[x][y] = 1;
+            Integer count = intervalNumIslands2(x, y, params, matrix);
+            int previousCount = result.isEmpty() ? 0 : result.get(result.size() - 1);
+            if (count == 0) {
+                result.add(previousCount);
+            } else {
+                result.add(previousCount + 1);
+            }
+        }
+        return result;
     }
 
+    private Integer intervalNumIslands2(int x, int y, int[][] direction, int[][] matrix) {
+//        map.put(new Point(x, y), 1);
+        for (int i = 0; i < direction.length; i++) {
+            int neighborX = direction[i][0] + x;
+            int neighborY = direction[i][1] + y;
+            if (neighborX < 0 || neighborX >= matrix.length || neighborY < 0 || neighborY >= matrix[x].length) {
+                continue;
+            }
+            if (matrix[neighborX][neighborY] == 1) {
+                return 0;
+            }
+//            Point point = new Point(neighborX, neighborY);
+//            if (map.containsKey(point)) {
+//                return map.get(point);
+//            }
 
-    public static void main(String[] args) {
-        ForPage page = new ForPage();
+        }
+        return 1;
     }
-
 }
