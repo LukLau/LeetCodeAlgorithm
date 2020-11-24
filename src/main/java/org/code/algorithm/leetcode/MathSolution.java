@@ -492,4 +492,33 @@ public class MathSolution {
     }
 
 
+    /**
+     * 稀疏矩阵算法
+     * todo Sparse Matrix Multiplication
+     *
+     * @param A: a sparse matrix
+     * @param B: a sparse matrix
+     * @return: the result of A * B
+     */
+    public int[][] multiply(int[][] A, int[][] B) {
+        // write your code here
+        int rowA = A.length;
+        int columnA = A[0].length;
+        int columnB = B[0].length;
+        int[][] result = new int[rowA][columnB];
+        for (int i = 0; i < rowA; i++) {
+            for (int k = 0; k < columnA; k++) {
+                if (A[i][k] == 0) {
+                    continue;
+                }
+                for (int j = 0; j < columnB; j++) {
+                    result[i][j] += A[i][k] * B[k][j];
+                }
+
+            }
+        }
+        return result;
+    }
+
+
 }

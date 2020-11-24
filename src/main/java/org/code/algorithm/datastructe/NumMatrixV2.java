@@ -1,19 +1,23 @@
 package org.code.algorithm.datastructe;
 
 /**
+ * todo
  * Binary Indexed Tree
- * 线段树问题
- * todo 304 Range Sum Query 2D - Immutable
- *
+ * 	308
+ * Range Sum Query 2D - Mutable
  * @author luk
- * @date 2020/11/20
+ * @date 2020/11/23
  */
-public class NumMatrix {
-
+public class NumMatrixV2 {
     private final int[][] matrix;
 
-    public NumMatrix(int[][] matrix) {
+    public NumMatrixV2(int[][] matrix) {
         this.matrix = matrix;
+
+    }
+
+    public void update(int row, int col, int val) {
+        matrix[row][col] = val;
     }
 
     public int sumRegion(int row1, int col1, int row2, int col2) {

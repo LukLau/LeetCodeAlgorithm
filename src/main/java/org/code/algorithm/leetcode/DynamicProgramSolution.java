@@ -285,6 +285,30 @@ public class DynamicProgramSolution {
         return dp[k][len - 1];
     }
 
+
+    /**
+     * todo
+     * 309. Best Time to Buy and Sell Stock with Cool down
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitV(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+        int len = prices.length;
+        int[] sell = new int[len];
+        int[] buy = new int[len];
+        buy[0] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i]);
+            buy[i] = Math.max(buy[i - 1], i == 1 ? -prices[i] : sell[i - 2] - prices[i]);
+        }
+        return sell[len - 1];
+    }
+
+
     /**
      * 132. Palindrome Partitioning II
      *
