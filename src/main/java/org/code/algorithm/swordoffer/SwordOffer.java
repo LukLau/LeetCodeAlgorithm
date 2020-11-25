@@ -4,6 +4,7 @@ import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author dora
@@ -1730,14 +1731,9 @@ public class SwordOffer {
 
 
     public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
-        ListNode prev = null;
-        while (listNode != null) {
-            ListNode tmp = listNode.next;
-            listNode.next = prev;
-            prev = listNode;
-            listNode = tmp;
-        }
+
         ArrayList<Integer> result = new ArrayList<>();
+        ListNode prev = reverse(listNode);
         while (prev != null) {
             result.add(prev.val);
             prev = prev.next;
@@ -1750,9 +1746,237 @@ public class SwordOffer {
         if (pre == null || pre.length == 0 || in == null || in.length == 0) {
             return null;
         }
-        return null;
+        return reConstructBinaryTree(0, pre, 0, in.length - 1, in);
+    }
+
+    private TreeNode reConstructBinaryTree(int preStart, int[] pre, int inStart, int inEnd, int[] in) {
+        if (preStart >= pre.length || inStart > inEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(pre[preStart]);
+        int index = 0;
+
+        for (int i = inStart; i <= inEnd; i++) {
+            if (in[i] == root.val) {
+                index = i;
+                break;
+            }
+        }
+        root.left = reConstructBinaryTree(preStart + 1, pre, inStart, index - 1, in);
+        root.right = reConstructBinaryTree(preStart + index - inStart + 1, pre, index + 1, inEnd, in);
+        return root;
+    }
+
+
+    public int minNumberInRotateArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[left] <= array[mid]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        return array[left];
 
     }
 
 
+    public int minNumberInRotateArrayV2(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (array[mid] <= array[right]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return array[left];
+    }
+
+    public int JumpFloorII(int target) {
+        if (target <= 2) {
+            return target;
+        }
+        return 2 * JumpFloorII(target - 1);
+    }
+
+
+    public int NumberOf1(int n) {
+        int result = 0;
+        while (n != 0) {
+            result++;
+            n = n & (n - 1);
+        }
+        return result;
+    }
+
+
+    public double Power(double base, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        if (exponent < 0) {
+            base = 1 / base;
+            exponent = -exponent;
+        }
+        return exponent % 2 == 0 ? Power(base * base, exponent / 2) : base * Power(base * base, exponent / 2);
+    }
+
+    public double PowerV2(double base, int exponent) {
+        long abs = Math.abs((long) exponent);
+        double result = 1;
+        while (abs != 0) {
+            if (abs % 2 != 0) {
+                result *= base;
+            }
+            base *= base;
+            abs >>= 1;
+        }
+        return exponent < 0 ? 1 / result : result;
+    }
+
+
+    public void reOrderArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        Arrays.sort(array);
+        int len = array.length;
+        int[] result = new int[len];
+        int index = 0;
+        for (int j : array) {
+            if (j % 2 == 1) {
+                result[index++] = j;
+            }
+        }
+        for (int j : array) {
+            if (j % 2 == 0) {
+                result[index++] = j;
+            }
+        }
+        System.arraycopy(result, 0, array, 0, result.length);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int val = nums[i];
+        nums[i] = nums[j];
+        nums[j] = val;
+    }
+
+
+    public ListNode FindKthToTail(ListNode head, int k) {
+        if (head == null || k < 0) {
+            return null;
+        }
+        ListNode fast = head;
+        for (int i = 0; i < k - 1; i++) {
+            if (fast == null) {
+                return null;
+            }
+            fast = fast.next;
+        }
+        ListNode slow = head;
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+
+    }
+
+    private ListNode reverse(ListNode listNode) {
+        ListNode prev = null;
+        while (listNode != null) {
+            ListNode tmp = listNode.next;
+            listNode.next = prev;
+            prev = listNode;
+            listNode = tmp;
+        }
+        return prev;
+    }
+
+
+    public ListNode ReverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode listNode = ReverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return listNode;
+    }
+
+
+    public ListNode Merge(ListNode list1, ListNode list2) {
+        if (list1 == null && list2 == null) {
+            return null;
+        }
+        if (list1 == null) {
+            return list2;
+        }
+        if (list2 == null) {
+            return list1;
+        }
+        if (list1.val <= list2.val) {
+            list1.next = Merge(list1.next, list2);
+            return list1;
+        } else {
+            list2.next = Merge(list1, list2.next);
+            return list2;
+        }
+    }
+
+
+    public boolean HasSubtree(TreeNode root1, TreeNode root2) {
+        if (root1 == null) {
+            return false;
+        }
+        return intervalIsSubTree(root1, root2) || HasSubtree(root1.left, root2) || HasSubtree(root1.right, root2);
+    }
+
+    private boolean intervalIsSubTree(TreeNode root1, TreeNode root2) {
+        if (root2 == null) {
+            return true;
+        }
+        if (root1 == null) {
+            return false;
+        }
+        if (root1.val == root2.val) {
+            return intervalIsSubTree(root1.left, root2.left) && intervalIsSubTree(root1.right, root2.right);
+        }
+        return false;
+    }
+
+
+    public void Mirror(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode left = root.left;
+        root.left = root.right;
+        root.right = left;
+        Mirror(root.left);
+        Mirror(root.right);
+    }
+
+
+    public boolean IsPopOrder(int[] pushA, int[] popA) {
+        if (pushA == null || popA == null) {
+            return false;
+        }
+        return false;
+
+    }
 }
