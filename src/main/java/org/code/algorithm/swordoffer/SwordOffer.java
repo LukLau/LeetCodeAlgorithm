@@ -1,10 +1,12 @@
 package org.code.algorithm.swordoffer;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.RandomListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -1976,7 +1978,153 @@ public class SwordOffer {
         if (pushA == null || popA == null) {
             return false;
         }
-        return false;
+        Stack<Integer> stack = new Stack<>();
+        int j = 0;
+        for (int i = 0; i < pushA.length; i++) {
+            stack.push(i);
+            while (!stack.isEmpty() && pushA[stack.peek()] == popA[j]) {
+                j++;
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+    }
+
+
+    public boolean VerifySquenceOfBST(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        int result = sequence.length - 1;
+        while (result >= 0) {
+            int i = 0;
+            while (i < result && sequence[i] < sequence[result]) {
+                i++;
+            }
+            while (i < result && sequence[i] > sequence[result]) {
+                i++;
+            }
+            if (i != result) {
+                return false;
+            }
+            result--;
+        }
+        return true;
+    }
+
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        intervalFindPath(result, new ArrayList<>(), root, target);
+        return result;
 
     }
+
+    private void intervalFindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, TreeNode root, int target) {
+        integers.add(root.val);
+        if (root.left == null && root.right == null && root.val == target) {
+            result.add(new ArrayList<>(integers));
+        } else {
+            if (root.left != null) {
+                intervalFindPath(result, integers, root.left, target - root.val);
+            }
+            if (root.right != null) {
+                intervalFindPath(result, integers, root.right, target - root.val);
+            }
+        }
+        integers.remove(integers.size() - 1);
+    }
+
+
+    public RandomListNode Clone(RandomListNode pHead) {
+        if (pHead == null) {
+            return null;
+        }
+        RandomListNode node = pHead;
+        while (node != null) {
+            RandomListNode tmp = new RandomListNode(node.label);
+            tmp.next = node.next;
+            node.next = tmp;
+            node = tmp.next;
+        }
+        node = pHead;
+        while (node != null) {
+            RandomListNode tmp = node.next;
+            if (node.random != null) {
+                tmp.random = node.random.next;
+            }
+            node = tmp.next;
+        }
+        node = pHead;
+        RandomListNode cloneHead = pHead.next;
+        while (node.next != null) {
+            RandomListNode tmp = node.next;
+            node.next = tmp.next;
+            node = tmp;
+        }
+        return cloneHead;
+    }
+
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode root = null;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || pRootOfTree != null) {
+            while (pRootOfTree != null) {
+                stack.push(pRootOfTree);
+                pRootOfTree = pRootOfTree.left;
+            }
+            pRootOfTree = stack.pop();
+            if (prev == null) {
+                root = pRootOfTree;
+            } else {
+                prev.right = pRootOfTree;
+                pRootOfTree.left = prev;
+            }
+            prev = pRootOfTree;
+            pRootOfTree = pRootOfTree.right;
+        }
+        return root;
+    }
+
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        char[] words = str.toCharArray();
+        Arrays.sort(words);
+        intervalPermutation(result, 0, words);
+        return result;
+    }
+
+    private void intervalPermutation(ArrayList<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[i - 1]) {
+                continue;
+            }
+            swap(words, i, start);
+            intervalPermutation(result, i + 1, words);
+            swap(words, i, start);
+        }
+    }
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
+    }
+
+
 }
