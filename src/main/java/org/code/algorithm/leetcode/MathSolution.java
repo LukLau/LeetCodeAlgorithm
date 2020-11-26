@@ -1,5 +1,7 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.ListNode;
+
 import java.util.*;
 
 /**
@@ -244,6 +246,7 @@ public class MathSolution {
 
 
     /**
+     * moore vote
      * 摩尔投票法
      * 169. Majority Element
      *
@@ -276,7 +279,52 @@ public class MathSolution {
      * @return
      */
     public List<Integer> majorityElementII(int[] nums) {
-        return null;
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        int countA = 0;
+        int countB = 0;
+        int candidateA = nums[0];
+        int candidateB = nums[0];
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                candidateA = num;
+                countA = 1;
+                continue;
+            }
+            if (countB == 0) {
+                candidateB = num;
+                countB = 1;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        List<Integer> result = new ArrayList<>();
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (countA * 3 > nums.length) {
+            result.add(candidateA);
+        }
+        if (countB * 3 > nums.length) {
+            result.add(candidateB);
+        }
+        return result;
     }
 
 
