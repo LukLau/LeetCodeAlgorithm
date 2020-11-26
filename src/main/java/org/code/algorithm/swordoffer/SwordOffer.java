@@ -1686,8 +1686,8 @@ public class SwordOffer {
 
     public static void main(String[] args) {
         SwordOffer swordOffer = new SwordOffer();
-        StringBuffer buffer = new StringBuffer("hello world ");
-        swordOffer.replaceSpace(buffer);
+        ArrayList<String> abc = swordOffer.Permutation("abc");
+        System.out.println(abc.toString());
     }
 
     public boolean Find(int target, int[][] array) {
@@ -1979,4 +1979,99 @@ public class SwordOffer {
         return false;
 
     }
+
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> result = new ArrayList<>();
+        char[] words = str.toCharArray();
+        Arrays.sort(words);
+        intervalPermutation(result, 0, words);
+        result.sort(String::compareTo);
+        return result;
+    }
+
+    private void intervalPermutation(ArrayList<String> result, int start, char[] tmp) {
+        if (start == tmp.length) {
+            result.add(String.valueOf(tmp));
+            return;
+        }
+        for (int i = start; i < tmp.length; i++) {
+            if (i > start && tmp[i] == tmp[start]) {
+                continue;
+            }
+            swap(tmp, i, start);
+            intervalPermutation(result, start + 1, tmp);
+            swap(tmp, i, start);
+        }
+    }
+
+    public ArrayList<String> PermutationV2(String str) {
+        if (str == null || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> ans = new ArrayList<>();
+        char[] words = str.toCharArray();
+        boolean[] used = new boolean[words.length];
+        Arrays.sort(words);
+        intervalPermutationV2(ans, used, words, "");
+        return ans;
+    }
+
+    private void intervalPermutationV2(ArrayList<String> ans, boolean[] used, char[] words, String s) {
+        if (s.length() == words.length) {
+            ans.add(s);
+            return;
+        }
+        for (int i = 0; i < words.length; i++) {
+            if (i > 0 && words[i] == words[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            s += words[i];
+            used[i] = true;
+            intervalPermutationV2(ans, used, words, s);
+            used[i] = false;
+            s = s.substring(0, s.length() - 1);
+        }
+    }
+
+    private void swap(char[] words, int start, int end) {
+        char tmp = words[start];
+        words[start] = words[end];
+        words[end] = tmp;
+    }
+
+    public int MoreThanHalfNumSolution(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int candidate = array[0];
+        int count = 0;
+        for (int num : array) {
+
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+            }
+            if (count == 0) {
+                count = 1;
+                candidate = num;
+            }
+        }
+        count = 0;
+        for (int num : array) {
+            if (candidate == num) {
+                count++;
+            }
+        }
+        return 2 * count > array.length ? candidate : 0;
+    }
+
+
 }

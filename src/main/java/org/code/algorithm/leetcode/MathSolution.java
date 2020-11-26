@@ -1,5 +1,7 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.ListNode;
+
 import java.util.*;
 
 /**
@@ -244,6 +246,7 @@ public class MathSolution {
 
 
     /**
+     * moore vote
      * 摩尔投票法
      * 169. Majority Element
      *
@@ -276,7 +279,52 @@ public class MathSolution {
      * @return
      */
     public List<Integer> majorityElementII(int[] nums) {
-        return null;
+        if (nums == null || nums.length == 0) {
+            return new ArrayList<>();
+        }
+        int countA = 0;
+        int countB = 0;
+        int candidateA = nums[0];
+        int candidateB = nums[0];
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+                continue;
+            }
+            if (num == candidateB) {
+                countB++;
+                continue;
+            }
+            if (countA == 0) {
+                candidateA = num;
+                countA = 1;
+                continue;
+            }
+            if (countB == 0) {
+                candidateB = num;
+                countB = 1;
+                continue;
+            }
+            countA--;
+            countB--;
+        }
+        countA = 0;
+        countB = 0;
+        List<Integer> result = new ArrayList<>();
+        for (int num : nums) {
+            if (num == candidateA) {
+                countA++;
+            } else if (num == candidateB) {
+                countB++;
+            }
+        }
+        if (countA * 3 > nums.length) {
+            result.add(candidateA);
+        }
+        if (countB * 3 > nums.length) {
+            result.add(candidateB);
+        }
+        return result;
     }
 
 
@@ -518,6 +566,149 @@ public class MathSolution {
             }
         }
         return result;
+    }
+
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        if (input == null || k <= 0 || k > input.length) {
+            return new ArrayList<>();
+        }
+        k--;
+        int partition = partition(input, 0, input.length - 1);
+        while (partition < k) {
+            partition = partition(input, partition + 1, input.length - 1);
+        }
+        Arrays.sort(input);
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i <= k; i++) {
+            result.add(input[i]);
+        }
+        return result;
+    }
+
+
+    private int partition(int[] input, int low, int high) {
+        int pivot = input[low];
+        while (low < high) {
+            while (low < high && input[high] >= pivot) {
+                high--;
+            }
+            if (low < high) {
+                input[low] = input[high];
+                low++;
+            }
+
+            while (low < high && input[low] <= pivot) {
+                low++;
+            }
+            if (low < high) {
+                input[high] = input[low];
+                high--;
+            }
+        }
+        input[low] = pivot;
+        return low;
+    }
+
+
+    public int FindGreatestSumOfSubArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int result = Integer.MIN_VALUE;
+        int local = 0;
+        for (int num : array) {
+            local = local >= 0 ? local + num : num;
+            result = Math.max(result, local);
+        }
+        return result;
+    }
+
+
+    public String PrintMinNumber(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return "";
+        }
+        String[] nums = new String[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            nums[i] = String.valueOf(numbers[i]);
+        }
+        Arrays.sort(nums, (o1, o2) -> {
+            String s1 = o1 + o2;
+            String s2 = o2 + o1;
+            return s1.compareTo(s2);
+        });
+        if ("0".equals(nums[0])) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String num : nums) {
+            builder.append(num);
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * todo 丑数
+     *
+     * @param index
+     * @return
+     */
+    public int GetUglyNumberSolution(int index) {
+        if (index <= 6) {
+            return index;
+        }
+        return 0;
+    }
+
+
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode p1 = pHead1;
+        ListNode p2 = pHead2;
+        while (p1 != p2) {
+            p1 = p1 == null ? pHead2 : p1.next;
+            p2 = p2 == null ? pHead1 : p2.next;
+        }
+        return p1;
+    }
+
+
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (int num : array) {
+
+            if (num == k) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int GetNumberOfKV2(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+//        int lastK = getnum
+        return -1;
+    }
+
+    private int getNumberLastK(int[] array, int target, int low, int high) {
+        if (low > high) {
+            return -1;
+        }
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (array[mid] < target) {
+                low = mid + 1;
+            } else if (array[mid] > target) {
+                high = mid - 1;
+            }
+        }
+
+
     }
 
 
