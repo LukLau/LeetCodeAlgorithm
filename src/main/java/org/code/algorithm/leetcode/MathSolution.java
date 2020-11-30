@@ -708,7 +708,7 @@ public class MathSolution {
             }
         }
 
-
+        return -1;
     }
 
 

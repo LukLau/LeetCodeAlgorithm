@@ -2073,5 +2073,92 @@ public class SwordOffer {
         return 2 * count > array.length ? candidate : 0;
     }
 
+    public String LeftRotateString(String str, int n) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
+        int len = str.length();
+        str += str;
+        return str.substring(n, n + len);
+    }
+
+
+    public String ReverseSentence(String str) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
+        String[] words = str.split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (int i = words.length - 1; i >= 0; i--) {
+            builder.append(words[i]);
+            if (i > 0) {
+                builder.append(" ");
+            }
+        }
+        return builder.length() == 0 ? str : builder.toString();
+    }
+
+
+    public boolean isContinuous(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return false;
+        }
+        int min = 14;
+        int max = 0;
+        boolean[] used = new boolean[15];
+        int zeroCount = 0;
+        for (int number : numbers) {
+            if (number == 0) {
+                zeroCount++;
+                continue;
+            }
+            if (number < min) {
+                min = number;
+            }
+            if (number > max) {
+                max = number;
+            }
+            if (used[number]) {
+                return false;
+            }
+            used[number] = true;
+        }
+        if (zeroCount >= 4) {
+            return true;
+        }
+        return max - min <= 4;
+    }
+
+
+    public boolean isContinuousV2(int[] numbers) {
+        if (numbers == null || numbers.length < 5) {
+            return false;
+        }
+        int min = 15;
+        int max = 0;
+        Arrays.sort(numbers);
+        int zeroCount = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            int number = numbers[i];
+            if (number == 0) {
+                zeroCount++;
+                continue;
+            }
+            if (i > 0 && numbers[i - 1] == numbers[i]) {
+                return false;
+            }
+            if (number > max) {
+                max = number;
+            }
+            if (number < min) {
+                min = number;
+            }
+        }
+        if (zeroCount >= 4) {
+            return true;
+        }
+        return max - min <= 4;
+    }
+
 
 }
