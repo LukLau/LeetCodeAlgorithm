@@ -1,6 +1,8 @@
 package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.TreeLinkNode;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -566,6 +568,63 @@ public class MathSolution {
             }
         }
         return result;
+    }
+
+
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
+        ListNode next = pHead.next;
+        if (pHead.val == next.val) {
+            while (next != null && next.val == pHead.val) {
+                next = next.next;
+            }
+            return deleteDuplication(next);
+        }
+        pHead.next = deleteDuplication(pHead.next);
+        return pHead;
+    }
+
+
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) {
+            return null;
+        }
+        TreeLinkNode nextNode = pNode.right;
+        if (nextNode != null) {
+            while (nextNode.left != null) {
+                nextNode = nextNode.left;
+            }
+            return nextNode;
+        }
+        while (pNode.next != null) {
+            if (pNode.next.left == pNode) {
+                return pNode.next;
+            }
+            pNode = pNode.next;
+        }
+        return null;
+    }
+
+    public boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) {
+            return true;
+        }
+        return intervalSymmetrical(pRoot.left, pRoot.right);
+    }
+
+    private boolean intervalSymmetrical(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+        return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
     }
 
 
