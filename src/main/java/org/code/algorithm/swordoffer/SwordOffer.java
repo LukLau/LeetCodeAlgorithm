@@ -1686,8 +1686,7 @@ public class SwordOffer {
 
     public static void main(String[] args) {
         SwordOffer swordOffer = new SwordOffer();
-        ArrayList<String> abc = swordOffer.Permutation("abc");
-        System.out.println(abc.toString());
+        System.out.println(swordOffer.isNumeric("12e+5.4".toCharArray()));
     }
 
     public boolean Find(int target, int[][] array) {
@@ -2158,6 +2157,159 @@ public class SwordOffer {
             return true;
         }
         return max - min <= 4;
+    }
+
+
+    public int SumSolution(int n) {
+        return n == 0 ? 0 : n + SumSolution(n - 1);
+    }
+
+
+    public int SumSolutionV2(int n) {
+        int result = n;
+        result = result > 0 ? result + SumSolutionV2(n - 1) : result;
+        return result;
+    }
+
+
+    public int StrToInt(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        char[] words = str.toCharArray();
+
+        int index = 0;
+        if (words[index] == '-' || words[index] == '+') {
+            sign = words[index] == '-' ? -1 : 1;
+            index++;
+        }
+        long result = 0L;
+        while (index < words.length && Character.isDigit(words[index])) {
+            result = result * 10 + Character.getNumericValue(words[index]);
+            if (result > Integer.MAX_VALUE) {
+                return 0;
+            }
+            index++;
+        }
+        if (index != words.length) {
+            return 0;
+        }
+        return (int) result * sign;
+    }
+
+
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[A.length];
+        int base = 1;
+        for (int i = 0; i < A.length; i++) {
+            result[i] = base;
+            base *= A[i];
+        }
+
+        base = 1;
+        for (int i = A.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= A[i];
+        }
+        return result;
+    }
+
+
+    public boolean match(char[] str, char[] pattern) {
+        int m = str.length;
+        int n = pattern.length;
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = pattern[j - 1] == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str[i - 1] == pattern[j - 1] || pattern[j - 1] == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern[j - 1] == '*') {
+                    if (str[i - 1] != pattern[j - 2] && pattern[j - 2] != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    public boolean isNumeric(char[] str) {
+        if (str == null || str.length == 0) {
+            return false;
+        }
+        boolean seenDigit = false;
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenNumberAfterE = false;
+        for (int i = 0; i < str.length; i++) {
+            char word = str[i];
+            if (word >= '0' && word <= '9') {
+                seenNumber = true;
+                seenNumberAfterE = true;
+            } else if (word == 'e' || word == 'E') {
+                if (!seenNumber || seenE) {
+                    return false;
+                }
+                seenNumberAfterE = false;
+                seenE = true;
+            } else if (word == '-' || word == '+') {
+                if (i > 0 && (str[i - 1] != 'e' && str[i - 1] != 'E')) {
+                    return false;
+                }
+            } else if (word == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                if (seenE && (str[i - 1] != 'e' && str[i - 1] != 'E')) {
+                    return false;
+                }
+//                if (!seenNumber) {
+//                    return false;
+//                }
+                seenDigit = true;
+            } else {
+                return false;
+            }
+        }
+        return seenNumber && seenNumberAfterE;
+    }
+
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode slow = pHead;
+        ListNode fast = pHead;
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = pHead;
+                while (slow != fast) {
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+                return slow;
+            }
+
+        }
+        return null;
     }
 
 
