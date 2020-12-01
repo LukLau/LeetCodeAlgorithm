@@ -1,6 +1,8 @@
 package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.TreeLinkNode;
+import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
 
@@ -568,147 +570,61 @@ public class MathSolution {
         return result;
     }
 
-    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-        if (input == null || k <= 0 || k > input.length) {
-            return new ArrayList<>();
-        }
-        k--;
-        int partition = partition(input, 0, input.length - 1);
-        while (partition < k) {
-            partition = partition(input, partition + 1, input.length - 1);
-        }
-        Arrays.sort(input);
-        ArrayList<Integer> result = new ArrayList<>();
-        for (int i = 0; i <= k; i++) {
-            result.add(input[i]);
-        }
-        return result;
-    }
 
-
-    private int partition(int[] input, int low, int high) {
-        int pivot = input[low];
-        while (low < high) {
-            while (low < high && input[high] >= pivot) {
-                high--;
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return pHead;
+        }
+        ListNode next = pHead.next;
+        if (pHead.val == next.val) {
+            while (next != null && next.val == pHead.val) {
+                next = next.next;
             }
-            if (low < high) {
-                input[low] = input[high];
-                low++;
+            return deleteDuplication(next);
+        }
+        pHead.next = deleteDuplication(pHead.next);
+        return pHead;
+    }
+
+
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) {
+            return null;
+        }
+        TreeLinkNode nextNode = pNode.right;
+        if (nextNode != null) {
+            while (nextNode.left != null) {
+                nextNode = nextNode.left;
             }
-
-            while (low < high && input[low] <= pivot) {
-                low++;
+            return nextNode;
+        }
+        while (pNode.next != null) {
+            if (pNode.next.left == pNode) {
+                return pNode.next;
             }
-            if (low < high) {
-                input[high] = input[low];
-                high--;
-            }
+            pNode = pNode.next;
         }
-        input[low] = pivot;
-        return low;
+        return null;
     }
 
-
-    public int FindGreatestSumOfSubArray(int[] array) {
-        if (array == null || array.length == 0) {
-            return 0;
+    public boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) {
+            return true;
         }
-        int result = Integer.MIN_VALUE;
-        int local = 0;
-        for (int num : array) {
-            local = local >= 0 ? local + num : num;
-            result = Math.max(result, local);
-        }
-        return result;
+        return intervalSymmetrical(pRoot.left, pRoot.right);
     }
 
-
-    public String PrintMinNumber(int[] numbers) {
-        if (numbers == null || numbers.length == 0) {
-            return "";
+    private boolean intervalSymmetrical(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
         }
-        String[] nums = new String[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
-            nums[i] = String.valueOf(numbers[i]);
+        if (left == null || right == null) {
+            return false;
         }
-        Arrays.sort(nums, (o1, o2) -> {
-            String s1 = o1 + o2;
-            String s2 = o2 + o1;
-            return s1.compareTo(s2);
-        });
-        if ("0".equals(nums[0])) {
-            return "0";
+        if (left.val != right.val) {
+            return false;
         }
-        StringBuilder builder = new StringBuilder();
-        for (String num : nums) {
-            builder.append(num);
-        }
-        return builder.toString();
-    }
-
-
-    /**
-     * todo 丑数
-     *
-     * @param index
-     * @return
-     */
-    public int GetUglyNumberSolution(int index) {
-        if (index <= 6) {
-            return index;
-        }
-        return 0;
-    }
-
-
-    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
-        ListNode p1 = pHead1;
-        ListNode p2 = pHead2;
-        while (p1 != p2) {
-            p1 = p1 == null ? pHead2 : p1.next;
-            p2 = p2 == null ? pHead1 : p2.next;
-        }
-        return p1;
-    }
-
-
-    public int GetNumberOfK(int[] array, int k) {
-        if (array == null || array.length == 0) {
-            return 0;
-        }
-        int count = 0;
-        for (int num : array) {
-
-            if (num == k) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int GetNumberOfKV2(int[] array, int k) {
-        if (array == null || array.length == 0) {
-            return 0;
-        }
-//        int lastK = getnum
-        return -1;
-    }
-
-    private int getNumberLastK(int[] array, int target, int low, int high) {
-        if (low > high) {
-            return -1;
-        }
-        while (low < high) {
-            int mid = low + (high - low) / 2;
-            if (array[mid] < target) {
-                low = mid + 1;
-            } else if (array[mid] > target) {
-                high = mid - 1;
-            }
-        }
-
-        return -1;
+        return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
     }
 
 

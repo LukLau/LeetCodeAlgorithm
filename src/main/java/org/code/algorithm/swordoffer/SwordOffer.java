@@ -1,10 +1,12 @@
 package org.code.algorithm.swordoffer;
 
 import org.code.algorithm.datastructe.ListNode;
+import org.code.algorithm.datastructe.RandomListNode;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 
 /**
  * @author dora
@@ -1975,8 +1977,119 @@ public class SwordOffer {
         if (pushA == null || popA == null) {
             return false;
         }
-        return false;
+        Stack<Integer> stack = new Stack<>();
+        int j = 0;
+        for (int i = 0; i < pushA.length; i++) {
+            stack.push(i);
+            while (!stack.isEmpty() && pushA[stack.peek()] == popA[j]) {
+                j++;
+                stack.pop();
+            }
+        }
+        return stack.isEmpty();
+    }
 
+
+    public boolean VerifySquenceOfBST(int[] sequence) {
+        if (sequence == null || sequence.length == 0) {
+            return false;
+        }
+        int result = sequence.length - 1;
+        while (result >= 0) {
+            int i = 0;
+            while (i < result && sequence[i] < sequence[result]) {
+                i++;
+            }
+            while (i < result && sequence[i] > sequence[result]) {
+                i++;
+            }
+            if (i != result) {
+                return false;
+            }
+            result--;
+        }
+        return true;
+    }
+
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        intervalFindPath(result, new ArrayList<>(), root, target);
+        return result;
+
+    }
+
+    private void intervalFindPath(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> integers, TreeNode root, int target) {
+        integers.add(root.val);
+        if (root.left == null && root.right == null && root.val == target) {
+            result.add(new ArrayList<>(integers));
+        } else {
+            if (root.left != null) {
+                intervalFindPath(result, integers, root.left, target - root.val);
+            }
+            if (root.right != null) {
+                intervalFindPath(result, integers, root.right, target - root.val);
+            }
+        }
+        integers.remove(integers.size() - 1);
+    }
+
+
+    public RandomListNode Clone(RandomListNode pHead) {
+        if (pHead == null) {
+            return null;
+        }
+        RandomListNode node = pHead;
+        while (node != null) {
+            RandomListNode tmp = new RandomListNode(node.label);
+            tmp.next = node.next;
+            node.next = tmp;
+            node = tmp.next;
+        }
+        node = pHead;
+        while (node != null) {
+            RandomListNode tmp = node.next;
+            if (node.random != null) {
+                tmp.random = node.random.next;
+            }
+            node = tmp.next;
+        }
+        node = pHead;
+        RandomListNode cloneHead = pHead.next;
+        while (node.next != null) {
+            RandomListNode tmp = node.next;
+            node.next = tmp.next;
+            node = tmp;
+        }
+        return cloneHead;
+    }
+
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree == null) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode root = null;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || pRootOfTree != null) {
+            while (pRootOfTree != null) {
+                stack.push(pRootOfTree);
+                pRootOfTree = pRootOfTree.left;
+            }
+            pRootOfTree = stack.pop();
+            if (prev == null) {
+                root = pRootOfTree;
+            } else {
+                prev.right = pRootOfTree;
+                pRootOfTree.left = prev;
+            }
+            prev = pRootOfTree;
+            pRootOfTree = pRootOfTree.right;
+        }
+        return root;
     }
 
 
@@ -1988,24 +2101,24 @@ public class SwordOffer {
         char[] words = str.toCharArray();
         Arrays.sort(words);
         intervalPermutation(result, 0, words);
-        result.sort(String::compareTo);
         return result;
     }
 
-    private void intervalPermutation(ArrayList<String> result, int start, char[] tmp) {
-        if (start == tmp.length) {
-            result.add(String.valueOf(tmp));
+    private void intervalPermutation(ArrayList<String> result, int start, char[] words) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
             return;
         }
-        for (int i = start; i < tmp.length; i++) {
-            if (i > start && tmp[i] == tmp[start]) {
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[i - 1]) {
                 continue;
             }
-            swap(tmp, i, start);
-            intervalPermutation(result, start + 1, tmp);
-            swap(tmp, i, start);
+            swap(words, i, start);
+            intervalPermutation(result, i + 1, words);
+            swap(words, i, start);
         }
     }
+
 
     public ArrayList<String> PermutationV2(String str) {
         if (str == null || str.isEmpty()) {
@@ -2072,6 +2185,219 @@ public class SwordOffer {
         return 2 * count > array.length ? candidate : 0;
     }
 
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        if (input == null || k <= 0 || k > input.length) {
+            return new ArrayList<>();
+        }
+        k--;
+        int partition = partition(input, 0, input.length - 1);
+        while (partition < k) {
+            partition = partition(input, partition + 1, input.length - 1);
+        }
+        Arrays.sort(input);
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i <= k; i++) {
+            result.add(input[i]);
+        }
+        return result;
+    }
+
+
+    private int partition(int[] input, int low, int high) {
+        int pivot = input[low];
+        while (low < high) {
+            while (low < high && input[high] >= pivot) {
+                high--;
+            }
+            if (low < high) {
+                input[low] = input[high];
+                low++;
+            }
+
+            while (low < high && input[low] <= pivot) {
+                low++;
+            }
+            if (low < high) {
+                input[high] = input[low];
+                high--;
+            }
+        }
+        input[low] = pivot;
+        return low;
+    }
+
+
+    public int FindGreatestSumOfSubArray(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int result = Integer.MIN_VALUE;
+        int local = 0;
+        for (int num : array) {
+            local = local >= 0 ? local + num : num;
+            result = Math.max(result, local);
+        }
+        return result;
+    }
+
+
+    public String PrintMinNumber(int[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return "";
+        }
+        String[] nums = new String[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            nums[i] = String.valueOf(numbers[i]);
+        }
+        Arrays.sort(nums, (o1, o2) -> {
+            String s1 = o1 + o2;
+            String s2 = o2 + o1;
+            return s1.compareTo(s2);
+        });
+        if ("0".equals(nums[0])) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String num : nums) {
+            builder.append(num);
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * todo 丑数
+     *
+     * @param index
+     * @return
+     */
+    public int GetUglyNumberSolution(int index) {
+        if (index <= 6) {
+            return index;
+        }
+        return 0;
+    }
+
+
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode p1 = pHead1;
+        ListNode p2 = pHead2;
+        while (p1 != p2) {
+            p1 = p1 == null ? pHead2 : p1.next;
+            p2 = p2 == null ? pHead1 : p2.next;
+        }
+        return p1;
+    }
+
+
+    public int GetNumberOfK(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (int num : array) {
+
+            if (num == k) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int GetNumberOfKV2(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int firstK = getNumberFirstK(array, k, 0, array.length - 1);
+        int lastK = getNumberLastK(array, k, 0, array.length - 1);
+        if (firstK == -1 && lastK == -1) {
+            return 0;
+        }
+        return lastK - firstK + 1;
+    }
+
+    private int getNumberLastK(int[] array, int target, int low, int high) {
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (array[mid] < target) {
+                low = mid + 1;
+            } else if (array[mid] > target) {
+                high = mid - 1;
+            } else {
+                if (mid + 1 <= high && array[mid + 1] == target) {
+                    low = mid + 1;
+                } else {
+                    return mid;
+                }
+            }
+        }
+        return array[low] == target ? low : -1;
+
+    }
+
+    private int getNumberFirstK(int[] array, int target, int low, int high) {
+        if (low > high) {
+            return -1;
+        }
+        int mid = low + (high - low) / 2;
+        if (array[mid] < target) {
+            return getNumberFirstK(array, target, mid + 1, high);
+        } else if (array[mid] > target) {
+            return getNumberFirstK(array, target, low, mid - 1);
+        } else if (mid - 1 >= low && array[mid - 1] == target) {
+            return getNumberFirstK(array, target, low, mid - 1);
+        } else if (array[mid] == target) {
+            return mid;
+        } else {
+            return -1;
+        }
+    }
+
+    public boolean IsBalancedSolution(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = depth(root.left);
+        int right = depth(root.right);
+        if (Math.abs(left - right) > 1) {
+            return false;
+        }
+        return IsBalancedSolution(root.left) && IsBalancedSolution(root.right);
+    }
+
+    private int depth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(depth(root.left), depth(root.right));
+    }
+
+
+    public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        int result = 0;
+        for (int num : array) {
+            result ^= num;
+        }
+        result &= -result;
+
+        for (int num : array) {
+            if ((num & result) != 0) {
+                num1[0] ^= num;
+            } else {
+                num2[0] ^= num;
+            }
+        }
+    }
+
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        if (array == null || array.length == 0) {
+            return new ArrayList<>();
+        }
+        return null;
+    }
     public String LeftRotateString(String str, int n) {
         if (str == null || str.isEmpty()) {
             return "";
