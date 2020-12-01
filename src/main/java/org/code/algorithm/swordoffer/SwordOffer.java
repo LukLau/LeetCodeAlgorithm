@@ -6,6 +6,7 @@ import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -2398,6 +2399,7 @@ public class SwordOffer {
         }
         return null;
     }
+
     public String LeftRotateString(String str, int n) {
         if (str == null || str.isEmpty()) {
             return "";
@@ -2636,6 +2638,152 @@ public class SwordOffer {
 
         }
         return null;
+    }
+
+    public TreeNode KthNode(TreeNode pRoot, int k) {
+        if (pRoot == null || k <= 0) {
+            return null;
+        }
+        k--;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = pRoot;
+        int iteratorCount = 0;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (iteratorCount == k) {
+                return p;
+            }
+            p = p.right;
+            iteratorCount++;
+        }
+        return null;
+    }
+
+
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        if (num == null || num.length == 0 || size <= 0) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < num.length; i++) {
+            int index = i - size + 1;
+            if (!linkedList.isEmpty() && linkedList.getFirst() < index) {
+                linkedList.poll();
+            }
+            while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.offer(i);
+            if (index >= 0) {
+                result.add(num[linkedList.peek()]);
+            }
+        }
+        return result;
+    }
+
+
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        if (matrix == null || str == null) {
+            return false;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * cols + j;
+                if (matrix[index] == str[0] && intervalHasPath(used, matrix, i, j, rows, cols, 0, str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean intervalHasPath(boolean[][] used, char[] matrix, int i, int j, int rows, int cols, int k, char[] str) {
+        if (k == str.length) {
+            return true;
+        }
+        if (i < 0 || i >= rows || j < 0 || j >= cols || used[i][j]) {
+            return false;
+        }
+        int index = i * cols + j;
+        if (matrix[index] != str[k]) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalHasPath(used, matrix, i - 1, j, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i + 1, j, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i, j - 1, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i, j + 1, rows, cols, k + 1, str)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+    public int movingCount(int threshold, int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            return 0;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        return intervalCount(threshold, used, 0, 0);
+    }
+
+    private int intervalCount(int threshold, boolean[][] used, int i, int j) {
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length) {
+            return 0;
+        }
+        if (used[i][j]) {
+            return 0;
+        }
+        used[i][j] = true;
+        int val = calculateCount(i) + calculateCount(j);
+        if (val > threshold) {
+            return 0;
+        }
+        int count = 1;
+        count += intervalCount(threshold, used, i - 1, j);
+        count += intervalCount(threshold, used, i + 1, j);
+        count += intervalCount(threshold, used, i, j - 1);
+        count += intervalCount(threshold, used, i, j + 1);
+        return count;
+    }
+
+    private int calculateCount(int k) {
+        int result = 0;
+        while (k != 0) {
+            result += k % 10;
+            k /= 10;
+        }
+        return result;
+    }
+
+    public int cutRope(int target) {
+        if (target <= 2) {
+            return target == 2 ? 1 : target;
+        }
+        if (target == 3) {
+            return 2;
+        }
+        if (target == 4) {
+            return 3;
+        }
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 3;
+        dp[4] = 4;
+        for (int i = 5; i <= target; i++) {
+            for (int j = 1; j <= i / 2; j++) {
+                dp[i] = Math.max(dp[i], dp[j] * dp[i - j]);
+            }
+        }
+        return dp[target];
     }
 
 
