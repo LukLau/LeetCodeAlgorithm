@@ -6,6 +6,7 @@ import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -1688,8 +1689,7 @@ public class SwordOffer {
 
     public static void main(String[] args) {
         SwordOffer swordOffer = new SwordOffer();
-        int[] nums = new int[]{1, 2, 3, 3, 3, 3};
-        swordOffer.GetNumberOfKV2(nums, 3);
+        System.out.println(swordOffer.isNumeric("12e+5.4".toCharArray()));
     }
 
     public boolean Find(int target, int[][] array) {
@@ -2399,6 +2399,7 @@ public class SwordOffer {
         }
         return null;
     }
+
     public String LeftRotateString(String str, int n) {
         if (str == null || str.isEmpty()) {
             return "";
@@ -2484,6 +2485,305 @@ public class SwordOffer {
             return true;
         }
         return max - min <= 4;
+    }
+
+
+    public int SumSolution(int n) {
+        return n == 0 ? 0 : n + SumSolution(n - 1);
+    }
+
+
+    public int SumSolutionV2(int n) {
+        int result = n;
+        result = result > 0 ? result + SumSolutionV2(n - 1) : result;
+        return result;
+    }
+
+
+    public int StrToInt(String str) {
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.isEmpty()) {
+            return 0;
+        }
+        int sign = 1;
+        char[] words = str.toCharArray();
+
+        int index = 0;
+        if (words[index] == '-' || words[index] == '+') {
+            sign = words[index] == '-' ? -1 : 1;
+            index++;
+        }
+        long result = 0L;
+        while (index < words.length && Character.isDigit(words[index])) {
+            result = result * 10 + Character.getNumericValue(words[index]);
+            if (result > Integer.MAX_VALUE) {
+                return 0;
+            }
+            index++;
+        }
+        if (index != words.length) {
+            return 0;
+        }
+        return (int) result * sign;
+    }
+
+
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) {
+            return new int[]{};
+        }
+        int[] result = new int[A.length];
+        int base = 1;
+        for (int i = 0; i < A.length; i++) {
+            result[i] = base;
+            base *= A[i];
+        }
+
+        base = 1;
+        for (int i = A.length - 1; i >= 0; i--) {
+            result[i] *= base;
+            base *= A[i];
+        }
+        return result;
+    }
+
+
+    public boolean match(char[] str, char[] pattern) {
+        int m = str.length;
+        int n = pattern.length;
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = pattern[j - 1] == '*' && dp[0][j - 2];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str[i - 1] == pattern[j - 1] || pattern[j - 1] == '.') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (pattern[j - 1] == '*') {
+                    if (str[i - 1] != pattern[j - 2] && pattern[j - 2] != '.') {
+                        dp[i][j] = dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    }
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+
+    public boolean isNumeric(char[] str) {
+        if (str == null || str.length == 0) {
+            return false;
+        }
+        boolean seenDigit = false;
+        boolean seenNumber = false;
+        boolean seenE = false;
+        boolean seenNumberAfterE = false;
+        for (int i = 0; i < str.length; i++) {
+            char word = str[i];
+            if (word >= '0' && word <= '9') {
+                seenNumber = true;
+                seenNumberAfterE = true;
+            } else if (word == 'e' || word == 'E') {
+                if (!seenNumber || seenE) {
+                    return false;
+                }
+                seenNumberAfterE = false;
+                seenE = true;
+            } else if (word == '-' || word == '+') {
+                if (i > 0 && (str[i - 1] != 'e' && str[i - 1] != 'E')) {
+                    return false;
+                }
+            } else if (word == '.') {
+                if (seenDigit) {
+                    return false;
+                }
+                if (seenE && (str[i - 1] != 'e' && str[i - 1] != 'E')) {
+                    return false;
+                }
+//                if (!seenNumber) {
+//                    return false;
+//                }
+                seenDigit = true;
+            } else {
+                return false;
+            }
+        }
+        return seenNumber && seenNumberAfterE;
+    }
+
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode slow = pHead;
+        ListNode fast = pHead;
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                fast = pHead;
+                while (slow != fast) {
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+                return slow;
+            }
+
+        }
+        return null;
+    }
+
+    public TreeNode KthNode(TreeNode pRoot, int k) {
+        if (pRoot == null || k <= 0) {
+            return null;
+        }
+        k--;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = pRoot;
+        int iteratorCount = 0;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (iteratorCount == k) {
+                return p;
+            }
+            p = p.right;
+            iteratorCount++;
+        }
+        return null;
+    }
+
+
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        if (num == null || num.length == 0 || size <= 0) {
+            return new ArrayList<>();
+        }
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < num.length; i++) {
+            int index = i - size + 1;
+            if (!linkedList.isEmpty() && linkedList.getFirst() < index) {
+                linkedList.poll();
+            }
+            while (!linkedList.isEmpty() && num[linkedList.peekLast()] <= num[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.offer(i);
+            if (index >= 0) {
+                result.add(num[linkedList.peek()]);
+            }
+        }
+        return result;
+    }
+
+
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        if (matrix == null || str == null) {
+            return false;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * cols + j;
+                if (matrix[index] == str[0] && intervalHasPath(used, matrix, i, j, rows, cols, 0, str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean intervalHasPath(boolean[][] used, char[] matrix, int i, int j, int rows, int cols, int k, char[] str) {
+        if (k == str.length) {
+            return true;
+        }
+        if (i < 0 || i >= rows || j < 0 || j >= cols || used[i][j]) {
+            return false;
+        }
+        int index = i * cols + j;
+        if (matrix[index] != str[k]) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalHasPath(used, matrix, i - 1, j, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i + 1, j, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i, j - 1, rows, cols, k + 1, str)
+                || intervalHasPath(used, matrix, i, j + 1, rows, cols, k + 1, str)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
+    public int movingCount(int threshold, int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            return 0;
+        }
+        boolean[][] used = new boolean[rows][cols];
+        return intervalCount(threshold, used, 0, 0);
+    }
+
+    private int intervalCount(int threshold, boolean[][] used, int i, int j) {
+        if (i < 0 || i >= used.length || j < 0 || j >= used[i].length) {
+            return 0;
+        }
+        if (used[i][j]) {
+            return 0;
+        }
+        used[i][j] = true;
+        int val = calculateCount(i) + calculateCount(j);
+        if (val > threshold) {
+            return 0;
+        }
+        int count = 1;
+        count += intervalCount(threshold, used, i - 1, j);
+        count += intervalCount(threshold, used, i + 1, j);
+        count += intervalCount(threshold, used, i, j - 1);
+        count += intervalCount(threshold, used, i, j + 1);
+        return count;
+    }
+
+    private int calculateCount(int k) {
+        int result = 0;
+        while (k != 0) {
+            result += k % 10;
+            k /= 10;
+        }
+        return result;
+    }
+
+    public int cutRope(int target) {
+        if (target <= 2) {
+            return target == 2 ? 1 : target;
+        }
+        if (target == 3) {
+            return 2;
+        }
+        if (target == 4) {
+            return 3;
+        }
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 3;
+        dp[4] = 4;
+        for (int i = 5; i <= target; i++) {
+            for (int j = 1; j <= i / 2; j++) {
+                dp[i] = Math.max(dp[i], dp[j] * dp[i - j]);
+            }
+        }
+        return dp[target];
     }
 
 
