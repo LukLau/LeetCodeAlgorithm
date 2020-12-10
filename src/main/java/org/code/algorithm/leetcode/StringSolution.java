@@ -11,8 +11,50 @@ public class StringSolution {
     public static void main(String[] args) {
         StringSolution solution = new StringSolution();
         String word = "aabb";
-        solution.generatePalindromes(word);
+        System.out.println(solution.longestPalindrome("babad"));
     }
+
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        int result = 0;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            if (map.containsKey(words[i])) {
+                left = Math.max(left, map.get(words[i]) + 1);
+            }
+            map.put(words[i], i);
+            result = Math.max(result, i - left + 1);
+        }
+        return result;
+    }
+
+    public int lengthOfLongestSubstringV2(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int[] hash = new int[256];
+
+        char[] words = s.toCharArray();
+
+        int result = 0;
+
+        int left = 0;
+
+        for (int i = 0; i < words.length; i++) {
+
+            left = Math.max(left, hash[s.charAt(i)]);
+
+            result = Math.max(result, i - left + 1);
+
+            hash[s.charAt(i)] = i + 1;
+        }
+        return result;
+    }
+
 
     // ---kmp问题--- //
 
@@ -57,6 +99,41 @@ public class StringSolution {
 
 
     // ---回文系列---//
+
+
+    /**
+     * 5. Longest Palindromic Substring
+     *
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return "";
+        }
+        int len = s.length();
+        if (len == 1) {
+            return s;
+        }
+        boolean[][] dp = new boolean[len][len];
+        int result = 0;
+        int left = -1;
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (s.charAt(j) == s.charAt(i) && ((i - j <= 2) || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+                }
+                if (dp[j][i] && i - j + 1 > result) {
+                    left = j;
+                    result = i - j + 1;
+                }
+            }
+        }
+        if (result != 0) {
+            return s.substring(left, left + result);
+        }
+        return "";
+    }
 
 
     /**

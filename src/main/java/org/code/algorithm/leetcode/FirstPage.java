@@ -32,18 +32,15 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return new int[]{};
         }
-        HashMap<Integer, Integer> map = new HashMap<>();
-
         int[] result = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            int num = nums[i];
-            if (map.containsKey(target - num)) {
-                Integer index0 = map.get(target - num);
-                result[0] = index0;
+            if (map.containsKey(target - nums[i])) {
+                result[0] = map.get(target - nums[i]);
                 result[1] = i;
-                break;
+                return result;
             }
-            map.put(num, i);
+            map.put(nums[i], i);
         }
         return result;
     }
@@ -59,10 +56,9 @@ public class FirstPage {
         if (l1 == null && l2 == null) {
             return null;
         }
-        int carry = 0;
-
         ListNode root = new ListNode(0);
         ListNode dummy = root;
+        int carry = 0;
         while (l1 != null || l2 != null || carry != 0) {
             int val = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
 
@@ -215,39 +211,36 @@ public class FirstPage {
     /**
      * 8. 字符串转换整数 (atoi)
      *
-     * @param str
+     * @param s
      * @return
      */
-    public int myAtoi(String str) {
-        if (str == null) {
+    public int myAtoi(String s) {
+        if (s == null) {
             return 0;
         }
-        str = str.trim();
-
-        if (str.isEmpty()) {
+        s = s.trim();
+        if (s.isEmpty()) {
             return 0;
         }
         int sign = 1;
-
         int index = 0;
-
-        char firstCharacter = str.charAt(index);
-
-        if (firstCharacter == '-' || firstCharacter == '+') {
-            sign = firstCharacter == '-' ? -1 : 1;
+        char[] words = s.toCharArray();
+        char firstWord = words[index];
+        if (firstWord == '-' || firstWord == '+') {
+            sign = firstWord == '-' ? -1 : 1;
             index++;
         }
-        long result = 0L;
-        while (index < str.length() && Character.isDigit(str.charAt(index))) {
-            result = result * 10 + Character.getNumericValue(str.charAt(index));
+        long result = 0;
+        while (index < words.length && Character.isDigit(words[index])) {
+            int val = Character.getNumericValue(words[index]);
+            result = result * 10 + val;
 
             if (result > Integer.MAX_VALUE) {
                 return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
-
             index++;
         }
-        return (int) (sign * result);
+        return (int) result * sign;
     }
 
 
@@ -265,11 +258,11 @@ public class FirstPage {
         int m = s.length();
         int n = p.length();
         boolean[][] dp = new boolean[m + 1][n + 1];
-
         dp[0][0] = true;
-
-        for (int i = 1; i <= n; i++) {
-            dp[0][i] = p.charAt(i - 1) == '*' && dp[0][i - 2];
+        for (int j = 1; j <= n; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 2];
+            }
         }
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
@@ -279,9 +272,8 @@ public class FirstPage {
                     if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
                         dp[i][j] = dp[i][j - 2];
                     } else {
-                        dp[i][j] = dp[i - 1][j - 1] || dp[i][j - 2] || dp[i - 1][j];
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 2] || dp[i][j - 1];
                     }
-
                 }
             }
         }
@@ -418,22 +410,18 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
-        int target = 0;
-        int length = nums.length;
-        for (int i = 0; i < length - 2; i++) {
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; i++) {
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
             int left = i + 1;
-            int right = length - 1;
+            int right = nums.length - 1;
             while (left < right) {
-
                 int val = nums[i] + nums[left] + nums[right];
-
-                if (val == target) {
-                    List<Integer> tmp = Arrays.asList(nums[i], nums[left], nums[right]);
+                if (val == 0) {
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
                     while (left < right && nums[left] == nums[left + 1]) {
                         left++;
                     }
@@ -442,18 +430,16 @@ public class FirstPage {
                     }
                     left++;
                     right--;
-
-                    result.add(tmp);
-                } else if (val < target) {
+                } else if (val < 0) {
                     left++;
                 } else {
                     right--;
                 }
-
             }
         }
         return result;
     }
+
 
     /**
      * 16. 最接近的三数之和
@@ -505,30 +491,22 @@ public class FirstPage {
         if (digits == null || digits.isEmpty()) {
             return new ArrayList<>();
         }
-        String[] map = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-
-        LinkedList<String> result = new LinkedList<>();
-
-        result.add("");
-
-        int length = digits.length();
-
-        for (int i = 0; i < length; i++) {
-
+        String[] nums = new String[]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.add("");
+        int len = digits.length();
+        for (int i = 0; i < len; i++) {
             int index = Character.getNumericValue(digits.charAt(i));
-
-            String word = map[index];
-
-            while (result.peek().length() == i) {
-
-                String poll = result.poll();
-
-                for (char tmp : word.toCharArray()) {
-                    result.offer(poll + tmp);
+            String word = nums[index];
+            while (linkedList.peek().length() == i) {
+                String poll = linkedList.poll();
+                char[] words = word.toCharArray();
+                for (char tmp : words) {
+                    linkedList.offer(poll + tmp);
                 }
             }
         }
-        return result;
+        return linkedList;
     }
 
     /**
@@ -686,6 +664,7 @@ public class FirstPage {
             }
         }
         return root.next;
+
     }
 
     /**
