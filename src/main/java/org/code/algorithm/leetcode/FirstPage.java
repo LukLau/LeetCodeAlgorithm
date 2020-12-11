@@ -18,7 +18,7 @@ public class FirstPage {
         FirstPage page = new FirstPage();
         String ip = "0000";
 
-        page.restoreIpAddresses(ip);
+        page.longestValidParenthesesV2(")()())");
     }
 
     /**
@@ -794,29 +794,28 @@ public class FirstPage {
         if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        boolean positiveSign = (dividend > 0 && divisor > 0)
-                || (dividend < 0 && divisor < 0);
-
-        int sign = 1;
-
-        if (!positiveSign) {
-            sign = -1;
+        if (dividend == 0) {
+            return 0;
         }
-        long result = 0;
+        int sign = ((dividend < 0 && divisor < 0) || (dividend > 0 && divisor > 0)) ? 1 : -1;
+
         long dvd = Math.abs((long) dividend);
+
         long dvs = Math.abs((long) divisor);
 
+        int result = 0;
         while (dvd >= dvs) {
-            int count = 1;
             long tmp = dvs;
+            int number = 1;
             while (dvd >= (tmp << 1)) {
                 tmp <<= 1;
-                count <<= 1;
+                number <<= 1;
             }
             dvd -= tmp;
-            result += count;
+            result += number;
         }
-        return (int) (sign * result);
+        return sign * result;
+
     }
 
     /**
@@ -896,24 +895,23 @@ public class FirstPage {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        Stack<Integer> stack = new Stack<>();
         int result = 0;
-        int len = s.length();
+        Stack<Integer> stack = new Stack<>();
         int left = -1;
-        for (int i = 0; i < len; i++) {
-            char word = s.charAt(i);
-            if (word == '(') {
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            if (words[i] == '(') {
                 stack.push(i);
             } else {
-                if (!stack.isEmpty() && s.charAt(stack.peek()) == '(') {
+                if (!stack.isEmpty() && words[stack.peek()] == '(') {
                     stack.pop();
+                    if (stack.isEmpty()) {
+                        result = Math.max(result, i - left);
+                    } else {
+                        result = Math.max(result, i - stack.peek());
+                    }
                 } else {
                     left = i;
-                }
-                if (stack.isEmpty()) {
-                    result = Math.max(result, i - left);
-                } else {
-                    result = Math.max(result, i - stack.peek());
                 }
             }
         }
@@ -921,7 +919,10 @@ public class FirstPage {
     }
 
     public int longestValidParenthesesV2(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
+            return 0;
+        }
+        if (s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
@@ -930,27 +931,26 @@ public class FirstPage {
             char word = s.charAt(i);
             if (stack.isEmpty() || word == '(') {
                 stack.push(i);
-            } else if (s.charAt(stack.peek()) == '(') {
-                stack.pop();
             } else {
-                stack.push(i);
+                if (s.charAt(stack.peek()) == '(') {
+                    stack.pop();
+                } else {
+                    stack.push(i);
+                }
             }
         }
         if (stack.isEmpty()) {
-            return s.length();
-        } else {
-            int result = 0;
-            int edge = s.length();
-            while (!stack.isEmpty()) {
-                Integer pop = stack.pop();
-
-                result = Math.max(result, edge - 1 - pop);
-
-                edge = pop;
-            }
-            result = Math.max(result, edge);
-            return result;
+            return len;
         }
+        int result = 0;
+        int a = s.length();
+        while (!stack.isEmpty()) {
+            int m = stack.pop();
+            result = Math.max(result, a - m - 1);
+            a = m;
+        }
+        result = Math.max(result, a);
+        return result;
     }
 
 
