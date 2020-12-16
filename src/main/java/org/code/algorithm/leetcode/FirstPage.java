@@ -1019,16 +1019,14 @@ public class FirstPage {
      * @return
      */
     public int searchInsert(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return 0;
-        }
         int left = 0;
         int right = nums.length - 1;
-        while (left <= right) {
+        while (left < right) {
             int mid = left + (right - left) / 2;
-            if (nums[mid] == target) {
+            int val = nums[mid];
+            if (val == target) {
                 return mid;
-            } else if (nums[left] < target) {
+            } else if (val < target) {
                 left = mid + 1;
             } else {
                 right = mid - 1;
@@ -1048,22 +1046,22 @@ public class FirstPage {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(candidates);
-        intervalCombination(result, new ArrayList<Integer>(), 0, candidates, target);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombination(result, new ArrayList<>(), 0, candidates, target);
         return result;
     }
 
     private void intervalCombination(List<List<Integer>> result,
-                                     ArrayList<Integer> integers, int start, int[] candidates, int target) {
+                                     ArrayList<Integer> integers,
+                                     int start,
+                                     int[] candidates,
+                                     int target) {
         if (target == 0) {
             result.add(new ArrayList<>(integers));
             return;
         }
         for (int i = start; i < candidates.length && candidates[i] <= target; i++) {
-            if (i > start && candidates[i] == candidates[i - 1]) {
-                continue;
-            }
             integers.add(candidates[i]);
             intervalCombination(result, integers, i, candidates, target - candidates[i]);
             integers.remove(integers.size() - 1);
@@ -1081,14 +1079,13 @@ public class FirstPage {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(candidates);
-        intervalCombinationSums(result, new ArrayList<Integer>(), 0, candidates, target);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationSums(result, new ArrayList<>(), 0, candidates, target);
         return result;
     }
 
-    private void intervalCombinationSums(List<List<Integer>> result, ArrayList<Integer> tmp,
-                                         int start, int[] candidates, int target) {
+    private void intervalCombinationSums(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] candidates, int target) {
         if (target == 0) {
             result.add(new ArrayList<>(tmp));
             return;
@@ -1101,7 +1098,6 @@ public class FirstPage {
             intervalCombinationSums(result, tmp, i + 1, candidates, target - candidates[i]);
             tmp.remove(tmp.size() - 1);
         }
-
     }
 
     /**
@@ -1111,16 +1107,13 @@ public class FirstPage {
      * @return
      */
     public int firstMissingPositive(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
         for (int i = 0; i < nums.length; i++) {
-            while (nums[i] >= 0 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+            while (nums[i] >= 1 && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
         for (int i = 0; i < nums.length; i++) {
-            if (i + 1 != nums[i]) {
+            if (nums[i] != i + 1) {
                 return i + 1;
             }
         }
@@ -1140,21 +1133,21 @@ public class FirstPage {
         int result = 0;
         int left = 0;
         int right = height.length - 1;
-        int leftEdge = 0;
-        int rightEdge = 0;
+        int leftSide = 0;
+        int rightSide = 0;
         while (left < right) {
             if (height[left] <= height[right]) {
-                if (leftEdge <= height[left]) {
-                    leftEdge = height[left];
+                if (height[left] >= leftSide) {
+                    leftSide = height[left];
                 } else {
-                    result += leftEdge - height[left];
+                    result += leftSide - height[left];
                 }
                 left++;
             } else {
-                if (height[right] >= rightEdge) {
-                    rightEdge = height[right];
+                if (height[right] >= rightSide) {
+                    rightSide = height[right];
                 } else {
-                    result += rightEdge - height[right];
+                    result += rightSide - height[right];
                 }
                 right--;
             }

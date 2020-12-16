@@ -80,8 +80,6 @@ public class BinarySearchSolution {
         }
         result[1] = left;
         return result;
-
     }
-
 
 }
