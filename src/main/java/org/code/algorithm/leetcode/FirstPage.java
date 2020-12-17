@@ -2,6 +2,7 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
+import sun.jvm.hotspot.runtime.ResultTypeFinder;
 
 import java.util.*;
 
@@ -17,8 +18,8 @@ public class FirstPage {
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
         String ip = "0000";
-
-        page.longestValidParenthesesV2(")()())");
+        int[] nums = new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        page.multiply("2", "3");
     }
 
     /**
@@ -1163,12 +1164,9 @@ public class FirstPage {
         if (height == null || height.length == 0) {
             return 0;
         }
-
-        int result = 0;
         int left = 0;
-
         int right = height.length - 1;
-
+        int result = 0;
         while (left < right) {
             while (left < right && height[left] == 0) {
                 left++;
@@ -1176,16 +1174,16 @@ public class FirstPage {
             while (left < right && height[right] == 0) {
                 right--;
             }
-            int edge = Math.min(height[left], height[right]);
+            int minEdge = Math.min(height[left], height[right]);
 
             for (int i = left; i <= right; i++) {
-                int value = height[i];
+                int val = height[i];
 
-                if (value > edge) {
-                    height[i] -= edge;
-                } else {
-                    result += edge - height[i];
+                if (val < minEdge) {
+                    result += minEdge - height[i];
                     height[i] = 0;
+                } else {
+                    height[i] -= minEdge;
                 }
             }
         }
@@ -1203,25 +1201,21 @@ public class FirstPage {
         if (num1.isEmpty() && num2.isEmpty()) {
             return "0";
         }
-        int len1 = num1.length();
+        int m = num1.length();
+        int n = num2.length();
+        int[] position = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int val = Character.getNumericValue(num1.charAt(i)) * Character.getNumericValue(num2.charAt(j)) + position[i + j + 1];
 
-        int len2 = num2.length();
+                position[i + j + 1] = val % 10;
 
-        int[] nums = new int[num1.length() + num2.length()];
-
-        for (int i = len1 - 1; i >= 0; i--) {
-            for (int j = len2 - 1; j >= 0; j--) {
-                int value = Character.getNumericValue(num1.charAt(i))
-                        * Character.getNumericValue(num2.charAt(j)) + nums[i + j + 1];
-
-                nums[i + j + 1] = value % 10;
-
-                nums[i + j] += value / 10;
+                position[i + j] += val / 10;
             }
         }
         StringBuilder builder = new StringBuilder();
+        for (int num : position) {
 
-        for (int num : nums) {
             if (!(builder.length() == 0 && num == 0)) {
                 builder.append(num);
             }
@@ -1241,14 +1235,14 @@ public class FirstPage {
         int furthest = nums[0];
         int current = 0;
         for (int i = 0; i < nums.length - 1; i++) {
-            furthest = Math.max(furthest, i + nums[i]);
-
+            furthest = Math.max(nums[i] + i, furthest);
             if (i == current) {
                 step++;
                 current = furthest;
             }
         }
         return step;
+
     }
 
     /**
@@ -1262,15 +1256,15 @@ public class FirstPage {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
-        intervalPermute(result, new ArrayList<Integer>(), nums, used);
+        intervalPermute(result, new ArrayList<>(), nums, used);
         return result;
     }
 
     private void intervalPermute(List<List<Integer>> result, ArrayList<Integer> tmp, int[] nums, boolean[] used) {
         if (tmp.size() == nums.length) {
             result.add(new ArrayList<>(tmp));
+            return;
         }
         for (int i = 0; i < nums.length; i++) {
             if (used[i]) {
@@ -1282,7 +1276,6 @@ public class FirstPage {
             used[i] = false;
             tmp.remove(tmp.size() - 1);
         }
-
     }
 
     /**
@@ -1386,15 +1379,15 @@ public class FirstPage {
      * @return
      */
     public double myPow(double x, int n) {
+        if (n == 1) {
+            return x;
+        }
         if (n == 0) {
             return 1;
         }
         if (n < 0) {
-            n = -n;
             x = 1 / x;
-        }
-        if (x > Integer.MAX_VALUE || x < Integer.MIN_VALUE) {
-            return 0;
+            n = -n;
         }
         return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
     }

@@ -56,6 +56,25 @@ public class StringSolution {
     }
 
 
+    //---魔法匹配问题---//
+
+    /**
+     * todo
+     * 44. Wildcard Matching
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        if (p.isEmpty()) {
+            return s.isEmpty();
+        }
+        return false;
+
+    }
+
+
     // ---kmp问题--- //
 
     /**
