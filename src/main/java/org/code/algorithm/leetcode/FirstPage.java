@@ -2,7 +2,6 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.ListNode;
 import org.code.algorithm.datastructe.TreeNode;
-import sun.jvm.hotspot.runtime.ResultTypeFinder;
 
 import java.util.*;
 
@@ -17,9 +16,8 @@ public class FirstPage {
 
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
-        String ip = "0000";
-        int[] nums = new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
-        page.multiply("2", "3");
+        String[] words = new String[]{"This", "is", "an", "example", "of", "text", "justification."};
+        page.fullJustifyV2(words, 16);
     }
 
     /**
@@ -1288,29 +1286,32 @@ public class FirstPage {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
         boolean[] used = new boolean[nums.length];
-        intervalPermuteUnique(result, new ArrayList<Integer>(), used, nums);
+        List<List<Integer>> result = new ArrayList<>();
+        intervalPermuteUnique(result, new ArrayList<>(), used, nums);
         return result;
-
     }
 
     private void intervalPermuteUnique(List<List<Integer>> result, ArrayList<Integer> integers, boolean[] used, int[] nums) {
         if (integers.size() == nums.length) {
             result.add(new ArrayList<>(integers));
-            return;
         }
         for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i]) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
                 continue;
             }
+            if (used[i]) {
+                continue;
+            }
+
             used[i] = true;
             integers.add(nums[i]);
             intervalPermuteUnique(result, integers, used, nums);
-            integers.remove(integers.size() - 1);
             used[i] = false;
+            integers.remove(integers.size() - 1);
         }
+
     }
 
 
@@ -1420,34 +1421,31 @@ public class FirstPage {
         if (n <= 0) {
             return new ArrayList<>();
         }
-        char[][] matrix = new char[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                matrix[i][j] = '.';
-            }
+        char[][] queens = new char[n][n];
+        for (char[] row : queens) {
+            Arrays.fill(row, '.');
         }
         List<List<String>> result = new ArrayList<>();
-        intervalSolveNQueens(result, 0, matrix);
+        intervalSolveNQueens(result, 0, queens);
         return result;
     }
 
     private void intervalSolveNQueens(List<List<String>> result, int row, char[][] matrix) {
         if (row == matrix.length) {
             List<String> tmp = new ArrayList<>();
-            for (char[] chars : matrix) {
-                tmp.add(String.valueOf(chars));
+            for (char[] content : matrix) {
+                tmp.add(String.valueOf(content));
             }
             result.add(tmp);
             return;
         }
-        for (int i = 0; i < matrix.length; i++) {
+        for (int i = 0; i < matrix[0].length; i++) {
             if (validNQueens(i, row, matrix)) {
                 matrix[row][i] = 'Q';
                 intervalSolveNQueens(result, row + 1, matrix);
                 matrix[row][i] = '.';
             }
         }
-
     }
 
     private boolean validNQueens(int column, int row, char[][] matrix) {
@@ -1461,7 +1459,7 @@ public class FirstPage {
                 return false;
             }
         }
-        for (int i = row - 1, j = column + 1; i >= 0 && j < matrix.length; i--, j++) {
+        for (int i = row - 1, j = column + 1; i >= 0 && j < matrix[i].length; i--, j++) {
             if (matrix[i][j] == 'Q') {
                 return false;
             }
@@ -1479,22 +1477,22 @@ public class FirstPage {
         if (n <= 0) {
             return 0;
         }
+
         int[] dp = new int[n];
-        for (int i = dp.length - 1; i >= 0; i--) {
-            dp[i] = -1;
-        }
+
         return intervalTotalNQueens(dp, 0, n);
     }
 
     private int intervalTotalNQueens(int[] dp, int row, int n) {
-        if (row == n) {
-            return 1;
-        }
         int count = 0;
-        for (int i = 0; i < n; i++) {
-            if (validNQueens(dp, i, row)) {
-                dp[row] = i;
-                count += intervalTotalNQueens(dp, row + 1, i);
+        if (row == n) {
+            count++;
+            return count;
+        }
+        for (int j = 0; j < n; j++) {
+            if (validNQueens(dp, row, j)) {
+                dp[row] = j;
+                count += intervalTotalNQueens(dp, row + 1, n);
                 dp[row] = -1;
             }
         }
@@ -1503,7 +1501,7 @@ public class FirstPage {
 
     private boolean validNQueens(int[] dp, int row, int column) {
         for (int i = row - 1; i >= 0; i--) {
-            if (dp[i] == column || Math.abs(i - row) == Math.abs(dp[i] - column)) {
+            if (dp[i] == column || Math.abs(dp[i] - column) == Math.abs(i - row)) {
                 return false;
             }
         }
@@ -1577,7 +1575,7 @@ public class FirstPage {
             return false;
         }
         int reach = 0;
-        for (int i = 0; i < nums.length && i <= reach; i++) {
+        for (int i = 0; i < nums.length - 1 && i <= reach; i++) {
             reach = Math.max(reach, i + nums[i]);
         }
         return reach >= nums.length - 1;
@@ -1593,15 +1591,17 @@ public class FirstPage {
         if (intervals == null || intervals.length == 0) {
             return new int[][]{};
         }
+        LinkedList<int[]> result = new LinkedList<>();
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-
-        List<int[]> result = new ArrayList<>();
-
         for (int[] interval : intervals) {
-            if (!result.isEmpty() && result.get(result.size() - 1)[1] >= interval[0]) {
-                result.get(result.size() - 1)[1] = Math.max(result.get(result.size() - 1)[1], interval[1]);
-            } else {
+            if (result.isEmpty() || result.peekLast()[1] < interval[0]) {
                 result.add(interval);
+            } else {
+                int[] pre = result.peekLast();
+
+                pre[0] = Math.min(pre[0], interval[0]);
+
+                pre[1] = Math.max(pre[1], interval[1]);
             }
         }
         return result.toArray(new int[][]{});
@@ -1616,28 +1616,26 @@ public class FirstPage {
      * @return
      */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        if (intervals == null || intervals.length == 0) {
+        if (intervals == null || newInterval == null) {
             return new int[][]{};
         }
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        LinkedList<int[]> result = new LinkedList<>();
-
-        int index = 0;
+        Arrays.sort(intervals, Comparator.comparing(o -> o[0]));
+        int endIndex = 0;
         int len = intervals.length;
-        while (index < len && intervals[index][1] < newInterval[0]) {
-            result.offer(intervals[index]);
-            index++;
+        LinkedList<int[]> linkedList = new LinkedList<>();
+        while (endIndex < len && intervals[endIndex][1] < newInterval[0]) {
+            linkedList.offer(intervals[endIndex++]);
         }
-        while (index < len && intervals[index][0] <= newInterval[1]) {
-            newInterval[0] = Math.min(intervals[index][0], newInterval[0]);
-            newInterval[1] = Math.max(intervals[index][1], newInterval[1]);
-            index++;
+        while (endIndex < len && intervals[endIndex][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(intervals[endIndex][0], newInterval[0]);
+            newInterval[1] = Math.max(intervals[endIndex][1], newInterval[1]);
+            endIndex++;
         }
-        result.offer(newInterval);
-        while (index < len) {
-            result.offer(intervals[index++]);
+        linkedList.offer(newInterval);
+        while (endIndex < len) {
+            linkedList.offer(intervals[endIndex++]);
         }
-        return result.toArray(new int[][]{});
+        return linkedList.toArray(new int[][]{});
     }
 
 
@@ -1691,6 +1689,21 @@ public class FirstPage {
      * @return
      */
     public String getPermutation(int n, int k) {
+        if (n <= 0) {
+            return "";
+        }
+        List<Integer> nums = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+        }
+        int[] position = new int[n + 1];
+        position[0] = 1;
+        position[1] = 1;
+        int base = 1;
+        for (int i = 2; i <= n; i++) {
+
+
+        }
         return "";
     }
 
@@ -1703,24 +1716,26 @@ public class FirstPage {
      * @return
      */
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null || k == 0) {
-            return head;
+        if (head == null) {
+            return null;
         }
-        ListNode fast = head;
+        ListNode current = head;
         int count = 1;
-        while (fast.next != null) {
-            fast = fast.next;
-            count = count + 1;
+        while (current.next != null) {
+            current = current.next;
+            count++;
         }
-        if ((k %= count) != 0) {
-            fast.next = head;
+        current.next = head;
+        k %= count;
+        if (k != 0) {
             for (int i = 0; i < count - k; i++) {
                 head = head.next;
-                fast = fast.next;
+                current = current.next;
             }
-            fast.next = null;
         }
+        current.next = null;
         return head;
+
     }
 
 
@@ -1807,18 +1822,15 @@ public class FirstPage {
         }
         int row = grid.length;
         int column = grid[0].length;
-
         int[] dp = new int[column];
 
-        dp[0] = grid[0][0];
-
-        for (int j = 1; j < column; j++) {
-            dp[j] = dp[j - 1] + grid[0][j];
+        for (int j = 0; j < column; j++) {
+            dp[j] = j == 0 ? grid[0][j] : dp[j - 1] + grid[0][j];
         }
         for (int i = 1; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 if (j == 0) {
-                    dp[j] = dp[j] + grid[i][j];
+                    dp[j] += grid[i][j];
                 } else {
                     dp[j] = Math.min(dp[j], dp[j - 1]) + grid[i][j];
                 }
@@ -1842,47 +1854,42 @@ public class FirstPage {
         if (s.isEmpty()) {
             return false;
         }
-        boolean numberAfterE = true;
         boolean seenNumber = false;
-        boolean seenE = false;
+        boolean seenEAfterNumber = false;
         boolean seenDigit = false;
-        int length = s.length();
-
-        for (int i = 0; i < length; i++) {
-            char word = s.charAt(i);
+        boolean seenE = false;
+        char[] words = s.toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            char word = words[i];
             if (Character.isDigit(word)) {
                 seenNumber = true;
-
-                numberAfterE = true;
+                seenEAfterNumber = true;
             } else if (word == 'e' || word == 'E') {
-                if (seenE || i == 0) {
+                if (i == 0 || seenE || !seenNumber) {
                     return false;
                 }
-                if (!seenNumber) {
-                    return false;
-                }
-                if (!Character.isDigit(s.charAt(i - 1)) && s.charAt(i - 1) != '.') {
+                if (!Character.isDigit(words[i - 1]) && words[i - 1] != '.') {
                     return false;
                 }
                 seenE = true;
-                numberAfterE = false;
-            } else if (word == '.') {
-                if (seenDigit) {
+                seenEAfterNumber = false;
+            } else if (word == '-' || word == '+') {
+                if (i != 0 && (words[i - 1] != 'e' && words[i - 1] != 'E')) {
                     return false;
                 }
-                if (seenE) {
+            } else if (word == '.') {
+                if (i == 0) {
+                    return false;
+                }
+                if (seenE || seenDigit) {
                     return false;
                 }
                 seenDigit = true;
-            } else if (word == '-' || word == '+') {
-                if (i != 0 && s.charAt(i - 1) != 'e' && s.charAt(i - 1) != 'E') {
-                    return false;
-                }
             } else {
                 return false;
             }
         }
-        return numberAfterE && seenNumber;
+        return seenNumber && seenEAfterNumber;
     }
 
     /**
@@ -1948,24 +1955,22 @@ public class FirstPage {
             int line = 0;
             int endIndex = startIndex;
             while (endIndex < words.length && line + words[endIndex].length() <= maxWidth) {
-                line += words[endIndex].length() + 1;
-                endIndex++;
+                line += words[endIndex++].length() + 1;
             }
-            StringBuilder builder = new StringBuilder();
             boolean lastRow = endIndex == words.length;
             int countOfWord = endIndex - startIndex;
-            int width = maxWidth - line + 1;
+            int blankRow = maxWidth - line + 1;
+            int blankCount = countOfWord - 1;
+            StringBuilder builder = new StringBuilder();
             if (countOfWord == 1) {
                 builder.append(words[startIndex]);
             } else {
-                int blankSpace = lastRow ? 1 : 1 + width / (countOfWord - 1);
-                int extraSpace = lastRow ? 0 : width % (countOfWord - 1);
-                builder.append(constructWord(words, blankSpace, extraSpace, startIndex, endIndex));
+                int space = lastRow ? 1 : 1 + blankRow / blankCount;
+                int extra = lastRow ? 0 : blankRow % blankCount;
+                builder.append(constructWord(words, space, extra, startIndex, endIndex));
             }
-            String tmp = builder.toString();
-
-            result.add(trimWord(tmp, maxWidth));
-
+            String tmp = trimWord(builder.toString(), maxWidth);
+            result.add(tmp);
             startIndex = endIndex;
         }
         return result;
@@ -2013,30 +2018,30 @@ public class FirstPage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int index = 0;
-        while (index < words.length) {
-            int k = 0;
+        int start = 0;
+        while (start < words.length) {
             int line = 0;
-            while (index + k < words.length && line + words[index + k].length() <= maxWidth - k) {
-                line += words[index + k].length();
-                k++;
+            int index = 0;
+            while (start + index < words.length && line + words[start + index].length() <= maxWidth - index) {
+                line += words[index].length();
+                index++;
             }
             StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < k; j++) {
-                builder.append(words[index + j]);
-                if (index + k >= words.length) {
+            boolean lastRow = start + index == words.length;
+            int blankWord = index - 1;
+            for (int i = 0; i < index; i++) {
+                builder.append(words[start]);
+                if (lastRow) {
                     builder.append(" ");
-                } else if (k > 1) {
-                    int space = (maxWidth - line) / (k - 1) + (j < (maxWidth - line) % (k - 1) ? 1 : 0);
-
+                } else if (index > 1) {
+                    int space = (maxWidth - line) / blankWord + (i < (maxWidth - line) % index ? 1 : 0);
                     while (space-- > 0) {
                         builder.append(" ");
                     }
                 }
             }
             result.add(trimWord(builder.toString(), maxWidth));
-
-            index += k;
+            start += index;
         }
         return result;
     }
