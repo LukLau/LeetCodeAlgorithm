@@ -215,4 +215,49 @@ public class StringSolution {
         words[j] = tmp;
     }
 
+
+    //---窗口问题---//
+
+    /**
+     * 76. Minimum Window Substring
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return "";
+        }
+        int result = Integer.MAX_VALUE;
+        int n = t.length();
+        int begin = 0;
+        int head = 0;
+        int[] hash = new int[256];
+        for (int i = 0; i < n; i++) {
+            hash[t.charAt(i) - '0']++;
+        }
+        int endIndex = 0;
+        int m = s.length();
+        while (endIndex < m) {
+            if (hash[s.charAt(endIndex++) - '0']-- > 0) {
+                n--;
+            }
+            while (n == 0) {
+                if (endIndex - begin < result) {
+                    head = begin;
+                    result = endIndex - begin;
+                }
+                if (hash[s.charAt(begin++) - '0']++ < 0) {
+                    n++;
+                }
+            }
+        }
+        if (result == Integer.MAX_VALUE) {
+            return s;
+        }
+        return s.substring(head, head + result);
+    }
+
+
 }

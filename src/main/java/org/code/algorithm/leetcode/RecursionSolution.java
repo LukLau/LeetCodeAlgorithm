@@ -355,6 +355,51 @@ public class RecursionSolution {
         return node;
     }
 
+    // 深度优先遍历系列 //
+
+
+    /**
+     * 79. Word Search
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0) {
+            return false;
+        }
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                if (board[i][j] == word.charAt(0) && intervalExist(used, board, i, j, 0, word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean intervalExist(boolean[][] used, char[][] board, int i, int j, int k, String word) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || word.charAt(k) != board[i][j] || used[i][j]) {
+            return false;
+        }
+        used[i][j] = true;
+        if (intervalExist(used, board, i - 1, j, k + 1, word) |
+                intervalExist(used, board, i + 1, j, k + 1, word) ||
+                intervalExist(used, board, i, j - 1, k + 1, word) ||
+                intervalExist(used, board, i, j + 1, k + 1, word)) {
+            return true;
+        }
+        used[i][j] = false;
+        return false;
+    }
+
 
     /**
      * 212. Word Search II

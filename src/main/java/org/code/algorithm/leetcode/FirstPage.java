@@ -2023,18 +2023,19 @@ public class FirstPage {
             int line = 0;
             int index = 0;
             while (start + index < words.length && line + words[start + index].length() <= maxWidth - index) {
-                line += words[index].length();
+                line += words[start + index].length();
                 index++;
             }
             StringBuilder builder = new StringBuilder();
             boolean lastRow = start + index == words.length;
             int blankWord = index - 1;
+            int remain = maxWidth - line;
             for (int i = 0; i < index; i++) {
-                builder.append(words[start]);
+                builder.append(words[start + i]);
                 if (lastRow) {
                     builder.append(" ");
                 } else if (index > 1) {
-                    int space = (maxWidth - line) / blankWord + (i < (maxWidth - line) % index ? 1 : 0);
+                    int space = (maxWidth - line) / (index - 1) + (i < (remain % (index - 1)) ? 1 : 0);
                     while (space-- > 0) {
                         builder.append(" ");
                     }
@@ -2136,6 +2137,7 @@ public class FirstPage {
         int m = word1.length();
         int n = word2.length();
         int[][] dp = new int[m + 1][n + 1];
+
         for (int i = 1; i <= m; i++) {
             dp[i][0] = i;
         }
@@ -2147,11 +2149,12 @@ public class FirstPage {
                 if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[i][j] = Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1])) + 1;
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
                 }
             }
         }
         return dp[m][n];
+
     }
 
 
@@ -2249,46 +2252,6 @@ public class FirstPage {
 
 
     /**
-     * 76. Minimum Window Substring
-     *
-     * @param s
-     * @param t
-     * @return
-     */
-    public String minWindow(String s, String t) {
-        if (s == null || t == null) {
-            return "";
-        }
-        int count = t.length();
-        int[] hash = new int[512];
-        for (int i = 0; i < count; i++) {
-            hash[t.charAt(i) - '0']++;
-        }
-        int result = Integer.MAX_VALUE;
-        int begin = 0;
-        int head = 0;
-        int end = 0;
-        while (end < s.length()) {
-            if (hash[s.charAt(end++) - '0']-- > 0) {
-                count--;
-            }
-            while (count == 0) {
-                if (end - begin < result) {
-                    head = begin;
-                    result = end - begin;
-                }
-                if (hash[s.charAt(begin++) - '0']++ == 0) {
-                    count++;
-                }
-            }
-        }
-        if (result != Integer.MAX_VALUE) {
-            return s.substring(head, head + result);
-        }
-        return "";
-    }
-
-    /**
      * 77. Combinations
      *
      * @param n
@@ -2296,7 +2259,7 @@ public class FirstPage {
      * @return
      */
     public List<List<Integer>> combine(int n, int k) {
-        if (n <= 0 || k <= 0) {
+        if (n <= 0) {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
@@ -2340,50 +2303,6 @@ public class FirstPage {
             integers.remove(integers.size() - 1);
         }
     }
-
-
-    /**
-     * 79. Word Search
-     *
-     * @param board
-     * @param word
-     * @return
-     */
-    public boolean exist(char[][] board, String word) {
-        if (board == null || board.length == 0) {
-            return false;
-        }
-        int row = board.length;
-        int column = board[0].length;
-        boolean[][] used = new boolean[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == word.charAt(0) && intervalExist(used, board, i, j, 0, word)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean intervalExist(boolean[][] used, char[][] board, int i, int j, int k, String word) {
-        if (k >= word.length()) {
-            return true;
-        }
-        if (i < 0 || j < 0 || i >= board.length || j >= board[i].length || used[i][j] || board[i][j] != word.charAt(k)) {
-            return false;
-        }
-        used[i][j] = true;
-        if (intervalExist(used, board, i - 1, j, k + 1, word)
-                || intervalExist(used, board, i + 1, j, k + 1, word)
-                || intervalExist(used, board, i, j - 1, k + 1, word)
-                || intervalExist(used, board, i, j + 1, k + 1, word)) {
-            return true;
-        }
-        used[i][j] = false;
-        return false;
-    }
-
 
     /**
      * 80. Remove Duplicates from Sorted Array II
@@ -2462,15 +2381,16 @@ public class FirstPage {
         if (head == null || head.next == null) {
             return head;
         }
-        if (head.val == head.next.val) {
-            ListNode node = head.next.next;
-            while (node != null && node.val == head.val) {
-                node = node.next;
+        ListNode current = head.next;
+        if (head.val == current.val) {
+            while (current != null && current.val == head.val) {
+                current = current.next;
             }
-            return deleteDuplicates(node);
+            return deleteDuplicates(current);
         }
         head.next = deleteDuplicates(head.next);
         return head;
+
     }
 
 
@@ -2506,14 +2426,14 @@ public class FirstPage {
         int result = 0;
         for (int i = 0; i <= heights.length; i++) {
             int height = i == heights.length ? 0 : heights[i];
-            if (stack.isEmpty() || heights[stack.peek()] <= height) {
+            if (stack.isEmpty() || heights[stack.peek()] < height) {
                 stack.push(i);
             } else {
-                int previousHeight = heights[stack.pop()];
+                int edgeHeight = heights[stack.pop()];
 
-                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+                int edge = stack.isEmpty() ? i : i - stack.peek() - 1;
 
-                result = Math.max(result, width * previousHeight);
+                result = Math.max(result, edgeHeight * edge);
 
                 i--;
             }
@@ -2533,45 +2453,37 @@ public class FirstPage {
         if (matrix == null || matrix.length == 0) {
             return 0;
         }
+        int row = matrix.length;
         int column = matrix[0].length;
         int[] height = new int[column];
         int[] left = new int[column];
         int[] right = new int[column];
-        for (int j = 0; j < column; j++) {
-            right[j] = column;
-        }
+        Arrays.fill(right, column);
         int result = 0;
-
-        for (int i = 0; i < matrix.length; i++) {
-            char[] chars = matrix[i];
+        for (int i = 0; i < row; i++) {
             int leftEdge = 0;
             int rightEdge = column;
             for (int j = 0; j < column; j++) {
-                char tmp = chars[j];
-                if (tmp == '1') {
+                char word = matrix[i][j];
+
+                if (word == '1') {
                     height[j]++;
+                    left[j] = Math.max(left[j], leftEdge);
                 } else {
                     height[j] = 0;
-                }
-                if (tmp == '1') {
-                    left[j] = Math.max(leftEdge, left[j]);
-                } else {
-                    left[j] = 0;
                     leftEdge = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
-                char tmp = chars[j];
-                if (tmp == '1') {
-                    right[j] = Math.min(rightEdge, right[j]);
+                if (matrix[i][j] == '1') {
+                    right[j] = Math.min(right[j], rightEdge);
                 } else {
                     right[j] = column;
                     rightEdge = j;
                 }
             }
-
             for (int j = 0; j < column; j++) {
-                result = Math.max(result, height[j] * (right[j] - left[j]));
+                result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
         return result;
