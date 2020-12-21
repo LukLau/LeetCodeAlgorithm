@@ -17,7 +17,7 @@ public class FirstPage {
     public static void main(String[] args) {
         FirstPage page = new FirstPage();
         String[] words = new String[]{"This", "is", "an", "example", "of", "text", "justification."};
-        page.fullJustifyV2(words, 16);
+        page.restoreIpAddresses("9245587303");
     }
 
     /**
@@ -2619,24 +2619,20 @@ public class FirstPage {
 
         ListNode slow = root;
 
-        ListNode fast = root;
-
         for (int i = 0; i < m - 1; i++) {
             slow = slow.next;
         }
-        for (int i = 0; i < n; i++) {
-            fast = fast.next;
-        }
         ListNode start = slow.next;
+        ListNode then = start.next;
+        for (int i = 0; i < n - m; i++) {
+            start.next = then.next;
 
-        ListNode end = fast.next;
+            then.next = slow.next;
 
-        fast.next = null;
+            slow.next = then;
 
-        slow.next = reverseNode(start);
-
-        start.next = end;
-
+            then = start.next;
+        }
         return root.next;
     }
 
@@ -2659,7 +2655,7 @@ public class FirstPage {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
 
-        for (int i = 0; i < m -1; i++) {
+        for (int i = 0; i < m - 1; i++) {
 
         }
         return null;
@@ -2677,19 +2673,21 @@ public class FirstPage {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        int length = s.length();
-        for (int i = 1; i < 4 && i < length - 2; i++) {
-            for (int j = i + 1; j < i + 4 && j < length - 1; j++) {
-                for (int k = j + 1; k < j + 4 && k < length; k++) {
-                    String A = s.substring(0, i);
-                    String B = s.substring(i, j);
-                    String C = s.substring(j, k);
-                    String D = s.substring(k, length);
 
-                    if (validIp(A) && validIp(B) && validIp(C) && validIp(D)) {
-                        String tmp = A + "." + B + "." + C + "." + D;
+        int len = s.length();
+
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j < i + 4 && j < len - 1; j++) {
+                for (int k = j + 1; k < j + 4 && k < len; k++) {
+                    String a = s.substring(0, i);
+                    String b = s.substring(i, j);
+                    String c = s.substring(j, k);
+                    String d = s.substring(k);
+                    if (validIp(a) && validIp(b) && validIp(c) && validIp(d)) {
+                        String tmp = a + "." + b + "." + c + "." + d;
                         result.add(tmp);
                     }
+
                 }
             }
         }
@@ -2697,7 +2695,7 @@ public class FirstPage {
     }
 
     private boolean validIp(String s) {
-        return !s.isEmpty() && s.length() <= 3 && Integer.parseInt(s) <= 255 && (s.charAt(0) != '0' || s.length() <= 1);
+        return !s.isEmpty() && s.length() <= 3 && Integer.parseInt(s) <= 255 && (s.length() == 1 || s.charAt(0) != '0');
     }
 
 
@@ -2773,18 +2771,18 @@ public class FirstPage {
 
     private List<TreeNode> intervalGenerateTrees(int start, int end) {
         List<TreeNode> result = new ArrayList<>();
-        if (start > end) {
-            result.add(null);
+        if (start == end) {
+            result.add(new TreeNode(start));
             return result;
         }
-        if (start == end) {
-            TreeNode node = new TreeNode(start);
-            result.add(node);
+        if (start > end) {
+            result.add(null);
             return result;
         }
         for (int i = start; i <= end; i++) {
             List<TreeNode> leftNodes = intervalGenerateTrees(start, i - 1);
             List<TreeNode> rightNodes = intervalGenerateTrees(i + 1, end);
+
             for (TreeNode leftNode : leftNodes) {
                 for (TreeNode rightNode : rightNodes) {
                     TreeNode root = new TreeNode(i);
