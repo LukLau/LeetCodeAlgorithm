@@ -2454,75 +2454,50 @@ public class FirstPage {
             return 0;
         }
         int row = matrix.length;
-        int column = matrix[0].length;
-        int[] height = new int[column];
-        int[] left = new int[column];
-        int[] right = new int[column];
-        Arrays.fill(right, column);
-        int result = 0;
-        for (int i = 0; i < row; i++) {
-            int leftEdge = 0;
-            int rightEdge = column;
-            for (int j = 0; j < column; j++) {
-                char word = matrix[i][j];
 
-                if (word == '1') {
+        int column = matrix[0].length;
+
+        int result = 0;
+
+        int[] left = new int[column];
+
+        int[] right = new int[column];
+
+        int[] height = new int[column];
+
+        Arrays.fill(right, column);
+
+        for (int i = 0; i < row; i++) {
+            int leftSide = 0;
+            int rightSide = column;
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '1') {
                     height[j]++;
-                    left[j] = Math.max(left[j], leftEdge);
+                    left[j] = Math.max(left[j], leftSide);
                 } else {
                     height[j] = 0;
-                    leftEdge = j + 1;
+
+                    left[j] = leftSide;
+
+                    leftSide = j + 1;
                 }
             }
             for (int j = column - 1; j >= 0; j--) {
                 if (matrix[i][j] == '1') {
-                    right[j] = Math.min(right[j], rightEdge);
+                    right[j] = Math.min(right[j], rightSide);
                 } else {
                     right[j] = column;
-                    rightEdge = j;
+                    rightSide = j;
                 }
             }
             for (int j = 0; j < column; j++) {
+                if (height[j] == 0) {
+                    continue;
+                }
                 result = Math.max(result, (right[j] - left[j]) * height[j]);
             }
         }
         return result;
-    }
-
-
-    /**
-     * 86. Partition List
-     *
-     * @param head
-     * @param x
-     * @return
-     */
-    public ListNode partition(ListNode head, int x) {
-        if (head == null) {
-            return null;
-        }
-        ListNode slow = new ListNode(0);
-        ListNode dummy1 = slow;
-
-        ListNode fast = new ListNode(0);
-        ListNode dummy2 = fast;
-        while (head != null) {
-            if (head.val <= x) {
-                dummy1.next = head;
-                dummy1 = dummy1.next;
-            } else {
-                dummy2.next = head;
-                dummy2 = dummy2.next;
-            }
-            head = head.next;
-        }
-        dummy2.next = null;
-
-        dummy1.next = fast.next;
-
-        fast.next = null;
-
-        return slow.next;
     }
 
 
@@ -2543,27 +2518,24 @@ public class FirstPage {
         if (m != n) {
             return false;
         }
-        if (s1.equals(s2)) {
-            return true;
-        }
-
         int[] hash = new int[256];
-
         for (int i = 0; i < m; i++) {
             hash[s1.charAt(i) - 'a']++;
             hash[s2.charAt(i) - 'a']--;
         }
-        for (int i = 0; i < hash.length; i++) {
-            if (hash[i] != 0) {
+        for (int num : hash) {
+            if (num != 0) {
                 return false;
             }
+        }
+        if (s1.equals(s2)) {
+            return true;
         }
         for (int i = 1; i < m; i++) {
             if (isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
                 return true;
             }
-            if (isScramble(s1.substring(i), s2.substring(0, m - i))
-                    && isScramble(s1.substring(0, i), s2.substring(m - i))) {
+            if (isScramble(s1.substring(i), s2.substring(0, m - i)) && isScramble(s1.substring(0, i), s2.substring(m - i))) {
                 return true;
             }
         }
@@ -2606,36 +2578,6 @@ public class FirstPage {
         return null;
     }
 
-
-    /**
-     * 90. Subsets II
-     *
-     * @param nums
-     * @return
-     */
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return new ArrayList<>();
-        }
-        List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);
-        intervalSubSets(result, new ArrayList<Integer>(), 0, nums);
-        return result;
-
-    }
-
-    private void intervalSubSets(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int[] nums) {
-        result.add(new ArrayList<>(tmp));
-        for (int i = start; i < nums.length; i++) {
-            if (i > start && nums[i] == nums[i - 1]) {
-                continue;
-            }
-            tmp.add(nums[i]);
-            intervalSubSets(result, tmp, i + 1, nums);
-            tmp.remove(tmp.size() - 1);
-        }
-    }
-
     /**
      * todo
      * 91. Decode Ways
@@ -2668,41 +2610,59 @@ public class FirstPage {
      * @return
      */
     public ListNode reverseBetween(ListNode head, int m, int n) {
-        if (head == null) {
-            return null;
+        if (head == null || head.next == null) {
+            return head;
         }
         ListNode root = new ListNode(0);
 
         root.next = head;
 
-        ListNode fast = root;
-
         ListNode slow = root;
 
-        for (int i = 0; i < n; i++) {
-            fast = fast.next;
-        }
+        ListNode fast = root;
+
         for (int i = 0; i < m - 1; i++) {
             slow = slow.next;
+        }
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
         }
         ListNode start = slow.next;
 
         ListNode end = fast.next;
 
-        ListNode prev = end;
+        fast.next = null;
 
-        while (start != end) {
-            ListNode tmp = start.next;
+        slow.next = reverseNode(start);
 
-            start.next = prev;
-
-            prev = start;
-
-            start = tmp;
-        }
-        slow.next = prev;
+        start.next = end;
 
         return root.next;
+    }
+
+    private ListNode reverseNode(ListNode head) {
+        ListNode prev = null;
+
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = prev;
+            prev = head;
+            head = tmp;
+        }
+        return prev;
+    }
+
+    public ListNode reverseBetweenV2(ListNode head, int m, int n) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        for (int i = 0; i < m -1; i++) {
+
+        }
+        return null;
     }
 
 

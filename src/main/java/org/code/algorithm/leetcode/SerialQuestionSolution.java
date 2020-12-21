@@ -605,25 +605,30 @@ public class SerialQuestionSolution {
         }
     }
 
+    /**
+     * 90. Subsets II
+     * @param nums
+     * @return
+     */
     public List<List<Integer>> subsetsWithDup(int[] nums) {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
-        intervalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
+        Arrays.sort(nums);
+        intervalSubsetsWithDup(result,new ArrayList<>(), 0, nums);
         return result;
     }
 
     private void intervalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
-            if (i > start && nums[i] == nums[i - 1]) {
+            if ( i > start && nums[i] == nums[i-1]) {
                 continue;
             }
             tmp.add(nums[i]);
-            intervalSubsetsWithDup(result, tmp, i + 1, nums);
-            tmp.remove(tmp.size() - 1);
+            intervalSubsetsWithDup(result, tmp, i + 1,nums);
+            tmp.remove(tmp.size()-1);
         }
     }
 
@@ -1135,42 +1140,6 @@ public class SerialQuestionSolution {
         current.next = null;
         return head;
     }
-
-
-    /**
-     * 86. Partition List
-     *
-     * @param head
-     * @param x
-     * @return
-     */
-    public ListNode partition(ListNode head, int x) {
-        if (head == null) {
-            return null;
-        }
-        ListNode smallList = new ListNode(0);
-        ListNode dummy1 = smallList;
-        ListNode bigList = new ListNode(0);
-        ListNode dummy2 = bigList;
-        while (head != null) {
-            if (head.val < x) {
-                dummy1.next = head;
-                dummy1 = dummy1.next;
-            } else {
-                dummy2.next = head;
-                dummy2 = dummy2.next;
-            }
-            head = head.next;
-        }
-        dummy1.next = bigList.next;
-
-        bigList.next = null;
-
-        dummy2.next = null;
-
-        return smallList.next;
-    }
-
 
     /**
      * 92. Reverse Linked List II
