@@ -2806,11 +2806,12 @@ public class FirstPage {
         if (n <= 0) {
             return 0;
         }
-        if (n == 1) {
+        if (n <= 1) {
             return 1;
         }
         int[] dp = new int[n + 1];
-        dp[0] = dp[1] = 1;
+        dp[0] = 1;
+        dp[1] = 1;
         for (int i = 2; i <= n; i++) {
             for (int j = 1; j <= i; j++) {
                 dp[i] += dp[j - 1] * dp[i - j];
@@ -2845,10 +2846,11 @@ public class FirstPage {
         for (int j = 1; j <= n; j++) {
             dp[0][j] = s2.charAt(j - 1) == s3.charAt(j - 1) && dp[0][j - 1];
         }
+
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1))
-                        || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                dp[i][j] = (s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j])
+                        || (s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1]);
             }
         }
         return dp[m][n];
@@ -2893,11 +2895,11 @@ public class FirstPage {
         if (root == null) {
             return;
         }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
         TreeNode first = null;
         TreeNode second = null;
         TreeNode prev = null;
-        TreeNode p = root;
-        Stack<TreeNode> stack = new Stack<>();
         while (!stack.isEmpty() || p != null) {
             while (p != null) {
                 stack.push(p);
@@ -2906,13 +2908,10 @@ public class FirstPage {
             p = stack.pop();
 
             if (prev != null && prev.val >= p.val) {
-
                 if (first == null) {
                     first = prev;
                 }
-                if (first != null) {
-                    second = p;
-                }
+                second = p;
             }
             prev = p;
             p = p.right;
