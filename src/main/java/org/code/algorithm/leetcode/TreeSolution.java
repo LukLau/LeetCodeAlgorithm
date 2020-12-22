@@ -449,10 +449,9 @@ public class TreeSolution {
             return;
         }
         Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
         TreeNode prev = null;
+        stack.push(root);
         while (!stack.isEmpty()) {
-
             TreeNode pop = stack.pop();
             if (pop.right != null) {
                 stack.push(pop.right);
@@ -461,8 +460,8 @@ public class TreeSolution {
                 stack.push(pop.left);
             }
             if (prev != null) {
-                prev.left = null;
                 prev.right = pop;
+                prev.left = null;
             }
             prev = pop;
         }
@@ -481,23 +480,20 @@ public class TreeSolution {
         if (root.left == null) {
             return root;
         }
-        Node currentNode = root;
+        Node traversal = root;
+        while (traversal.left != null) {
+            Node current = traversal;
 
-        while (currentNode.left != null) {
-            Node levelRoot = currentNode.left;
+            Node next = traversal.left;
 
-            while (currentNode != null) {
-                Node leftNode = currentNode.left;
-
-                leftNode.next = currentNode.right;
-
-                if (currentNode.next != null) {
-
-                    leftNode.next.next = currentNode.next.left;
+            while (current != null) {
+                current.left.next = current.right;
+                if (current.next != null) {
+                    current.right.next = current.next.left;
                 }
-                currentNode = currentNode.next;
+                current = current.next;
             }
-            currentNode = levelRoot;
+            traversal = next;
         }
         return root;
     }
@@ -542,6 +538,7 @@ public class TreeSolution {
             prev = null;
         }
         return root;
+
 
     }
 

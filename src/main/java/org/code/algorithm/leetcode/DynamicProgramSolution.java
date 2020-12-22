@@ -57,18 +57,17 @@ public class DynamicProgramSolution {
      */
     public int numDistinct(String s, String t) {
         if (s == null || t == null) {
-            return -1;
+            return 0;
         }
         int m = s.length();
         int n = t.length();
         int[][] dp = new int[m + 1][n + 1];
-
         for (int i = 0; i <= m; i++) {
             dp[i][0] = 1;
         }
-        for (int i = 1; i < m; i++) {
+        for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                dp[i][j] = (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0) + dp[i - 1][j];
+                dp[i][j] = dp[i - 1][j] + (s.charAt(i - 1) == t.charAt(j - 1) ? dp[i - 1][j - 1] : 0);
             }
         }
         return dp[m][n];
@@ -88,18 +87,13 @@ public class DynamicProgramSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-
-
+        List<Integer> tmp = new ArrayList<>();
         for (int i = 0; i < numRows; i++) {
-            List<Integer> tmp = new ArrayList<>();
+            for (int j = i - 1; j >= 1; j--) {
+                int val = result.get(i - 1).get(j - 1) + result.get(i - 1).get(j);
+                tmp.set(j, val);
+            }
             tmp.add(1);
-            for (int j = 1; j <= i - 1; j++) {
-                int value = result.get(i - 1).get(j) + result.get(i - 1).get(j - 1);
-                tmp.add(value);
-            }
-            if (i > 0) {
-                tmp.add(1);
-            }
             result.add(new ArrayList<>(tmp));
         }
         return result;
@@ -115,19 +109,16 @@ public class DynamicProgramSolution {
         if (rowIndex < 0) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>();
-
-        result.add(1);
-
-        for (int i = 1; i <= rowIndex; i++) {
+        List<Integer> result = new ArrayList<>(rowIndex + 1);
+        for (int i = 0; i <= rowIndex; i++) {
 
             for (int j = i - 1; j >= 1; j--) {
                 int val = result.get(j) + result.get(j - 1);
+
                 result.set(j, val);
             }
-            if (i > 0) {
-                result.add(1);
-            }
+
+            result.add(1);
         }
         return result;
     }
