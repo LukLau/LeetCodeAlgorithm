@@ -509,32 +509,36 @@ public class TreeSolution {
         if (root == null) {
             return null;
         }
-        Node currentNode = root;
-        Node levelRoot = null;
-        Node prev = null;
-        while (currentNode != null) {
+        Node traversal = root;
 
-            while (currentNode != null) {
-                if (currentNode.left != null) {
-                    if (levelRoot == null) {
-                        levelRoot = currentNode.left;
+        Node level = null;
+
+        Node prev = null;
+
+        while (traversal != null) {
+            while (traversal != null) {
+                if (traversal.left != null) {
+                    if (level == null) {
+                        level = traversal.left;
                     } else {
-                        prev.next = currentNode.left;
+                        prev.next = traversal.left;
                     }
-                    prev = currentNode.left;
+                    prev = traversal.left;
                 }
-                if (currentNode.right != null) {
-                    if (levelRoot == null) {
-                        levelRoot = currentNode.right;
+                if (traversal.right != null) {
+                    if (level == null) {
+                        level = traversal.right;
                     } else {
-                        prev.next = currentNode.right;
+                        prev.next = traversal.right;
                     }
-                    prev = currentNode.right;
+                    prev = traversal.right;
                 }
-                currentNode = currentNode.next;
+                traversal = traversal.next;
             }
-            currentNode = levelRoot;
-            levelRoot = null;
+            traversal = level;
+
+            level = null;
+
             prev = null;
         }
         return root;

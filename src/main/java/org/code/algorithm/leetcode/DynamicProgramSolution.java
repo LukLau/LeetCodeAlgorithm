@@ -136,21 +136,20 @@ public class DynamicProgramSolution {
         }
         int size = triangle.size();
 
-        List<Integer> result = triangle.get(size - 1);
-
         for (int i = size - 2; i >= 0; i--) {
-            List<Integer> currentRow = triangle.get(i);
 
-            int currentSize = currentRow.size();
+            List<Integer> current = triangle.get(i);
 
-            for (int j = 0; j < currentSize; j++) {
+            int len = current.size();
 
-                int value = Math.min(result.get(j), result.get(j + 1)) + currentRow.get(j);
+            for (int j = 0; j < len; j++) {
 
-                result.set(j, value);
+                int val = Math.min(triangle.get(i + 1).get(j), triangle.get(i + 1).get(j + 1)) + current.get(j);
+
+                current.set(j, val);
             }
         }
-        return result.get(0);
+        return triangle.get(0).get(0);
     }
 
 
@@ -166,18 +165,18 @@ public class DynamicProgramSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int minPrice = Integer.MAX_VALUE;
-
         int result = 0;
+        int cost = prices[0];
 
-        for (int price : prices) {
-            if (price > minPrice) {
-                result = Math.max(result, price - minPrice);
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                result = Math.max(result, prices[i] - cost);
             } else {
-                minPrice = price;
+                cost = prices[i];
             }
         }
         return result;
+
     }
 
 
@@ -191,15 +190,13 @@ public class DynamicProgramSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
+        int cost = prices[0];
         int result = 0;
-
-        int minPrice = Integer.MAX_VALUE;
-
-        for (int price : prices) {
-            if (price > minPrice) {
-                result += price - minPrice;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > cost) {
+                result += prices[i] - cost;
             }
-            minPrice = price;
+            cost = prices[i];
         }
         return result;
     }
@@ -215,38 +212,40 @@ public class DynamicProgramSolution {
         if (prices == null || prices.length == 0) {
             return 0;
         }
-        int[] leftSell = new int[prices.length];
+        int column = prices.length;
 
-        int[] rightSell = new int[prices.length + 1];
-
-        int leftProfit = 0;
+        int[] left = new int[column];
 
         int leftCost = prices[0];
 
-        for (int i = 1; i < prices.length; i++) {
+        int leftProfit = 0;
+
+        for (int i = 1; i < column; i++) {
             if (prices[i] > leftCost) {
                 leftProfit = Math.max(leftProfit, prices[i] - leftCost);
             } else {
                 leftCost = prices[i];
             }
-            leftSell[i] = leftProfit;
+            left[i] = leftProfit;
         }
+
+        int[] right = new int[column + 1];
+
+        int rightCost = prices[column - 1];
+
         int rightProfit = 0;
 
-        int rightCost = prices[prices.length - 1];
-
-        for (int i = prices.length - 2; i >= 0; i--) {
+        for (int i = column - 2; i >= 0; i--) {
             if (prices[i] < rightCost) {
                 rightProfit = Math.max(rightProfit, rightCost - prices[i]);
             } else {
                 rightCost = prices[i];
             }
-            rightSell[i] = rightProfit;
+            right[i] = rightProfit;
         }
         int result = 0;
-
-        for (int i = 1; i < prices.length; i++) {
-            result = Math.max(result, leftSell[i] + rightSell[i + 1]);
+        for (int i = 1; i < column; i++) {
+            result = Math.max(result, left[i] + right[i + 1]);
         }
         return result;
     }
