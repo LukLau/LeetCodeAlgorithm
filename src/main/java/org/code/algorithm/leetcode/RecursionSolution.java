@@ -67,24 +67,21 @@ public class RecursionSolution {
         int column = board[0].length;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                boolean edgeScene = i == 0 || i == row - 1 || j == 0 || j == column - 1;
-                if (edgeScene && board[i][j] == 'O') {
+                boolean edge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
+                if (edge && board[i][j] == 'O') {
                     dfsReplace(i, j, board);
                 }
             }
         }
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j] == 'o') {
+                if (board[i][j] == '0') {
                     board[i][j] = 'O';
                 } else if (board[i][j] == 'O') {
                     board[i][j] = 'X';
                 }
             }
         }
-
-
     }
 
     private void dfsReplace(int i, int j, char[][] board) {
@@ -94,8 +91,7 @@ public class RecursionSolution {
         if (board[i][j] != 'O') {
             return;
         }
-        board[i][j] = 'o';
-
+        board[i][j] = '0';
         dfsReplace(i - 1, j, board);
         dfsReplace(i + 1, j, board);
         dfsReplace(i, j - 1, board);
@@ -142,6 +138,7 @@ public class RecursionSolution {
 
 
     /**
+     * 该题类似于 排列组合
      * todo
      * 131. Palindrome Partitioning
      *
@@ -158,11 +155,12 @@ public class RecursionSolution {
     }
 
     private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
-        if (start == s.length()) {
+        int len = s.length();
+        if (start == len) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < s.length(); i++) {
+        for (int i = start; i < len; i++) {
             if (!partitionValid(s, start, i)) {
                 continue;
             }
@@ -173,15 +171,13 @@ public class RecursionSolution {
     }
 
     private boolean partitionValid(String s, int begin, int end) {
-        if (begin == end) {
-            return true;
+        if (begin > end) {
+            return false;
         }
         while (begin < end) {
-            if (s.charAt(begin) != s.charAt(end)) {
+            if (s.charAt(begin++) != s.charAt(end--)) {
                 return false;
             }
-            begin++;
-            end--;
         }
         return true;
     }

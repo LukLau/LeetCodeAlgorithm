@@ -676,28 +676,37 @@ public class TwoPage {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        HashMap<Integer, Integer> map = new HashMap<>();
         int result = 0;
+
+        Map<Integer, Integer> map = new HashMap<>();
+
         for (int num : nums) {
+
             if (map.containsKey(num)) {
                 continue;
             }
-            Integer leftSide = map.getOrDefault(num - 1, 0);
-            Integer rightSide = map.getOrDefault(num + 1, 0);
+            Integer left = map.getOrDefault(num - 1, 0);
 
-            int tmp = leftSide + rightSide + 1;
+            Integer right = map.getOrDefault(num + 1, 0);
+
+            int tmp = left + right + 1;
 
             result = Math.max(result, tmp);
 
-            map.put(num - leftSide, tmp);
+            map.put(num - left, tmp);
 
-            map.put(num + rightSide, tmp);
+            map.put(num + right, tmp);
 
             map.put(num, tmp);
         }
         return result;
     }
 
+    /**
+     * 129. Sum Root to Leaf Numbers
+     * @param root
+     * @return
+     */
     public int sumNumbers(TreeNode root) {
         if (root == null) {
             return 0;
@@ -707,7 +716,7 @@ public class TwoPage {
 
     private int intervalSumNumbers(int val, TreeNode root) {
         if (root == null) {
-            return 0;
+            return val;
         }
         int tmp = val * 10 + root.val;
         if (root.left == null && root.right == null) {
@@ -835,25 +844,32 @@ public class TwoPage {
     }
 
 
+    /**
+     * 132. Palindrome Partitioning II
+     * @param s
+     * @return
+     */
     public int minCut(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
         }
         int len = s.length();
+
         int[] cut = new int[len];
+
         boolean[][] dp = new boolean[len][len];
-        for (int i = 0; i < len; i++) {
+
+        for (int i = 1; i < len; i++) {
             int minCut = i;
             for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
-                    dp[j][i] = true;
-
-                    minCut = j == 0 ? 0 : Math.min(minCut, cut[j - 1] + 1);
+                dp[j][i] = s.charAt(j) == s.charAt(i)  && ( i - j < 2 || dp[j+1][i-1]);
+                if (dp[j][i]) {
+                    minCut = j == 0 ? 0 : 1 + Math.min(minCut,cut[j-1]  + 1);
                 }
             }
             cut[i] = minCut;
         }
-        return cut[len - 1];
+        return cut[len-1];
     }
 
     /**
@@ -875,24 +891,23 @@ public class TwoPage {
      * @return
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
-        if (gas == null || gas.length == 0 || cost == null || cost.length == 0) {
+        if (gas == null || gas.length == 0) {
             return -1;
         }
-        int globalCost = 0;
-        int localCost = 0;
-        int index = -1;
+        int global = 0;
+        int local = 0;
+        int index = 0;
         for (int i = 0; i < gas.length; i++) {
-            globalCost += gas[i] - cost[i];
+            global += gas[i] - cost[i];
 
-            localCost += gas[i] - cost[i];
+            local += gas[i] - cost[i];
 
-            if (localCost < 0) {
-                index = i;
-                localCost = 0;
+            if (local < 0) {
+                index = i + 1;
+                local = 0;
             }
         }
-
-        return globalCost < 0 ? -1 : index + 1;
+        return global < 0 ? -1 : index;
     }
 
     public int candy(int[] ratings) {
@@ -930,6 +945,7 @@ public class TwoPage {
 
 
     /**
+     * https://leetcode.com/problems/single-number-ii/
      * todo 137. 只出现一次的数字 II
      *
      * @param nums

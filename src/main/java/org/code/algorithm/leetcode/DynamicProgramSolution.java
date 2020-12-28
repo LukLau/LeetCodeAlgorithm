@@ -363,30 +363,25 @@ public class DynamicProgramSolution {
         if (ratings == null || ratings.length == 0) {
             return 0;
         }
-        int n = ratings.length;
-        int[] dp = new int[n];
-
+        int len = ratings.length;
+        int[] dp = new int[len];
         Arrays.fill(dp, 1);
-
-        int result = 0;
-
-        for (int i = 1; i < ratings.length; i++) {
+        for (int i = 1; i < len; i++) {
             if (ratings[i] > ratings[i - 1] && dp[i] < dp[i - 1] + 1) {
                 dp[i] = dp[i - 1] + 1;
             }
         }
-        for (int i = ratings.length - 2; i >= 0; i--) {
-            if (ratings[i] > ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
+        for (int i = len - 2; i >= 0; i--) {
+            if (ratings[i] < ratings[i + 1] && dp[i] < dp[i + 1] + 1) {
                 dp[i] = dp[i + 1] + 1;
             }
         }
+        int result = 0;
+        for (int num : dp) {
 
-
-        for (int cost : dp) {
-            result += cost;
+            result += num;
         }
         return result;
-
     }
 
 
