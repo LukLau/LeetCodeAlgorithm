@@ -607,6 +607,7 @@ public class SerialQuestionSolution {
 
     /**
      * 90. Subsets II
+     *
      * @param nums
      * @return
      */
@@ -616,19 +617,19 @@ public class SerialQuestionSolution {
         }
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
-        intervalSubsetsWithDup(result,new ArrayList<>(), 0, nums);
+        intervalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
         return result;
     }
 
     private void intervalSubsetsWithDup(List<List<Integer>> result, List<Integer> tmp, int start, int[] nums) {
         result.add(new ArrayList<>(tmp));
         for (int i = start; i < nums.length; i++) {
-            if ( i > start && nums[i] == nums[i-1]) {
+            if (i > start && nums[i] == nums[i - 1]) {
                 continue;
             }
             tmp.add(nums[i]);
-            intervalSubsetsWithDup(result, tmp, i + 1,nums);
-            tmp.remove(tmp.size()-1);
+            intervalSubsetsWithDup(result, tmp, i + 1, nums);
+            tmp.remove(tmp.size() - 1);
         }
     }
 
@@ -1771,7 +1772,7 @@ public class SerialQuestionSolution {
                     fast = fast.next;
                     slow = slow.next;
                 }
-                return fast;
+                return slow;
             }
         }
         return null;
@@ -1793,18 +1794,17 @@ public class SerialQuestionSolution {
             slow = slow.next;
             fast = fast.next.next;
         }
-        ListNode split = slow.next;
+
+        ListNode reverseList = reverseList(slow.next);
 
         slow.next = null;
-
-        ListNode reverseList = reverseList(split);
 
         slow = head;
 
         while (slow != null && reverseList != null) {
             ListNode tmp = slow.next;
 
-            ListNode reverseNext = reverseList.next;
+            ListNode reverseListTmp = reverseList.next;
 
             slow.next = reverseList;
 
@@ -1812,9 +1812,8 @@ public class SerialQuestionSolution {
 
             slow = tmp;
 
-            reverseList = reverseNext;
+            reverseList = reverseListTmp;
         }
-
     }
 
     private ListNode reverseList(ListNode head) {

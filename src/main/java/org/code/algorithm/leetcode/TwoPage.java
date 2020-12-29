@@ -20,31 +20,10 @@ public class TwoPage {
 
         String[] tokens = new String[]{"4", "3", "-"};
 
+        String s = "pineapplepenapple";
 
-//        String s = "catsanddog";
-//
-//        ListNode head = new ListNode(1);
-//
-//        ListNode two = new ListNode(2);
-//
-//        head.next = two;
-//
-//        ListNode three = new ListNode(3);
-//
-//        two.next = three;
-//
-//        three.next = new ListNode(4);
-//
-//        three.next.next = new ListNode(5);
-
-//        List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
-//        page.wordBreakV2(s, wordDict);
-
-//        page.reorderList(head);
-//        String word = "the sky is blue";
-//        page.reverseWords(word.toCharArray());
-
-        int[] nums = new int[]{1, 2, 3, 1};
+        List<String> words = Arrays.asList("apple", "pen", "applepen", "pine", "pineapple");
+        page.wordBreakV2(s, words);
     }
 
     /**
@@ -704,6 +683,7 @@ public class TwoPage {
 
     /**
      * 129. Sum Root to Leaf Numbers
+     *
      * @param root
      * @return
      */
@@ -846,6 +826,7 @@ public class TwoPage {
 
     /**
      * 132. Palindrome Partitioning II
+     *
      * @param s
      * @return
      */
@@ -862,14 +843,14 @@ public class TwoPage {
         for (int i = 1; i < len; i++) {
             int minCut = i;
             for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i)  && ( i - j < 2 || dp[j+1][i-1]);
+                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
                 if (dp[j][i]) {
-                    minCut = j == 0 ? 0 : 1 + Math.min(minCut,cut[j-1]  + 1);
+                    minCut = j == 0 ? 0 : 1 + Math.min(minCut, cut[j - 1] + 1);
                 }
             }
             cut[i] = minCut;
         }
-        return cut[len-1];
+        return cut[len - 1];
     }
 
     /**
@@ -957,95 +938,106 @@ public class TwoPage {
     }
 
 
+    /**
+     * 138 Copy List with Random Pointer
+     *
+     * @param head
+     * @return
+     */
     public Node copyRandomList(Node head) {
         if (head == null) {
             return null;
         }
+        Node current = head;
 
-        Node currentNode = head;
-        while (currentNode != null) {
-            Node tmp = new Node(currentNode.val);
-            if (currentNode.next != null) {
-                tmp.next = currentNode.next;
-            }
-            currentNode.next = tmp;
-            currentNode = tmp.next;
-        }
-        currentNode = head;
-        while (currentNode != null) {
-            Node tmp = currentNode.next;
-            if (currentNode.random != null) {
-                tmp.random = currentNode.random.next;
-            }
-            currentNode = tmp.next;
-        }
-        currentNode = head;
+        while (current != null) {
 
-        Node randomHead = head.next;
-        while (currentNode.next != null) {
-            Node tmp = currentNode.next;
-            currentNode.next = tmp.next;
-            currentNode = tmp;
+            Node node = new Node(current.val);
+
+            node.next = current.next;
+
+            current.next = node;
+
+            current = node.next;
         }
-        return randomHead;
+        current = head;
+        while (current != null) {
+            Node tmp = current.next;
+            if (current.random != null) {
+                tmp.random = current.random.next;
+            }
+            current = tmp.next;
+        }
+        current = head;
+        Node copyHead = head.next;
+        while (current.next != null) {
+            Node next = current.next;
+            current.next = next.next;
+            current = next;
+        }
+        return copyHead;
     }
 
 
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
-            return true;
+        if (s == null || wordDict == null || wordDict.isEmpty()) {
+            return false;
         }
-        HashMap<String, Boolean> map = new HashMap<>();
+        Map<String, Boolean> map = new HashMap<>();
         return intervalWordBreak(map, s, wordDict);
     }
 
-    private boolean intervalWordBreak(HashMap<String, Boolean> map, String s, List<String> wordDict) {
-        if (s.isEmpty()) {
-            return true;
-        }
+    public boolean intervalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
         if (map.containsKey(s)) {
             return map.get(s);
         }
-        for (String dict : wordDict) {
-            int index = s.indexOf(dict);
-            if (index != 0) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        for (String word : wordDict) {
+
+            if (!s.startsWith(word)) {
                 continue;
             }
-            String substring = s.substring(dict.length());
-            if (intervalWordBreak(map, substring, wordDict)) {
-                map.put(s, true);
+            String tmp = s.substring(word.length());
+            if (intervalWordBreak(map, tmp, wordDict)) {
                 return true;
             }
+            map.put(tmp, false);
         }
-        map.put(s, false);
         return false;
     }
 
 
     public List<String> wordBreakV2(String s, List<String> wordDict) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
             return new ArrayList<>();
         }
-        HashMap<String, List<String>> map = new HashMap<>();
-        return intervalWordBreakV2(map, s, wordDict);
+        return intervalWordBreakV2(new HashMap<>(), s, wordDict);
     }
 
-    private List<String> intervalWordBreakV2(HashMap<String, List<String>> map, String s, List<String> wordDict) {
+    private List<String> intervalWordBreakV2(Map<String, List<String>> map, String s, List<String> wordDict) {
         if (map.containsKey(s)) {
             return map.get(s);
         }
-        if (s.isEmpty()) {
-            return Arrays.asList("");
-        }
         List<String> result = new ArrayList<>();
+        if (s.isEmpty()) {
+            result.add(s);
+            return result;
+        }
         for (String word : wordDict) {
             int index = s.indexOf(word);
             if (index != 0) {
                 continue;
             }
-            List<String> tmp = intervalWordBreakV2(map, s.substring(word.length()), wordDict);
-            for (String t : tmp) {
-                result.add(word + (t.isEmpty() ? "" : " ") + t);
+            String tmp = s.substring(word.length());
+
+            List<String> items = intervalWordBreakV2(map, tmp, wordDict);
+
+            if (!items.isEmpty()) {
+                for (String item : items) {
+                    result.add(word + (item.isEmpty() ? "" : " " + item));
+                }
             }
         }
         map.put(s, result);

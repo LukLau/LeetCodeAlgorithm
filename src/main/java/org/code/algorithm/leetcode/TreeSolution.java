@@ -58,21 +58,22 @@ public class TreeSolution {
      * @param root
      * @return
      */
-    public List<Integer> inorderTraversal(TreeNode root) {
+    public List<Integer> inorderTraversal(TreeNode root){
         if (root == null) {
             return new ArrayList<>();
         }
-        List<Integer> result = new ArrayList<>();
+        LinkedList<Integer> result = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
-            while (p != null) {
+            if ( p != null) {
+                result.addFirst(p.val);
                 stack.push(p);
+                p = p.right;
+            } else {
+                p = stack.pop();
                 p = p.left;
             }
-            p = stack.pop();
-            result.add(p.val);
-            p = p.right;
         }
         return result;
     }
