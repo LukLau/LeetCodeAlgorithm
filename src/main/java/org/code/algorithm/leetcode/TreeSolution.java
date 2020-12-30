@@ -58,7 +58,7 @@ public class TreeSolution {
      * @param root
      * @return
      */
-    public List<Integer> inorderTraversal(TreeNode root){
+    public List<Integer> inorderTraversal(TreeNode root) {
         if (root == null) {
             return new ArrayList<>();
         }
@@ -66,7 +66,7 @@ public class TreeSolution {
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
         while (!stack.isEmpty() || p != null) {
-            if ( p != null) {
+            if (p != null) {
                 result.addFirst(p.val);
                 stack.push(p);
                 p = p.right;
@@ -559,19 +559,19 @@ public class TreeSolution {
         if (root == null || root.left == null) {
             return root;
         }
-        TreeNode leftNode = root.left;
+        TreeNode left = root.left;
 
-        TreeNode newRoot = upsideDownBinaryTree(root.left);
+        TreeNode node = upsideDownBinaryTree(left);
 
-        leftNode.left = root.right;
+        left.left = root.right;
 
-        leftNode.right = root;
+        left.right = root;
 
         root.left = null;
 
         root.right = null;
 
-        return newRoot;
+        return node;
     }
 
     public TreeNode upsideDownBinaryTreeV2(TreeNode root) {
@@ -580,28 +580,25 @@ public class TreeSolution {
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode p = root;
-        while (p != null) {
-            stack.push(p);
+        while (p.left != null) {
+            stack.push(p.left);
             p = p.left;
         }
-        TreeNode newRoot = stack.peek();
-
+        TreeNode newHead = stack.peek();
         while (!stack.isEmpty()) {
-            TreeNode popNode = stack.pop();
-
-            TreeNode peekNode = stack.isEmpty() ? null : stack.peek();
-
-            if (peekNode != null) {
-                popNode.left = peekNode.right;
-
-                popNode.right = peekNode;
-
-                peekNode.left = null;
-
-                peekNode.right = null;
+            TreeNode pop = stack.pop();
+            if (!stack.isEmpty()) {
+                TreeNode peek = stack.peek();
+                pop.left = peek.right;
+                pop.right = peek;
+            } else {
+                pop.left = root.right;
+                pop.right = root;
+                root.left = null;
+                root.right = null;
             }
         }
-        return newRoot;
+        return newHead;
     }
 
     public TreeNode invertTree(TreeNode root) {

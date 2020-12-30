@@ -131,40 +131,36 @@ public class TwoPageVip {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        HashMap<Character, Integer> map = new HashMap<>();
-
-        int left = 0;
-
+        Map<Character, Integer> map = new HashMap<>();
         int result = 0;
+        int left = 0;
+        char[] words = s.toCharArray();
 
-        int length = s.length();
+        for (int i = 0; i < words.length; i++) {
+            char word = words[i];
 
-        for (int i = 0; i < length; i++) {
-            char word = s.charAt(i);
+            Integer num = map.getOrDefault(word, 0);
 
-            Integer number = map.getOrDefault(word, 0);
-
-            number++;
-
-            map.put(word, number);
+            map.put(word, num + 1);
 
             while (map.size() > 2) {
 
-                char leftWord = s.charAt(left);
+                result = Math.max(result, i - left);
+                for (int j = 0; j < i; j++) {
+                    char leftWord = words[j];
+                    Integer leftNum = map.get(leftWord);
+                    leftNum--;
 
-                Integer leftWordNum = map.get(leftWord);
-
-                leftWordNum--;
-
-                map.put(leftWord, leftWordNum);
-
-                if (leftWordNum == 0) {
-                    map.remove(leftWord);
+                    if (leftNum == 0) {
+                        map.remove(leftWord);
+                        left = i;
+                        break;
+                    }
                 }
-                left++;
             }
-
-            result = Math.max(result, i - left + 1);
+        }
+        if (map.size() == 1) {
+            return words.length;
         }
         return result;
     }

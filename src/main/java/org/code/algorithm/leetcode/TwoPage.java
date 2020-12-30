@@ -1321,54 +1321,26 @@ public class TwoPage {
         if (nums == null || nums.length == 0) {
             return 0;
         }
+        int max = nums[0];
+        int min = nums[0];
         int result = nums[0];
-        int minValue = nums[0];
-        int maxValue = nums[0];
-
         for (int i = 1; i < nums.length; i++) {
-            int tmpMax = Math.max(Math.max(maxValue * nums[i], minValue * nums[i]), nums[i]);
+            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
 
-            int tmpMin = Math.min(Math.min(maxValue * nums[i], minValue * nums[i]), nums[i]);
+            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
 
             result = Math.max(result, tmpMax);
 
-            maxValue = tmpMax;
+            max = tmpMax;
 
-            minValue = tmpMin;
+            min = tmpMin;
+
         }
         return result;
-
     }
 
 
     public int findMin(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return Integer.MAX_VALUE;
-        }
-        int left = 0;
-
-        int right = nums.length - 1;
-        while (left < right) {
-            if (nums[left] < nums[right]) {
-                return nums[left];
-            }
-            int mid = left + (right - left) / 2;
-
-
-            if (nums[left] <= nums[mid]) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        return nums[left];
-    }
-
-
-    public int findMinV2(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return Integer.MAX_VALUE;
-        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -1378,7 +1350,6 @@ public class TwoPage {
                 right = mid;
             } else {
                 left = mid + 1;
-
             }
         }
         return nums[left];

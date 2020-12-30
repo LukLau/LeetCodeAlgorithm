@@ -6,6 +6,7 @@ import org.code.algorithm.datastructe.Trie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -273,20 +274,22 @@ public class RecursionSolution {
             return head;
         }
         ListNode slow = head;
+
         ListNode fast = head;
+
         while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
             fast = fast.next.next;
+            slow = slow.next;
         }
-        ListNode fastHead = slow.next;
+        ListNode split = slow.next;
 
         slow.next = null;
 
-        ListNode sortList1 = sortList(head);
+        ListNode list1 = sortList(head);
+        ListNode list2 = sortList(split);
 
-        ListNode sortList2 = sortList(fastHead);
+        return mergeList(list1, list2);
 
-        return mergeList(sortList1, sortList2);
     }
 
     private ListNode mergeList(ListNode node1, ListNode node2) {
@@ -312,7 +315,6 @@ public class RecursionSolution {
     // --波兰数系列- //
 
     /**
-     * todo
      * 150. Evaluate Reverse Polish Notation
      *
      * @param tokens
@@ -322,11 +324,35 @@ public class RecursionSolution {
         if (tokens == null || tokens.length == 0) {
             return 0;
         }
-        List<Integer> signIndex = new ArrayList<>();
+        Stack<Integer> stack = new Stack<>();
         for (String token : tokens) {
+            if ("+".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(first + second);
+            } else if ("-".equals(token)) {
+                Integer first = stack.pop();
+                Integer second = stack.pop();
+                stack.push(second - first);
+            } else if ("*".equals(token)) {
+                Integer first = stack.pop();
 
+                Integer second = stack.pop();
+
+                stack.push(first * second);
+            } else if ("/".equals(token)) {
+
+                Integer first = stack.pop();
+
+                Integer second = stack.pop();
+
+                stack.push(second / first);
+
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
         }
-        return -1;
+        return stack.pop();
     }
 
 

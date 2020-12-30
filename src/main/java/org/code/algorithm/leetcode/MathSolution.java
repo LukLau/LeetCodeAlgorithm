@@ -97,49 +97,48 @@ public class MathSolution {
         if (points == null || points.length == 0) {
             return 0;
         }
-
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            HashMap<Integer, Map<Integer, Integer>> map = new HashMap<>();
-            int repeatPoint = 0;
-            int distinctPoint = 0;
+            int overlap = 0;
+            int num = 0;
+            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
 
                 if (x == 0 && y == 0) {
-                    repeatPoint++;
+                    overlap++;
                     continue;
                 }
                 int gcd = gcd(x, y);
-                x /= gcd;
-                y /= gcd;
-                if (map.containsKey(x)) {
-                    Map<Integer, Integer> vertical = map.get(x);
 
-                    if (vertical.containsKey(y)) {
-                        Integer point = vertical.get(y);
-                        vertical.put(y, point + 1);
-                    } else {
-                        vertical.put(y, 1);
-                    }
+                x /= gcd;
+
+                y /= gcd;
+
+                if (!map.containsKey(x)) {
+                    Map<Integer, Integer> tmp = new HashMap<>();
+                    tmp.put(y, 1);
+                    map.put(x, tmp);
                 } else {
-                    Map<Integer, Integer> vertical = new HashMap<>();
-                    vertical.put(y, 1);
-                    map.put(x, vertical);
+                    Map<Integer, Integer> tmp = map.get(x);
+
+                    Integer count = tmp.getOrDefault(y, 0);
+
+                    tmp.put(y, count + 1);
                 }
-                distinctPoint = Math.max(distinctPoint, map.get(x).get(y));
+                num = Math.max(num, map.get(x).get(y));
             }
-            result = Math.max(result, distinctPoint + repeatPoint + 1);
+            result = Math.max(result, overlap + num + 1);
         }
         return result;
     }
 
-    private int gcd(int x, int y) {
-        if (y == 0) {
-            return x;
+    private int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
         }
-        return gcd(y, x % y);
+        return gcd(b, a % b);
     }
 
     /**
