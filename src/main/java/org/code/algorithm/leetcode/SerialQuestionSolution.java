@@ -173,9 +173,6 @@ public class SerialQuestionSolution {
      * @return
      */
     public int findPeakElement(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -186,7 +183,7 @@ public class SerialQuestionSolution {
                 right = mid;
             }
         }
-        return left;
+        return nums[left];
     }
 
     /**

@@ -222,12 +222,10 @@ public class MathSolution {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-
         for (int num : nums) {
-            if (num > lower) {
-                String range = constructRange(lower, num - 1);
-
-                result.add(range);
+            if (num > lower && num != lower + 1) {
+                String tmp = constructRange(lower + 1, num - 1);
+                result.add(tmp);
             }
             if (num == upper) {
                 return result;
@@ -235,14 +233,13 @@ public class MathSolution {
             lower = num + 1;
         }
         if (lower <= upper) {
-            String word = constructRange(lower, upper);
-            result.add(word);
+            result.add(constructRange(lower + 1, upper));
         }
         return result;
     }
 
     private String constructRange(int start, int end) {
-        return start == end ? start + "" : start + "->" + end;
+        return start == end ? String.valueOf(start) : start + "->" + end;
     }
 
 
@@ -263,6 +260,7 @@ public class MathSolution {
             } else {
                 count--;
             }
+
             if (count == 0) {
                 candidate = num;
                 count = 1;
