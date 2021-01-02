@@ -1412,20 +1412,6 @@ public class TwoPage {
     }
 
 
-    public int hammingWeight(int n) {
-        if (n <= 0) {
-            return 0;
-        }
-        int count = 0;
-        while (n != 0) {
-            count++;
-            n = n & (n - 1);
-        }
-        return count;
-
-    }
-
-
     public int trailingZeroes(int n) {
         int count = 0;
         while (n / 5 != 0) {
@@ -1592,15 +1578,21 @@ public class TwoPage {
     }
 
 
+    /**
+     * 189. Rotate Array
+     *
+     * @param nums
+     * @param k
+     */
     public void rotate(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
             return;
         }
         k %= nums.length;
-        k = nums.length - k;
-        swapArray(nums, 0, k - 1);
-        swapArray(nums, k, nums.length - 1);
+        k--;
         swapArray(nums, 0, nums.length - 1);
+        swapArray(nums, 0, k);
+        swapArray(nums, k + 1, nums.length - 1);
     }
 
     private void swapArray(int[] nums, int start, int end) {
@@ -1623,7 +1615,18 @@ public class TwoPage {
      * @return
      */
     public int reverseBits(int n) {
-        return -1;
+        int result = 0;
+
+        for (int i = 0; i < 32; i++) {
+            result += n & 1;
+
+            n >>= 1;
+
+            if (i < 31) {
+                result <<= 1;
+            }
+        }
+        return result;
     }
 
     /**
@@ -1679,22 +1682,17 @@ public class TwoPage {
         }
         List<Integer> result = new ArrayList<>();
         LinkedList<TreeNode> linkedList = new LinkedList<>();
-
         linkedList.add(root);
-
         while (!linkedList.isEmpty()) {
-
             int size = linkedList.size();
-
             for (int i = 0; i < size; i++) {
-
-                TreeNode node = linkedList.pollFirst();
+                TreeNode node = linkedList.poll();
 
                 if (node.left != null) {
-                    linkedList.add(node.left);
+                    linkedList.offer(node.left);
                 }
                 if (node.right != null) {
-                    linkedList.add(node.right);
+                    linkedList.offer(node.right);
                 }
                 if (i == size - 1) {
                     result.add(node.val);
@@ -1702,7 +1700,6 @@ public class TwoPage {
             }
         }
         return result;
-
     }
 
 
@@ -1718,15 +1715,15 @@ public class TwoPage {
                 if (grid[i][j] == '1') {
                     intervalIslands(i, j, grid);
                     count++;
+
                 }
             }
         }
         return count;
-
     }
 
     private void intervalIslands(int i, int j, char[][] grid) {
-        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length) {
             return;
         }
         if (grid[i][j] != '1') {

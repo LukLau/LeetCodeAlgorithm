@@ -19,7 +19,9 @@ public class ThreePage {
         int[] sort = new int[]{3, 5, 2, 1, 6, 4};
 
         int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
-        page.generatePossibleNextMoves("++++");
+
+        int[] largest = new int[]{3, 2, 1, 5, 6, 4};
+        System.out.println(page.findKthLargestV2(largest, 2));
     }
 
 
@@ -28,31 +30,31 @@ public class ThreePage {
             return null;
         }
         if (head.val == val) {
-            while (head != null && head.val == val) {
-                head = head.next;
-            }
-            return removeElements(head, val);
+            return removeElements(head.next, val);
         }
         head.next = removeElements(head.next, val);
-
         return head;
     }
 
 
+    /**
+     * 204. Count Primes
+     *
+     * @param n
+     * @return
+     */
     public int countPrimes(int n) {
-
-        if (n <= 1) {
-            return 0;
-        }
-        for (int i = 2; i <= n; i++) {
-            for (int j = 2; j < i; j++) {
-
-            }
-        }
         return -1;
     }
 
 
+    /**
+     * 205. Isomorphic Strings
+     *
+     * @param s
+     * @param t
+     * @return
+     */
     public boolean isIsomorphic(String s, String t) {
         if (s == null || t == null) {
             return false;
@@ -62,25 +64,21 @@ public class ThreePage {
         }
         int m = s.length();
         int n = t.length();
-
         if (m != n) {
             return false;
         }
         int[] hash1 = new int[256];
         int[] hash2 = new int[256];
         for (int i = 0; i < m; i++) {
-            int index1 = s.charAt(i);
-
-            int index2 = t.charAt(i);
-
-            if (hash1[index1] != hash2[index2]) {
+            if (hash1[s.charAt(i)] != hash2[t.charAt(i)]) {
                 return false;
             }
-            hash1[index1] = i + 1;
+            hash1[s.charAt(i)] = i + 1;
 
-            hash2[index2] = i + 1;
+            hash2[t.charAt(i)] = i + 1;
         }
         return true;
+
     }
 
     /**
@@ -125,10 +123,31 @@ public class ThreePage {
     }
 
 
+    /**
+     * 215. Kth Largest Element in an Array
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
     public int findKthLargest(int[] nums, int k) {
         Arrays.sort(nums);
-        int kthLargestIndex = nums.length - k;
-        return nums[kthLargestIndex];
+        return nums[nums.length - k];
+    }
+
+    public int findKthLargestV2(int[] nums, int k) {
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k);
+        for (int num : nums) {
+            if (priorityQueue.size() == k && priorityQueue.peek() <= num) {
+                priorityQueue.poll();
+            }
+            if (priorityQueue.size() != k) {
+                priorityQueue.offer(num);
+            }
+        }
+        ArrayList<Integer> integers = new ArrayList<>(priorityQueue);
+        return integers.get(0);
+
     }
 
 
@@ -139,8 +158,17 @@ public class ThreePage {
      * @return
      */
     public boolean containsDuplicate(int[] nums) {
-        int[] distinctNums = Arrays.stream(nums).distinct().toArray();
-        return nums.length != distinctNums.length;
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                return false;
+            }
+            map.put(num, 1);
+        }
+        return false;
     }
 
 
@@ -158,28 +186,25 @@ public class ThreePage {
 
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         Map<Integer, List<Integer>> map = new HashMap<>();
-
-
         for (int i = 0; i < nums.length; i++) {
-            int val = nums[i];
-            List<Integer> indexList = map.getOrDefault(val, new ArrayList<>());
-            for (int j = indexList.size() - 1; j >= 0; j--) {
-                int diff = i - indexList.get(j);
 
-                if (diff <= k) {
+            int val = nums[i];
+
+            List<Integer> tmp = map.getOrDefault(val, new ArrayList<>());
+            for (Integer j : tmp) {
+                if (i - j <= k) {
                     return true;
                 }
             }
-            indexList.add(i);
-
-            map.put(val, indexList);
+            tmp.add(i);
+            map.put(val, tmp);
         }
         return false;
     }
 
 
     /**
-     * todo time exceed limit
+     * todo time exceed limit need bucket sort
      * 220. Contains Duplicate III
      *
      * @param nums
@@ -189,10 +214,12 @@ public class ThreePage {
      */
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
         for (int i = 0; i < nums.length; i++) {
-            for (int j = i - 1; j >= 0 && j >= i - k; j--) {
-                long diff = Math.abs((long) nums[i] - (long) nums[j]);
-                if (diff <= t) {
-                    return true;
+            for (int j = i - 1; j >= 0; j--) {
+                if (Math.abs(i - j) <= k) {
+                    long diff = (long) nums[i] - (long) nums[j];
+                    if (Math.abs(diff) <= t) {
+                        return true;
+                    }
                 }
             }
         }
@@ -211,33 +238,38 @@ public class ThreePage {
             return 0;
         }
         int row = matrix.length;
-
         int column = matrix[0].length;
-
         int[][] dp = new int[row][column];
         int result = 0;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                char word = matrix[i][j];
-                if (word == '0') {
-                    continue;
-                }
-                if (i == 0) {
-                    dp[i][j] = 1;
-                } else if (j == 0) {
-                    dp[i][j] = 1;
-                } else {
-                    int width = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
+                if (matrix[i][j] == '1') {
+                    if (i == 0) {
+                        dp[0][j] = 1;
 
-                    dp[i][j] = width;
+
+                    } else if (j == 0) {
+                        dp[i][0] = 1;
+                    } else {
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    }
                 }
-                result = Math.max(result, dp[i][j] * dp[i][j]);
+            }
+            for (int j = 0; j < column; j++) {
+                if (matrix[i][j] == '1') {
+                    result = Math.max(result, dp[i][j] * dp[i][j]);
+                }
             }
         }
         return result;
-
     }
 
+    /**
+     * 222. Count Complete Tree Nodes
+     *
+     * @param root
+     * @return
+     */
     public int countNodes(TreeNode root) {
         if (root == null) {
             return 0;
@@ -260,6 +292,8 @@ public class ThreePage {
      * @return
      */
     public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+
+        int areaA = (C - A) * (D - B);
         return -1;
     }
 

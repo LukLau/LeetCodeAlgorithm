@@ -452,14 +452,18 @@ public class DynamicProgramSolution {
      * @return
      */
     public int rob(int[] nums) {
-        int robPre = 0;
         int robCurrent = 0;
+
+        int robPrevious = 0;
+
         for (int num : nums) {
-            int tmp = robPre;
-            robPre = Math.max(robCurrent, robPre);
-            robCurrent = tmp + num;
+            int tmp = robCurrent;
+
+            robCurrent = Math.max(robCurrent, robPrevious + num);
+
+            robPrevious = tmp;
         }
-        return Math.max(robPre, robCurrent);
+        return Math.max(robPrevious, robCurrent);
     }
 
 
@@ -486,10 +490,9 @@ public class DynamicProgramSolution {
         int robPre = 0;
         int robCurrent = 0;
         for (int i = start; i <= end; i++) {
-            int tmp = robPre;
-            robPre = Math.max(robCurrent, robPre);
-
-            robCurrent = tmp + nums[i];
+            int tmp = robCurrent;
+            robCurrent = Math.max(robCurrent, robPre + nums[i]);
+            robPre = tmp;
         }
         return Math.max(robPre, robCurrent);
     }

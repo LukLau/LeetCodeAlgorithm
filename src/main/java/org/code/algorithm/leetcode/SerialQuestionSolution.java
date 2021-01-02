@@ -638,24 +638,19 @@ public class SerialQuestionSolution {
      * @return
      */
     public List<List<Integer>> combinationSum3(int k, int n) {
-        if (k <= 0 || n <= 0) {
-            return new ArrayList<>();
-        }
         List<List<Integer>> result = new ArrayList<>();
-        intervalCombinationSum3(result, new ArrayList<Integer>(), 1, k, n);
+        intervalCombinationSum3(result, new ArrayList<>(), 1, k, n);
         return result;
-
     }
 
     private void intervalCombinationSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int value) {
         if (tmp.size() == k && value == 0) {
             result.add(new ArrayList<>(tmp));
+            return;
         }
         for (int i = start; i <= 9 && i <= value; i++) {
             tmp.add(i);
-            if (tmp.size() <= k) {
-                intervalCombinationSum3(result, tmp, i + 1, k, value - i);
-            }
+            intervalCombinationSum3(result, tmp, i + 1, k, value - i);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -824,23 +819,6 @@ public class SerialQuestionSolution {
         return step;
     }
 
-
-    public void rotate(int[][] matrix) {
-        if (matrix == null || matrix.length == 0) {
-            return;
-        }
-        int row = matrix.length;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < i; j++) {
-                swapMatrix(matrix, i, j);
-            }
-        }
-        for (int[] ints : matrix) {
-            for (int j = 0; j <= (ints.length - 1) / 2; j++) {
-                swap(ints, j, (ints.length - 1) - j);
-            }
-        }
-    }
 
     private void swapMatrix(int[][] matrix, int i, int j) {
         int val = matrix[i][j];
@@ -1870,26 +1848,23 @@ public class SerialQuestionSolution {
      * @return
      */
     public int calculate(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
-        s = s.trim();
-        if (s.isEmpty()) {
-            return 0;
-        }
-        int sign = 1;
         int result = 0;
-        int endIndex = 0;
+        int sign = 1;
+        char[] words = s.toCharArray();
         Stack<Integer> stack = new Stack<>();
-        int len = s.length();
-        while (endIndex < len) {
-            char word = s.charAt(endIndex);
+        int end = 0;
+        while (end < words.length) {
+            char word = words[end];
             if (Character.isDigit(word)) {
                 int tmp = 0;
-                while (endIndex < len && Character.isDigit(s.charAt(endIndex))) {
-                    tmp = tmp * 10 + Character.getNumericValue(s.charAt(endIndex++));
+                while (end < words.length && Character.isDigit(words[end])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[end]);
+                    end++;
                 }
-                result += tmp * sign;
+                result += sign * tmp;
             } else {
                 if (word == '+') {
                     sign = 1;
@@ -1898,12 +1873,11 @@ public class SerialQuestionSolution {
                 } else if (word == '(') {
                     stack.push(result);
                     stack.push(sign);
-                    sign = 1;
                     result = 0;
+                    sign = 1;
                 } else if (word == ')') {
                     result = stack.pop() * result + stack.pop();
                 }
-                endIndex++;
             }
         }
         return result;
@@ -1918,46 +1892,13 @@ public class SerialQuestionSolution {
      * @return
      */
     public int calculateII(String s) {
-        if (s == null) {
-            return 0;
-        }
-        s = s.trim();
-        if (s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-
-        char sign = '+';
-
-        int len = s.length();
-
-        int tmp = 0;
-        for (int i = 0; i < len; i++) {
-            char word = s.charAt(i);
-            if (Character.isDigit(word)) {
-                tmp = tmp * 10 + Character.getNumericValue(s.charAt(i));
-            }
-            if (i == s.length() - 1 || (!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ')) {
-                if (sign == '+') {
-                    stack.push(tmp);
-                } else if (sign == '-') {
-                    stack.push(-tmp);
-                } else if (sign == '*') {
-                    stack.push(stack.pop() * tmp);
-                } else if (sign == '/') {
-                    stack.push(stack.pop() / tmp);
-                }
-                sign = s.charAt(i);
-                tmp = 0;
-            }
-        }
-
-        int result = 0;
-
-        for (Integer integer : stack) {
-            result += integer;
-        }
-        return result;
+        int sign = 1;
+        char[] words = s.toCharArray();
+        return -1;
     }
 
     // --- 单词最短距离系列 ---//

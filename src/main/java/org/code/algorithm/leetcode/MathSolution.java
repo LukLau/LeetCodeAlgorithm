@@ -430,26 +430,24 @@ public class MathSolution {
      */
     public boolean isHappy(int n) {
         Set<Integer> repeat = new HashSet<>();
+
         while (n != 1) {
+
             int tmp = n;
-            int value = 0;
+
+            int val = 0;
 
             while (tmp != 0) {
-                int remain = tmp % 10;
+                int num = tmp % 10;
+                val += num * num;
 
-                value += remain * remain;
-
-                tmp /= 10;
+                tmp = tmp / 10;
             }
-            if (value == 1) {
-                return true;
-            }
-
-            if (repeat.contains(value)) {
+            if (repeat.contains(val)) {
                 return false;
             }
-            repeat.add(value);
-            n = value;
+            repeat.add(val);
+            n = val;
         }
         return true;
     }

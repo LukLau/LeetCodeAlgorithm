@@ -431,33 +431,34 @@ public class RecursionSolution {
      * @return
      */
     public List<String> findWords(char[][] board, String[] words) {
-        if (board == null || board.length == 0) {
+        if (board == null || board.length == 0 || words == null) {
             return new ArrayList<>();
-        }
-        List<String> result = new ArrayList<>();
-        Trie trie = new Trie();
-        for (String word : words) {
-            trie.insert(word);
         }
         int row = board.length;
         int column = board[0].length;
         boolean[][] used = new boolean[row][column];
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                String prefixWord = String.valueOf(board[i][j]);
-                if (trie.startsWith(prefixWord)) {
+                if (trie.startsWith(String.valueOf(board[i][j]))) {
                     intervalFindWords(result, trie, used, i, j, board, "");
                 }
             }
         }
-        return result.stream().distinct().collect(Collectors.toList());
+        result = result.stream().distinct().collect(Collectors.toList());
+        return result;
     }
 
     private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, int i, int j, char[][] board, String prefixWord) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || used[i][j]) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[j].length || used[i][j]) {
             return;
         }
         prefixWord += board[i][j];
+
         if (!trie.startsWith(prefixWord)) {
             return;
         }
@@ -465,18 +466,11 @@ public class RecursionSolution {
             result.add(prefixWord);
         }
         used[i][j] = true;
-
         intervalFindWords(result, trie, used, i - 1, j, board, prefixWord);
-
         intervalFindWords(result, trie, used, i + 1, j, board, prefixWord);
-
-
         intervalFindWords(result, trie, used, i, j - 1, board, prefixWord);
-
         intervalFindWords(result, trie, used, i, j + 1, board, prefixWord);
-
         used[i][j] = false;
-
     }
 
 
