@@ -2,6 +2,7 @@ package org.code.algorithm.leetcode;
 
 import org.code.algorithm.datastructe.Interval;
 import org.code.algorithm.datastructe.ListNode;
+import org.springframework.boot.autoconfigure.session.NonUniqueSessionRepositoryException;
 
 import java.util.*;
 
@@ -1162,13 +1163,8 @@ public class SerialQuestionSolution {
             node.val = node.next.val;
             node.next = null;
         } else {
-            ListNode tmp = node.next;
-
-            node.val = tmp.val;
-
-            node.next = tmp.next;
-
-            tmp.next = null;
+            node.val = node.next.val;
+            node.next = node.next.next;
         }
 
     }
@@ -1443,30 +1439,28 @@ public class SerialQuestionSolution {
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-            return new int[]{};
+            return new int[] {};
         }
-        LinkedList<Integer> linkedList = new LinkedList<>();
         List<Integer> result = new ArrayList<>();
-
-
+        LinkedList<Integer> linkedList = new LinkedList<>();
         for (int i = 0; i < nums.length; i++) {
             int index = i - k + 1;
-            while (!linkedList.isEmpty() && index > linkedList.peekFirst()) {
-                linkedList.pollFirst();
+            if (!linkedList.isEmpty() && linkedList.peek() < index) {
+                linkedList.poll();
             }
-            while (!linkedList.isEmpty() && nums[linkedList.peekLast()] <= nums[i]) {
+            while (!linkedList.isEmpty() && nums[linkedList.getLast()] <= nums[i]) {
                 linkedList.pollLast();
             }
-            linkedList.add(i);
+            linkedList.offer(i);
             if (index >= 0) {
-                result.add(nums[linkedList.peekFirst()]);
+                result.add(nums[linkedList.peek()]);
             }
         }
-        int[] ans = new int[result.size()];
-        for (int i = 0; i < ans.length; i++) {
-            ans[i] = result.get(i);
+        int[] tmp = new int[result.size()];
+        for (int i = 0; i < tmp.length; i++) {
+            tmp[i] = result.get(i);
         }
-        return ans;
+        return tmp;
     }
 
 
