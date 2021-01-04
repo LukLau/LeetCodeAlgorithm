@@ -335,22 +335,22 @@ public class ThreePage {
         }
         ListNode slow = head;
         ListNode fast = head;
-        ListNode prev = slow;
-        while (fast != null && fast.next != null) {
-            prev = slow;
+        while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
-        prev.next = null;
+        ListNode split = slow.next;
+        slow.next = null;
 
-        ListNode reverseNode = reverseNode(slow);
+        ListNode reverseNode = reverseNode(split);
 
-        while (head != null) {
-            if (head.val != reverseNode.val) {
+
+        while (reverseNode != null) {
+            if (reverseNode.val != head.val) {
                 return false;
             }
-            head = head.next;
             reverseNode = reverseNode.next;
+            head = head.next;
         }
         return true;
     }
@@ -381,10 +381,10 @@ public class ThreePage {
         if (root == p || root == q) {
             return root;
         }
-        if (root.val > p.val && root.val > q.val) {
-            return lowestCommonAncestor(root.left, p, q);
+        if (root.val > p.val&& root.val > q.val) {
+            return lowestCommonAncestor(root.left,p,q);
         } else if (root.val < p.val && root.val < q.val) {
-            return lowestCommonAncestor(root.right, p, q);
+            return lowestCommonAncestor(root.right,p,q);
         } else {
             return root;
         }
@@ -405,16 +405,14 @@ public class ThreePage {
         if (root == p || root == q) {
             return root;
         }
-
-        TreeNode leftNode = lowestCommonAncestorII(root.left, p, q);
-
-        TreeNode rightNode = lowestCommonAncestorII(root.right, p, q);
-        if (leftNode != null && rightNode != null) {
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
             return root;
-        } else if (leftNode == null) {
-            return rightNode;
+        } else if (left == null) {
+            return right;
         } else {
-            return leftNode;
+            return left;
         }
     }
 
@@ -427,20 +425,21 @@ public class ThreePage {
      */
     public int[] productExceptSelf(int[] nums) {
         if (nums == null || nums.length == 0) {
-            return new int[]{};
+            return new int[] {};
         }
-        int baseNum = 1;
-        int[] result = new int[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            result[i] = baseNum;
-            baseNum *= nums[i];
+        int len = nums.length;
+        int[] products = new int[nums.length];
+        int base = 1;
+        for (int i = 0; i < products.length; i++) {
+            products[i] = base;
+            base *= nums[i];
         }
-        baseNum = 1;
-        for (int i = nums.length - 1; i >= 0; i--) {
-            result[i] *= baseNum;
-            baseNum *= nums[i];
+        base = 1;
+        for (int i = products.length - 1; i >= 0; i--) {
+            products[i] *= base;
+            base *= nums[i];
         }
-        return result;
+        return products;
     }
 
 
