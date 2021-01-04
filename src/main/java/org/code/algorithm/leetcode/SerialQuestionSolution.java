@@ -16,9 +16,10 @@ public class SerialQuestionSolution {
 
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-        String s = " 3+5 / 2 ";
+        String s = "3+2*2";
 
-        solution.getFactors(100);
+        System.out.println(solution.calculateII(s));
+
     }
 
     // ---O log(N)算法---- //
@@ -1892,13 +1893,49 @@ public class SerialQuestionSolution {
      * @return
      */
     public int calculateII(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
             return 0;
         }
         Stack<Integer> stack = new Stack<>();
-        int sign = 1;
+        char sign = '+';
         char[] words = s.toCharArray();
-        return -1;
+        int end = 0;
+        int tmp = 0;
+        int len = words.length;
+        while (end < len) {
+            if (Character.isDigit(words[end])) {
+                while (end < len && Character.isDigit(words[end])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[end]);
+                    end++;
+                }
+            }
+            boolean lastIndex = end == len;
+            if (lastIndex || (!Character.isDigit(words[end]) && words[end] != ' ')) {
+                if (sign == '+') {
+                    stack.push(tmp);
+                } else if (sign == '-') {
+                    stack.push(-tmp);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * tmp);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / tmp);
+                }
+            }
+            if (end != len && words[end] != ' ') {
+                sign = words[end];
+                tmp = 0;
+            }
+            end++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
     }
 
     // --- 单词最短距离系列 ---//

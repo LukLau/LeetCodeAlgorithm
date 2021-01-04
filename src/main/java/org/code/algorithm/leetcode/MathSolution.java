@@ -218,13 +218,13 @@ public class MathSolution {
      */
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         // write your code here
-        if (nums == null) {
+        if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
         for (int num : nums) {
-            if (num > lower && num != lower + 1) {
-                String tmp = constructRange(lower + 1, num - 1);
+            if (num > lower && num >= lower + 1) {
+                String tmp = constructRange(lower, num - 1);
                 result.add(tmp);
             }
             if (num == upper) {
@@ -281,10 +281,11 @@ public class MathSolution {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        int countA = 0;
-        int countB = 0;
+        List<Integer> result = new ArrayList<>();
         int candidateA = nums[0];
         int candidateB = nums[0];
+        int countA = 0;
+        int countB = 0;
         for (int num : nums) {
             if (num == candidateA) {
                 countA++;
@@ -309,7 +310,6 @@ public class MathSolution {
         }
         countA = 0;
         countB = 0;
-        List<Integer> result = new ArrayList<>();
         for (int num : nums) {
             if (num == candidateA) {
                 countA++;
@@ -317,10 +317,10 @@ public class MathSolution {
                 countB++;
             }
         }
-        if (countA * 3 > nums.length) {
+        if (3 * countA > nums.length) {
             result.add(candidateA);
         }
-        if (countB * 3 > nums.length) {
+        if (3 * countB > nums.length) {
             result.add(candidateB);
         }
         return result;
@@ -460,17 +460,11 @@ public class MathSolution {
      * @return
      */
     public boolean isPowerOfTwo(int n) {
-        if (n == 0) {
+        if (n <= 0) {
             return false;
         }
-        while (n != 0) {
-            int tmp = n & (n - 1);
-            if (tmp != 0) {
-                return false;
-            }
-            n >>= 1;
-        }
-        return true;
+        int result = n & (n - 1);
+        return result == 0;
     }
 
     /**

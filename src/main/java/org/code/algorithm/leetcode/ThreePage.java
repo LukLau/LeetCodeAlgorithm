@@ -313,21 +313,15 @@ public class ThreePage {
             result.add(String.valueOf(nums[0]));
             return result;
         }
-        int previousIndex = Integer.MAX_VALUE;
-
-        for (int i = 0; i < nums.length; i++) {
-            if (i == 0) {
-                previousIndex = i;
-            } else if (nums[i] != nums[i - 1] + 1) {
-                String range = nums[i - 1] == nums[previousIndex] ? String.valueOf(nums[previousIndex]) : nums[previousIndex] + "->" + nums[i - 1];
-
-                result.add(range);
-
-                previousIndex = i;
+        int prev = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1] + 1) {
+                String tmp = constructRange(nums, prev, i - 1);
+                result.add(tmp);
+                prev = i;
             }
         }
-        result.add(constructRange(nums, previousIndex, nums.length - 1));
-
+        result.add(constructRange(nums, prev, nums.length - 1));
         return result;
     }
 
