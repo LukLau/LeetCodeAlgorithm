@@ -1945,30 +1945,18 @@ public class SerialQuestionSolution {
      */
     public int shortestDistance(String[] words, String word1, String word2) {
         // Write your code here
-
         int result = Integer.MAX_VALUE;
-
-        int leftEdge = -1;
-
-        int rightEdge = -1;
-
+        int leftIndex = -1;
+        int rightIndex = -1;
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
-            int preLeft = leftEdge;
-
-            int preRight = rightEdge;
-
             if (word.equals(word1)) {
-                leftEdge = i;
+                leftIndex = i;
             } else if (word.equals(word2)) {
-                rightEdge = i;
+                rightIndex = i;
             }
-            if (leftEdge != -1 && rightEdge != -1) {
-                if (preLeft != leftEdge) {
-                    result = Math.min(result, Math.abs(i - rightEdge));
-                } else if (preRight != rightEdge) {
-                    result = Math.min(result, Math.abs(leftEdge - i));
-                }
+            if (leftIndex != -1 && rightIndex != -1) {
+                result = Math.min(result, Math.abs(leftIndex - rightIndex));
             }
         }
         return result;

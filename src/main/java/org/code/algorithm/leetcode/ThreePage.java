@@ -21,7 +21,7 @@ public class ThreePage {
         int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
 
         int[] largest = new int[]{3, 2, 1, 5, 6, 4};
-        System.out.println(page.findKthLargestV2(largest, 2));
+        page.findStrobogrammaticII(2);
     }
 
 
@@ -381,10 +381,10 @@ public class ThreePage {
         if (root == p || root == q) {
             return root;
         }
-        if (root.val > p.val&& root.val > q.val) {
-            return lowestCommonAncestor(root.left,p,q);
+        if (root.val > p.val && root.val > q.val) {
+            return lowestCommonAncestor(root.left, p, q);
         } else if (root.val < p.val && root.val < q.val) {
-            return lowestCommonAncestor(root.right,p,q);
+            return lowestCommonAncestor(root.right, p, q);
         } else {
             return root;
         }
@@ -425,7 +425,7 @@ public class ThreePage {
      */
     public int[] productExceptSelf(int[] nums) {
         if (nums == null || nums.length == 0) {
-            return new int[] {};
+            return new int[]{};
         }
         int len = nums.length;
         int[] products = new int[nums.length];
@@ -454,23 +454,23 @@ public class ThreePage {
         if (input == null || input.isEmpty()) {
             return new ArrayList<>();
         }
-        List<String> params = new ArrayList<>();
-        int len = input.length();
-        int endIndex = 0;
-        while (endIndex < len) {
-            char tmp = input.charAt(endIndex);
-            if (Character.isDigit(tmp)) {
-                int value = 0;
-                while (endIndex < len && Character.isDigit(input.charAt(endIndex))) {
-                    value = value * 10 + Character.getNumericValue(input.charAt(endIndex++));
+        List<String> result = new ArrayList<>();
+        char[] words = input.toCharArray();
+        int end = 0;
+        while (end < words.length) {
+            if (Character.isDigit(words[end])) {
+                int num = 0;
+                while (end < words.length && Character.isDigit(words[end])) {
+                    num = num * 10 + Character.getNumericValue(words[end]);
+                    end++;
                 }
-                params.add(String.valueOf(value));
+                result.add(String.valueOf(num));
             } else {
-                params.add(String.valueOf(tmp));
-                endIndex++;
+                result.add(String.valueOf(words[end]));
+                end++;
             }
         }
-        return intervalDiffWays(params, 0, params.size() - 1);
+        return intervalDiffWays(result, 0, result.size() - 1);
     }
 
     private List<Integer> intervalDiffWays(List<String> params, int start, int end) {
@@ -479,20 +479,22 @@ public class ThreePage {
             result.add(Integer.parseInt(params.get(start)));
             return result;
         }
+        if (start > end) {
+            return result;
+        }
         for (int i = start + 1; i <= end - 1; i = i + 2) {
-            String sign = params.get(i);
             List<Integer> leftNums = intervalDiffWays(params, start, i - 1);
             List<Integer> rightNums = intervalDiffWays(params, i + 1, end);
+            String sign = params.get(i);
             for (Integer leftNum : leftNums) {
                 for (Integer rightNum : rightNums) {
-
                     if ("+".equals(sign)) {
                         result.add(leftNum + rightNum);
                     } else if ("-".equals(sign)) {
                         result.add(leftNum - rightNum);
                     } else if ("*".equals(sign)) {
                         result.add(leftNum * rightNum);
-                    } else if ("/".equals(sign)) {
+                    } else {
                         result.add(leftNum / rightNum);
                     }
                 }
@@ -502,12 +504,16 @@ public class ThreePage {
     }
 
 
+    /**
+     * 242. Valid Anagram
+     *
+     * @param s
+     * @param t
+     * @return
+     */
     public boolean isAnagram(String s, String t) {
         if (s == null || t == null) {
             return false;
-        }
-        if (s.equals(t)) {
-            return true;
         }
         int m = s.length();
         int n = t.length();
@@ -516,16 +522,15 @@ public class ThreePage {
         }
         int[] hash = new int[256];
         for (int i = 0; i < m; i++) {
-            hash[s.charAt(i) - 'a']--;
-            hash[t.charAt(i) - 'a']++;
+            hash[s.charAt(i) - 'a']++;
+            hash[t.charAt(i) - 'a']--;
         }
-        for (int num : hash) {
-            if (num != 0) {
+        for (int count : hash) {
+            if (count != 0) {
                 return false;
             }
         }
         return true;
-
     }
 
 
@@ -540,20 +545,26 @@ public class ThreePage {
         if (num == null || num.isEmpty()) {
             return false;
         }
-        if (num.length() == 1) {
-            return "0".equals(num) || "8".equals(num) || "1".equals(num);
-        }
-        Map<Character, Character> map = getMap();
-        int len = num.length();
+        Map<Character, Character> map = new HashMap<>();
+        map.put('0', '0');
+        map.put('1', '1');
+        map.put('6', '9');
+        map.put('8', '8');
+        map.put('9', '6');
+
+
+        char[] words = num.toCharArray();
+
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            char word = num.charAt(i);
+        for (char word : words) {
             if (!map.containsKey(word)) {
                 return false;
             }
             builder.append(map.get(word));
         }
-        return builder.reverse().toString().equals(num);
+        String reverse = builder.reverse().toString();
+
+        return num.equals(reverse);
     }
 
 
@@ -565,38 +576,36 @@ public class ThreePage {
      */
     public List<String> findStrobogrammatic(int n) {
         // write your code here
-        if (n == 0) {
+        if (n <= 0) {
             return Arrays.asList("");
         }
-        if (n == 1) {
-            return Arrays.asList("0", "1", "8");
-        }
+        char[] even = new char[]{'0', '1', '6', '8', '9'};
+        char[] odd = new char[]{'0', '1', '8'};
+
         Map<Character, Character> map = getMap();
-        char[] nums = new char[]{'0', '1', '6', '8', '9'};
-        char[] odds = new char[]{'0', '1', '8'};
+        List<String> tmp = new ArrayList<>();
+        intervalFindStrobogrammatic(tmp, even, n / 2, "");
+
         List<String> result = new ArrayList<>();
-        intervalFindStrobogrammatic(result, nums, n / 2, "");
-        List<String> ans = new ArrayList<>();
-        boolean isOdd = n % 2 != 0;
-        for (String s : result) {
-            char[] chars = s.toCharArray();
-            String reverse = "";
-            for (char word : chars) {
-                Character character = map.get(word);
-                reverse += character;
+
+        boolean isOdd = n % 2 == 1;
+
+        for (String item : tmp) {
+            char[] words = item.toCharArray();
+            StringBuilder builder = new StringBuilder();
+            for (char word : words) {
+                builder.append(map.get(word));
             }
-            reverse = new StringBuilder(reverse).reverse().toString();
+            String reverse = builder.reverse().toString();
             if (isOdd) {
-                for (char odd : odds) {
-                    String tmp = s + odd + reverse;
-                    ans.add(tmp);
+                for (char oddChar : odd) {
+                    result.add(item + oddChar + reverse);
                 }
-            } else {
-                s += reverse;
-                ans.add(s);
+            }  else {
+                result.add(item + reverse);
             }
         }
-        return ans;
+        return result;
     }
 
 
@@ -643,7 +652,8 @@ public class ThreePage {
         if (s.length() < n) {
             for (char item : items) {
                 if (!s.startsWith("0")) {
-                    intervalFindStrobogrammatic(result, items, n, s + item);
+                    intervalFindStrobogrammatic(result, items, n, s + String.valueOf(item));
+
                 }
             }
         }
