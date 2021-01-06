@@ -1,7 +1,6 @@
 package org.code.algorithm.datastructe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,66 +10,56 @@ import java.util.List;
  */
 public class Vector2D implements Iterator<Integer> {
 
-    private Iterator<List<Integer>> iterator;
+    private Iterator<List<Integer>> listIterator;
 
-    private Iterator<Integer> secondIterator;
+    private Iterator<Integer> iterator;
+
 
     public Vector2D(List<List<Integer>> vec2d) {
-        if (!vec2d.isEmpty()) {
-            // Initialize your data structure here
-            this.iterator = vec2d.iterator();
-            this.secondIterator = this.iterator.next().iterator();
-        }
+        listIterator = vec2d.iterator();
+
+        // Initialize your data structure here
+    }
+
+    public static void main(String[] args) {
+        List<List<Integer>> params = new ArrayList<>();
+//                Arrays.asList(new ArrayList<>(), Arrays.asList(1, 2), new ArrayList<>());
+        Vector2D vector2D = new Vector2D(params);
     }
 
     @Override
     public Integer next() {
-        if (iterator == null) {
-            return null;
-        }
-        while (iterator != null && secondIterator != null) {
-            if (secondIterator.hasNext()) {
-                return secondIterator.next();
-            }
-            if (!iterator.hasNext()) {
-                return null;
-            }
-            secondIterator = iterator.next().iterator();
+        // Write your code here
+//        Integer result = null;
+//        while (result == null) {
+//            if (this.hasNext()) {
+//                result = iterator.next();
+//            } else {
+//                return null;
+//            }
+//        }
+//        return result;
+        if (hasNext()) {
+            return iterator.next();
         }
         return null;
     }
 
-
     @Override
     public boolean hasNext() {
-        if (iterator == null) {
+        if (iterator == null && !listIterator.hasNext()) {
             return false;
         }
-        if (secondIterator.hasNext()) {
-            return true;
-        }
-        if (!iterator.hasNext()) {
-            return false;
-        }
-        secondIterator = iterator.next().iterator();
-
-        return secondIterator.hasNext();
         // Write your code here
+        while (iterator == null || (!iterator.hasNext() && listIterator.hasNext())) {
+
+            List<Integer> tmp = listIterator.next();
+            iterator = tmp.iterator();
+        }
+        return iterator.hasNext();
     }
 
     @Override
     public void remove() {
-    }
-
-    public static void main(String[] args) {
-        Vector2D vector2D = new Vector2D(Arrays.asList(new ArrayList<>(), new ArrayList<>(), Arrays.asList(1, 2, 3), new ArrayList<>(), Arrays.asList(4)));
-        System.out.println(vector2D.next());
-        System.out.println(vector2D.next());
-        System.out.println(vector2D.next());
-        System.out.println(vector2D.next());
-        System.out.println(vector2D.next());
-        System.out.println(vector2D.next());
-
-
     }
 }

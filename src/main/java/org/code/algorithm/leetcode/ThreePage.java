@@ -601,7 +601,7 @@ public class ThreePage {
                 for (char oddChar : odd) {
                     result.add(item + oddChar + reverse);
                 }
-            }  else {
+            } else {
                 result.add(item + reverse);
             }
         }
@@ -616,15 +616,14 @@ public class ThreePage {
         if (n == 1) {
             return Arrays.asList("0", "1", "8");
         }
-
         return intervalFind(n, n);
     }
 
     private List<String> intervalFind(int m, int n) {
-        if (n == 0) {
+        if (m == 0) {
             return Collections.singletonList("");
         }
-        if (n == 1) {
+        if (m == 1) {
             return Arrays.asList("0", "1", "8");
         }
         List<String> result = new ArrayList<>();
@@ -680,7 +679,39 @@ public class ThreePage {
      * @return
      */
     public int strobogrammaticInRange(String low, String high) {
-        return -1;
+        int count = 0;
+        count += intervalStrobogrammaticInRange("", low, high);
+        count += intervalStrobogrammaticInRange(0 + "" + 0, low, high);
+        count += intervalStrobogrammaticInRange(1 + "" + 1, low, high);
+        count += intervalStrobogrammaticInRange(8 + "" + 8, low, high);
+        return count;
+    }
+
+    private int intervalStrobogrammaticInRange(String s, String low, String high) {
+        int count = 0;
+
+        int lowLen = low.length();
+        int highLen = high.length();
+        int len = s.length();
+        if (len < lowLen || len > highLen) {
+            return count;
+        }
+        if (len == highLen && s.compareTo(high) > 0) {
+            return count;
+        }
+        if (len == 1 && s.startsWith("0") || len == lowLen && s.compareTo(low) < 0) {
+            return count;
+        }
+        count++;
+        if (len + 2 > highLen) {
+            return count;
+        }
+        count += intervalStrobogrammaticInRange(0 + s + 0, low, high);
+        count += intervalStrobogrammaticInRange(1 + s + 1, low, high);
+        count += intervalStrobogrammaticInRange(6 + s + 9, low, high);
+        count += intervalStrobogrammaticInRange(8 + s + 8, low, high);
+        count += intervalStrobogrammaticInRange(9 + s + 6, low, high);
+        return count;
     }
 
 
