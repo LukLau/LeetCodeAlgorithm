@@ -1436,7 +1436,7 @@ public class SerialQuestionSolution {
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-            return new int[] {};
+            return new int[]{};
         }
         List<Integer> result = new ArrayList<>();
         LinkedList<Integer> linkedList = new LinkedList<>();
@@ -2039,14 +2039,14 @@ public class SerialQuestionSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
-        int row = costs.length -1;
+        int row = costs.length - 1;
 
         for (int i = 1; i < row; i++) {
-            costs[i][0] = Math.min(costs[i-1][1], costs[i-1][2]) + costs[i][0];
-            costs[i][1] = Math.min(costs[i-1][0], costs[i-1][2]) + costs[i][1];
-            costs[i][2] = Math.min(costs[i-1][1], costs[i-1][0]) + costs[i][2];
+            costs[i][0] = Math.min(costs[i - 1][1], costs[i - 1][2]) + costs[i][0];
+            costs[i][1] = Math.min(costs[i - 1][0], costs[i - 1][2]) + costs[i][1];
+            costs[i][2] = Math.min(costs[i - 1][1], costs[i - 1][0]) + costs[i][2];
         }
-        return Math.min(Math.min(costs[row-1][0], costs[row-1][1]), costs[row-1][2]);
+        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
         // write your code here
     }
 
@@ -2063,9 +2063,46 @@ public class SerialQuestionSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
-        int m = costs.length;
+        int row = costs.length;
         int n = costs[0].length;
-        return -1;
+
+        int index1 = -1;
+        int index2 = -1;
+
+        for (int i = 0; i < row; i++) {
+
+            int lastIndex1 = index1;
+
+            int lastIndex2 = index2;
+
+            index1 = -1;
+
+            index2 = -1;
+
+            for (int j = 0; j < n; j++) {
+                if (lastIndex1 >= 0) {
+                    if (j != lastIndex1) {
+                        costs[i][j] += costs[i - 1][lastIndex1];
+                    } else {
+                        costs[i][j] += costs[i - 1][lastIndex2];
+                    }
+                }
+//                if (index1 < 0 || costs[i][j] < costs[i][index1]) {
+//                    index2 = index1;
+//                    index1 = j;
+//                } else if (index2 < 0 || costs[i][j] < costs[i][index2]) {
+//                    index2 = j;
+//                }
+
+                if (index1 < 0 || costs[i][j] < costs[i][index1]) {
+                    index2 = index1;
+                    index1 = j;
+                } else if (index2 < 0 || costs[i][j] < costs[i][index2]) {
+                    index2 = j;
+                }
+            }
+        }
+        return costs[row - 1][index1];
     }
 
 
