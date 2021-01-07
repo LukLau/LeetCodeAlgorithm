@@ -669,7 +669,7 @@ public class SerialQuestionSolution {
             return new ArrayList<>();
         }
         List<List<Integer>> result = new ArrayList<>();
-        intervalGetFactors(result, new ArrayList<Integer>(), 2, n / 2, 1, n);
+        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, 1, n);
         return result;
     }
 
@@ -678,15 +678,12 @@ public class SerialQuestionSolution {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        if (value > n) {
-            return;
-        }
-        for (int i = start; i <= end && (i * value <= n); i++) {
+        for (int i = start; i <= end && value * i <= n; i++) {
             if (n % i != 0) {
                 continue;
             }
             tmp.add(i);
-            intervalGetFactors(result, tmp, i, end, i * value, n);
+            intervalGetFactors(result, tmp, i, end, value * i, n);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -2002,31 +1999,31 @@ public class SerialQuestionSolution {
      * @return: the minimum number of conference rooms required
      */
     public int minMeetingRooms(List<Interval> intervals) {
-        if (intervals == null) {
+        // Write your code here
+        if (intervals == null || intervals.isEmpty()) {
             return 0;
         }
         int size = intervals.size();
-        if (size <= 1) {
+
+        if (size == 1) {
             return size;
         }
-        intervals.sort(Comparator.comparingInt(o -> o.start));
-        PriorityQueue<Interval> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.end));
-
+        intervals.sort(Comparator.comparingInt(interval -> interval.start));
+        PriorityQueue<Interval> priorityQueue = new PriorityQueue<>(Comparator.comparing(item -> item.end));
         priorityQueue.offer(intervals.get(0));
         for (int i = 1; i < size; i++) {
             Interval poll = priorityQueue.poll();
+
             Interval current = intervals.get(i);
-            if (current.start >= poll.end) {
-                poll.end = current.end;
-            } else {
+
+            if (current.start <= poll.end) {
                 priorityQueue.offer(current);
+            } else {
+                poll.end = current.end;
             }
             priorityQueue.offer(poll);
         }
         return priorityQueue.size();
-
-
-        // Write your code here
     }
 
     // --- 画房子问题---//
@@ -2042,46 +2039,16 @@ public class SerialQuestionSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
-        int result = Integer.MAX_VALUE;
+        int row = costs.length -1;
 
-        int column = costs[0].length;
-
-        int row = costs.length;
-        int[][] dp = new int[row][column];
-        System.arraycopy(costs[0], 0, dp[0], 0, costs[0].length);
         for (int i = 1; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (j == 0) {
-                    dp[i][j] = Math.min(dp[i - 1][1], dp[i - 1][2]) + costs[i][j];
-                } else {
-                    dp[i][j] = Math.min(dp[i - 1][(j + 1) % column], dp[i - 1][(j + 2) % column]) + costs[i][j];
-                }
-            }
+            costs[i][0] = Math.min(costs[i-1][1], costs[i-1][2]) + costs[i][0];
+            costs[i][1] = Math.min(costs[i-1][0], costs[i-1][2]) + costs[i][1];
+            costs[i][2] = Math.min(costs[i-1][1], costs[i-1][0]) + costs[i][2];
         }
-        for (int j = 0; j < column; j++) {
-            result = Math.min(result, dp[row - 1][j]);
-        }
-        return result;
+        return Math.min(Math.min(costs[row-1][0], costs[row-1][1]), costs[row-1][2]);
         // write your code here
     }
-
-
-    public int minCostV2(int[][] costs) {
-        if (costs == null || costs.length == 0) {
-            return 0;
-        }
-        int row = costs.length;
-        int column = costs[0].length;
-
-        for (int i = 1; i < costs.length; i++) {
-            costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
-            costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
-            costs[i][2] += Math.min(costs[i - 1][0], costs[i - 1][1]);
-        }
-        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
-        // write your code here
-    }
-
 
     /**
      * todo
@@ -2096,35 +2063,9 @@ public class SerialQuestionSolution {
         if (costs == null || costs.length == 0) {
             return 0;
         }
-        int row = costs.length;
-        int column = costs[0].length;
-
-        int firstSmallIndex = -1;
-        int secondSmallIndex = -1;
-        for (int i = 0; i < row; i++) {
-            int lastFirstIndex = firstSmallIndex;
-            int lastSecondIndex = secondSmallIndex;
-            firstSmallIndex = -1;
-            secondSmallIndex = -1;
-            for (int j = 0; j < column; j++) {
-
-                if (lastFirstIndex >= 0) {
-                    if (j != lastFirstIndex) {
-                        costs[i][j] += costs[i - 1][lastFirstIndex];
-                    } else {
-                        costs[i][j] += costs[i - 1][lastSecondIndex];
-                    }
-                }
-
-                if (firstSmallIndex < 0 || costs[i][j] < costs[i][firstSmallIndex]) {
-                    secondSmallIndex = firstSmallIndex;
-                    firstSmallIndex = j;
-                } else if (secondSmallIndex < 0 || costs[i][j] < costs[i][secondSmallIndex]) {
-                    secondSmallIndex = j;
-                }
-            }
-        }
-        return costs[row - 1][firstSmallIndex];
+        int m = costs.length;
+        int n = costs[0].length;
+        return -1;
     }
 
 

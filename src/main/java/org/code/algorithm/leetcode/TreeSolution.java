@@ -21,6 +21,8 @@ public class TreeSolution {
         TreeSolution solution = new TreeSolution();
         int[][] matrix = new int[][]{{2147483647, -1, 0, 2147483647},
                 {2147483647, 2147483647, 2147483647, -1}, {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
+        int[] preorder = new int[]{1, 3, 2};
+        solution.verifyPreorder(preorder);
 
     }
 
@@ -645,30 +647,28 @@ public class TreeSolution {
         if (preorder == null || preorder.length == 0) {
             return false;
         }
-        return intervalVerifyPreorder(preorder, 0, preorder.length - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return intervalVerifyPreorder(Integer.MIN_VALUE, 0, preorder.length - 1, preorder, Integer.MAX_VALUE);
     }
 
-    private boolean intervalVerifyPreorder(int[] preorder, int start, int end, int minValue, int maxValue) {
-        if (start == end) {
+    private boolean intervalVerifyPreorder(int minValue, int start, int end, int[] preorder, int maxValue) {
+        if (start > end) {
             return true;
         }
-        if (start > end) {
+        int current = preorder[start];
+        if (current <= minValue || current >= maxValue) {
             return false;
         }
-        int rootValue = preorder[start];
-        if (rootValue <= minValue || rootValue >= maxValue) {
-            return false;
-        }
-        int bigIndex = -1;
+        int index = 0;
         for (int i = start + 1; i <= end; i++) {
-            if (preorder[i] > rootValue) {
-                bigIndex = i;
+            if (preorder[i] >= current) {
+                index = i;
                 break;
             }
         }
-        return intervalVerifyPreorder(preorder, start + 1, bigIndex - 1, Integer.MIN_VALUE, rootValue) &&
-                intervalVerifyPreorder(preorder, bigIndex, end, rootValue, Integer.MAX_VALUE);
+        return intervalVerifyPreorder(minValue, start + 1, index - 1, preorder, current)
+                && intervalVerifyPreorder(current, index, end, preorder, maxValue);
     }
+
 
     public boolean verifyPreorderV2(int[] preorder) {
         // write your code here
@@ -722,8 +722,9 @@ public class TreeSolution {
             return;
         }
 
-        intervalBinaryTreePaths(result, root.left, s);
-        intervalBinaryTreePaths(result, root.right, s);
+            intervalBinaryTreePaths(result, root.left, s);
+            intervalBinaryTreePaths(result, root.right, s);
+
     }
 
     /**
