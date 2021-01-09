@@ -21,7 +21,8 @@ public class ThreePage {
         int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
 
         int[] largest = new int[]{3, 2, 1, 5, 6, 4};
-        page.findStrobogrammaticII(2);
+        int[] three = new int[]{-2, 0, -1, 3};
+        page.threeSumSmaller(three, 2);
     }
 
 
@@ -729,7 +730,6 @@ public class ThreePage {
 
 
     /**
-     * todo
      * 259 3Sum Smaller
      * Medium
      *
@@ -742,32 +742,26 @@ public class ThreePage {
             return 0;
         }
         Arrays.sort(nums);
-        int result = 0;
-        int start = 0;
-        int end = nums.length - 1;
-        while (start < end - 1) {
+        int count = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+//            if (i > 0 && nums[i] == nums[i - 1]) {
+//                continue;
+//            }
+            int left = i + 1;
 
-            if (start > 0 && nums[start] == nums[start - 1]) {
-                start++;
-                continue;
-            }
-            if (nums[start] >= target) {
-                break;
-            }
-            int left = start + 1;
-            int right = end;
+            int right = nums.length - 1;
+
             while (left < right) {
-                int val = nums[start] + nums[left] + nums[right];
+                int val = nums[i] + nums[left] + nums[right];
                 if (val < target) {
-                    result += right - left;
+                    count += right - left;
                     left++;
                 } else {
                     right--;
                 }
             }
-            start++;
         }
-        return result;
+        return count;
     }
 
 

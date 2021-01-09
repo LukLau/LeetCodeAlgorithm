@@ -14,15 +14,15 @@ public class SerialQuestionSolution {
 
     // ---最长无重复子串问题--- //
 
+    // ---O log(N)算法---- //
+
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
         String s = "3+2*2";
 
-        System.out.println(solution.calculateII(s));
+        solution.generatePalindromes("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     }
-
-    // ---O log(N)算法---- //
 
     //计算最大质因数
     public static int getTheLargestPrimeFactor(int n) {
@@ -84,6 +84,9 @@ public class SerialQuestionSolution {
 
     }
 
+
+    // --查找数组中的最小值---- //
+
     private int searchLeftIndex(int[] nums, int target, int left, int right) {
         if (left > right) {
             return -1;
@@ -103,9 +106,6 @@ public class SerialQuestionSolution {
         }
         return -1;
     }
-
-
-    // --查找数组中的最小值---- //
 
     /**
      * 4. Median of Two Sorted Arrays
@@ -141,6 +141,9 @@ public class SerialQuestionSolution {
         return nums[left];
     }
 
+
+    // --正则表达式匹配问题 //
+
     /**
      * 154. Find Minimum in Rotated Sorted Array II
      *
@@ -163,9 +166,6 @@ public class SerialQuestionSolution {
         }
         return nums[left];
     }
-
-
-    // --正则表达式匹配问题 //
 
     /**
      * 162. Find Peak Element
@@ -223,6 +223,9 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
+
+    // --旋转数组系列问题-- //
+
     /**
      * 45. Jump Game II
      * todo
@@ -253,9 +256,6 @@ public class SerialQuestionSolution {
         }
         return dp[m][n];
     }
-
-
-    // --旋转数组系列问题-- //
 
     public boolean canJump(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -376,6 +376,8 @@ public class SerialQuestionSolution {
         return root.next;
     }
 
+    // ---排列组合问题---- //
+
     public ListNode reverseKGroup(ListNode head, int k) {
         if (head == null || head.next == null) {
             return head;
@@ -398,8 +400,6 @@ public class SerialQuestionSolution {
         }
         return head;
     }
-
-    // ---排列组合问题---- //
 
     /**
      * todo
@@ -673,6 +673,9 @@ public class SerialQuestionSolution {
         return result;
     }
 
+
+    // ---- //
+
     private void intervalGetFactors(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int end, int value, int n) {
         if (value == n) {
             result.add(new ArrayList<>(tmp));
@@ -687,9 +690,6 @@ public class SerialQuestionSolution {
             tmp.remove(tmp.size() - 1);
         }
     }
-
-
-    // ---- //
 
     /**
      * @param nums
@@ -714,7 +714,6 @@ public class SerialQuestionSolution {
         nums[i] = nums[j];
         nums[j] = val;
     }
-
 
     public int trap(int[] height) {
         if (height == null || height.length == 0) {
@@ -774,6 +773,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // ---跳跃格子游戏系列--- //
+
     public String multiply(String num1, String num2) {
         if (num1 == null && num2 == null) {
             return "0";
@@ -799,10 +800,6 @@ public class SerialQuestionSolution {
         return builder.length() == 0 ? "0" : builder.toString();
     }
 
-
-    // ---跳跃格子游戏系列--- //
-
-
     public int jump(int[] nums) {
         int step = 0;
         int currentIndex = 0;
@@ -817,14 +814,13 @@ public class SerialQuestionSolution {
         return step;
     }
 
+    // --数学原理--- //
 
     private void swapMatrix(int[][] matrix, int i, int j) {
         int val = matrix[i][j];
         matrix[i][j] = matrix[j][i];
         matrix[j][i] = val;
     }
-
-    // --数学原理--- //
 
     public double myPow(double x, int n) {
         if (n == 0) {
@@ -839,7 +835,6 @@ public class SerialQuestionSolution {
         }
         return n % 2 != 0 ? x * myPow(x * x, n / 2) : myPow(x * x, n / 2);
     }
-
 
     /**
      * 牛顿二分法
@@ -857,6 +852,8 @@ public class SerialQuestionSolution {
 
     }
 
+
+    // ---- 八皇后问题----//
 
     /**
      * todo
@@ -915,10 +912,6 @@ public class SerialQuestionSolution {
         return seenAfterE && seenNumber;
     }
 
-
-    // ---- 八皇后问题----//
-
-
     public List<List<String>> solveNQueens(int n) {
         if (n <= 0) {
             return new ArrayList<>();
@@ -974,7 +967,6 @@ public class SerialQuestionSolution {
         return true;
     }
 
-
     public int totalNQueens(int n) {
         if (n <= 0) {
             return 0;
@@ -999,6 +991,8 @@ public class SerialQuestionSolution {
         return count;
     }
 
+    // --合并区间问题- //
+
     private boolean validTotalNQueens(int[] dp, int row, int col) {
         for (int i = row - 1; i >= 0; i--) {
             if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
@@ -1007,9 +1001,6 @@ public class SerialQuestionSolution {
         }
         return true;
     }
-
-    // --合并区间问题- //
-
 
     public int[][] merge(int[][] intervals) {
         if (intervals == null || intervals.length == 0) {
@@ -1026,6 +1017,8 @@ public class SerialQuestionSolution {
         }
         return result.toArray(new int[][]{});
     }
+
+    // --最小路径-- //
 
     /**
      * 57. Insert Interval
@@ -1058,7 +1051,8 @@ public class SerialQuestionSolution {
         return ans.toArray(new int[][]{});
     }
 
-    // --最小路径-- //
+
+    // --链表相关接口-- //
 
     public int minPathSum(int[][] grid) {
         if (grid == null || grid.length == 0) {
@@ -1082,9 +1076,6 @@ public class SerialQuestionSolution {
         }
         return dp[row - 1][column - 1];
     }
-
-
-    // --链表相关接口-- //
 
     /**
      * 61. Rotate List
@@ -1150,6 +1141,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // ----- //
+
     /**
      * 237. Delete Node in a Linked List
      *
@@ -1165,9 +1158,6 @@ public class SerialQuestionSolution {
         }
 
     }
-
-
-    // ----- //
 
     /**
      * 68. Text Justification
@@ -1234,7 +1224,6 @@ public class SerialQuestionSolution {
         return result.toString();
     }
 
-
     public List<String> fullJustifyV2(String[] words, int maxWidth) {
         if (words == null || words.length == 0 || maxWidth <= 0) {
             return new ArrayList<>();
@@ -1273,6 +1262,7 @@ public class SerialQuestionSolution {
         return result;
     }
 
+    // --编辑距离问题- //
 
     public String simplifyPath(String path) {
         if (path == null || path.isEmpty()) {
@@ -1297,8 +1287,6 @@ public class SerialQuestionSolution {
         }
         return result.toString();
     }
-
-    // --编辑距离问题- //
 
     public int minDistance(String word1, String word2) {
         if (word1 == null || word2 == null) {
@@ -1325,7 +1313,6 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
-
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0) {
             return false;
@@ -1346,6 +1333,9 @@ public class SerialQuestionSolution {
         }
         return false;
     }
+
+
+    // ---双指针问题系列-- //
 
     public boolean searchMatrixII(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0) {
@@ -1370,8 +1360,7 @@ public class SerialQuestionSolution {
     }
 
 
-    // ---双指针问题系列-- //
-
+    // --滑动窗口问题- //
 
     public void sortColors(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -1388,9 +1377,6 @@ public class SerialQuestionSolution {
             }
         }
     }
-
-
-    // --滑动窗口问题- //
 
     public String minWindow(String s, String t) {
         if (s == null || t == null) {
@@ -1427,6 +1413,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // --dfs优先遍历----- //
+
     /**
      * 239. Sliding Window Maximum
      *
@@ -1460,9 +1448,6 @@ public class SerialQuestionSolution {
         return tmp;
     }
 
-
-    // --dfs优先遍历----- //
-
     public boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0) {
             return false;
@@ -1480,6 +1465,9 @@ public class SerialQuestionSolution {
         return false;
 
     }
+
+
+    // --唯一路径问题-- //
 
     private boolean intervalExist(int i, int j, int k, char[][] board, String word, boolean[][] used) {
         if (k == word.length()) {
@@ -1499,10 +1487,6 @@ public class SerialQuestionSolution {
 
         return false;
     }
-
-
-    // --唯一路径问题-- //
-
 
     /**
      * 62. Unique Paths
@@ -1524,7 +1508,6 @@ public class SerialQuestionSolution {
         }
         return dp[n - 1];
     }
-
 
     /**
      * 63. Unique Paths II
@@ -1553,6 +1536,7 @@ public class SerialQuestionSolution {
         return dp[column - 1];
     }
 
+    // --移除重复元素链表 - //
 
     /**
      * 64. Minimum Path Sum
@@ -1579,8 +1563,6 @@ public class SerialQuestionSolution {
         return dp[column - 1];
     }
 
-    // --移除重复元素链表 - //
-
     public ListNode deleteDuplicates(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -1595,6 +1577,8 @@ public class SerialQuestionSolution {
         head.next = deleteDuplicates(head.next);
         return head;
     }
+
+    //--动态规划问题---- //
 
     public int largestRectangleArea(int[] heights) {
         if (heights == null || heights.length == 0) {
@@ -1617,8 +1601,6 @@ public class SerialQuestionSolution {
         }
         return result;
     }
-
-    //--动态规划问题---- //
 
     /**
      * 85. Maximal Rectangle
@@ -1657,6 +1639,9 @@ public class SerialQuestionSolution {
         }
         return result;
     }
+
+
+    // ---格雷码---- //
 
     public int maximalRectangleV2(char[][] matrix) {
         if (matrix == null || matrix.length == 0) {
@@ -1700,10 +1685,6 @@ public class SerialQuestionSolution {
         return result;
     }
 
-
-    // ---格雷码---- //
-
-
     /**
      * todo
      * 89. Gray Code
@@ -1715,7 +1696,6 @@ public class SerialQuestionSolution {
         List<Integer> result = new ArrayList<>();
         return null;
     }
-
 
     /**
      * 142. Linked List Cycle II
@@ -1743,7 +1723,6 @@ public class SerialQuestionSolution {
         }
         return null;
     }
-
 
     /**
      * 143. Reorder List
@@ -1782,6 +1761,9 @@ public class SerialQuestionSolution {
         }
     }
 
+
+    // ---逆波兰系列--- //
+
     private ListNode reverseList(ListNode head) {
         ListNode prev = null;
         while (head != null) {
@@ -1793,8 +1775,7 @@ public class SerialQuestionSolution {
         return prev;
     }
 
-
-    // ---逆波兰系列--- //
+    // ---计算器系列--- //
 
     /**
      * 逆波兰
@@ -1827,9 +1808,6 @@ public class SerialQuestionSolution {
         }
         return stack.pop();
     }
-
-    // ---计算器系列--- //
-
 
     /**
      * todo
@@ -1874,6 +1852,7 @@ public class SerialQuestionSolution {
         return result;
     }
 
+    // --- 单词最短距离系列 ---//
 
     /**
      * todo
@@ -1928,8 +1907,8 @@ public class SerialQuestionSolution {
         return result;
     }
 
-    // --- 单词最短距离系列 ---//
 
+    // ---会议室问题---//
 
     /**
      * 243 Shortest Word Distance
@@ -1957,9 +1936,6 @@ public class SerialQuestionSolution {
         }
         return result;
     }
-
-
-    // ---会议室问题---//
 
     /**
      * 252 Meeting Rooms
@@ -1990,6 +1966,7 @@ public class SerialQuestionSolution {
         // Write your code here
     }
 
+    // --- 画房子问题---//
 
     /**
      * todo
@@ -2025,8 +2002,6 @@ public class SerialQuestionSolution {
         }
         return priorityQueue.size();
     }
-
-    // --- 画房子问题---//
 
     /**
      * todo
@@ -2105,7 +2080,6 @@ public class SerialQuestionSolution {
         return costs[row - 1][index1];
     }
 
-
     /**
      * 优化上面空间
      *
@@ -2135,7 +2109,6 @@ public class SerialQuestionSolution {
 
     }
 
-
     /**
      * 266
      * Palindrome Permutation
@@ -2144,28 +2117,106 @@ public class SerialQuestionSolution {
      * @return: if a permutation of the string could form a palindrome
      */
     public boolean canPermutePalindrome(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return false;
         }
-        int len = s.length();
-        if (len <= 0) {
-            return true;
-        }
-        boolean occurOdd = false;
-        int[] hash = new int[256];
-        for (char word : s.toCharArray()) {
-            hash[word]++;
-        }
-        for (int num : hash) {
-            if (num % 2 != 0) {
-                if (occurOdd) {
+        char[] words = s.toCharArray();
+        boolean odd = false;
+        Map<Character, Integer> map = getPalindromeMap(words);
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            Integer num = entry.getValue();
+            if (num % 2 == 1) {
+                if (odd) {
                     return false;
                 }
-                occurOdd = true;
+                odd = true;
             }
         }
         return true;
         // write your code here
+    }
+
+    /**
+     * 267	Palindrome Permutation II
+     *
+     * @param s: the given string
+     * @return: all the palindromic permutations (without duplicates) of it
+     */
+    public List<String> generatePalindromes(String s) {
+        // write your code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        char[] words = s.toCharArray();
+        Map<Character, Integer> map = getPalindromeMap(words);
+        if (map.size() == 1) {
+            return Arrays.asList(s);
+        }
+        StringBuilder builder = new StringBuilder();
+        Character odd = null;
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            Character character = entry.getKey();
+
+            Integer num = entry.getValue();
+
+            int count = num / 2;
+
+            for (int i = 0; i < count; i++) {
+                builder.append(character);
+            }
+            if (num % 2 != 0) {
+                if (odd != null) {
+                    return new ArrayList<>();
+                }
+                odd = character;
+            }
+        }
+        List<String> palindromes = new ArrayList<>();
+        intervalPalindrome(palindromes, builder.toString().toCharArray(), 0);
+
+        List<String> result = new ArrayList<>();
+        for (String palindrome : palindromes) {
+            StringBuilder reverse = new StringBuilder(palindrome);
+
+            if (odd != null) {
+                palindrome = palindrome + odd;
+            }
+            result.add(palindrome + reverse.reverse().toString());
+        }
+        return result;
+    }
+
+
+    private void intervalPalindrome(List<String> result, char[] words, int start) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swap(words, i, start);
+            intervalPalindrome(result, words, start + 1);
+            swap(words, i, start);
+        }
+    }
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
+    }
+
+
+    private Map<Character, Integer> getPalindromeMap(char[] words) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (char word : words) {
+            Integer num = map.getOrDefault(word, 0);
+            num++;
+            map.put(word, num);
+        }
+        return map;
     }
 
 
