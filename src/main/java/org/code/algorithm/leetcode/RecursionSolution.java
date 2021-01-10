@@ -19,7 +19,8 @@ public class RecursionSolution {
         char[][] board = new char[][]{{'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'}};
         String[] words = new String[]{"oath", "pea", "eat", "rain"};
 
-        solution.findWords(board, words);
+        String num = "105";
+        solution.addOperators(num, 5);
     }
 
 
@@ -309,6 +310,43 @@ public class RecursionSolution {
             node2.next = mergeList(node1, node2.next);
             return node2;
         }
+    }
+
+    /**
+     * 282. Expression Add Operators
+     *
+     * @param num
+     * @param target
+     * @return
+     */
+    public List<String> addOperators(String num, int target) {
+        if (num == null || num.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return null;
+    }
+
+    private List<String> intervalAddOperators(String num, int target) {
+        List<String> result = new ArrayList<>();
+        int size = num.length();
+        if (size == 1) {
+            result.add(num);
+            return result;
+        }
+        for (int i = 1; i <= size - 1; i++) {
+            String s1 = num.substring(0, i);
+            String s2 = num.substring(i);
+            List<String> leftNums = intervalAddOperators(s1, target);
+            List<String> rightNums = intervalAddOperators(s2, target);
+            for (String leftNum : leftNums) {
+                for (String rightNum : rightNums) {
+                    result.add(leftNum + "+" + rightNum);
+                    result.add(leftNum + "*" + rightNum);
+                    result.add(leftNum + "-" + rightNum);
+                }
+            }
+        }
+        return result;
     }
 
 

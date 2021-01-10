@@ -22,8 +22,10 @@ public class TreeSolution {
         int[][] matrix = new int[][]{{2147483647, -1, 0, 2147483647},
                 {2147483647, 2147483647, 2147483647, -1}, {2147483647, -1, 2147483647, -1}, {0, -1, 2147483647, 2147483647}};
         int[] preorder = new int[]{1, 3, 2};
-        solution.verifyPreorder(preorder);
-
+        TreeNode root = new TreeNode(2);
+        root.left = new TreeNode(1);
+        double tmp = 2147483647.0;
+        solution.closestValue(root, tmp);
     }
 
     /**
@@ -722,8 +724,8 @@ public class TreeSolution {
             return;
         }
 
-            intervalBinaryTreePaths(result, root.left, s);
-            intervalBinaryTreePaths(result, root.right, s);
+        intervalBinaryTreePaths(result, root.left, s);
+        intervalBinaryTreePaths(result, root.right, s);
 
     }
 
@@ -822,6 +824,82 @@ public class TreeSolution {
      */
     public List<List<Integer>> verticalOrder(TreeNode root) {
         // write your code here
+        return null;
+    }
+
+    /**
+     * 270
+     * Closest Binary Search Tree Value
+     *
+     * @param root:   the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     */
+    public int closestValue(TreeNode root, double target) {
+        // write your code here
+        double result = 0;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode p = root;
+        TreeNode prev = null;
+        while (!stack.isEmpty() || p != null) {
+            while (p != null) {
+                stack.push(p);
+                p = p.left;
+            }
+            p = stack.pop();
+            if (prev == null) {
+                result = p.val;
+            } else {
+                result = Math.abs(result - target) - Math.abs(p.val - target) < 0 ? result : p.val;
+            }
+            prev = p;
+            p = p.right;
+        }
+        return (int) result;
+    }
+
+
+    public int closestValueV2(TreeNode root, double target) {
+        double result = 0;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode pop = stack.pop();
+            if (pop.val == target) {
+                return (int) target;
+            }
+            double diff = Math.abs(pop.val - target);
+            double prev = Math.abs(result - target);
+            if (diff < prev) {
+                result = pop.val;
+                if (pop.right != null) {
+                    stack.push(pop.right);
+                }
+            } else {
+                if (pop.left != null) {
+                    stack.push(pop.left);
+                }
+            }
+        }
+        return (int) result;
+    }
+
+
+    /**
+     * todo
+     * 272 Closest Binary Search Tree Value II
+     *
+     * @param root:   the given BST
+     * @param target: the given target
+     * @param k:      the given k
+     * @return: k values in the BST that are closest to the target
+     */
+    public List<Integer> closestKValuesII(TreeNode root, double target, int k) {
+        // write your code here
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, Comparator.reverseOrder());
         return null;
     }
 

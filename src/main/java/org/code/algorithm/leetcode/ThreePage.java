@@ -847,7 +847,18 @@ public class ThreePage {
      * @return: an integer, the total number of ways
      */
     public int numWays(int n, int k) {
-        // write your code here
+        int[][] dp = new int[n + 1][k + 1];
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (i == 1) {
+                    dp[i][j] = j;
+                } else if (j == 1) {
+                    dp[i][j] = i;
+                }
+
+            }
+        }
         return -1;
     }
 

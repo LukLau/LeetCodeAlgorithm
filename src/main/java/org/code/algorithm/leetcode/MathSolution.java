@@ -20,7 +20,7 @@ public class MathSolution {
 
         int n = 19;
 
-        solution.isHappy(8);
+        solution.numSquares(12);
     }
 
 
@@ -606,6 +606,43 @@ public class MathSolution {
             return false;
         }
         return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
+    }
+
+
+    /**
+     * todo
+     * 273. Integer to English Words
+     *
+     * @param num
+     * @return
+     */
+    public String numberToWords(int num) {
+        return null;
+    }
+
+
+    /**
+     * 279. Perfect Squares
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            int tmp = i;
+            for (int j = 1; j * j <= i; j++) {
+                int key1 = dp[i - j * j];
+                tmp = Math.min(tmp, key1 + 1);
+            }
+            dp[i] = tmp;
+        }
+        return dp[n];
     }
 
 
