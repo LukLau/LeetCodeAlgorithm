@@ -758,7 +758,7 @@ public class TreeSolution {
      * @param p:    You need find the successor node of p.
      * @return: Successor of p.
      */
-    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    public TreeNode inorderSuccessorV2(TreeNode root, TreeNode p) {
         if (root == null || p == null) {
             return null;
         }
@@ -780,6 +780,33 @@ public class TreeSolution {
             current = current.right;
         }
         return null;
+    }
+
+
+    private TreeNode inorderSuccessorResult = null;
+
+    /**
+     * 285 Inorder Successor in BST
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        intervalInorderSuccessor(root,p);
+        return inorderSuccessorResult;
+    }
+
+    private void intervalInorderSuccessor(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return;
+        }
+        if (root.val > p.val) {
+            inorderSuccessorResult = root;
+            intervalInorderSuccessor(root.left, p);
+            return;
+        }
+        intervalInorderSuccessor(root.right, p);
+
     }
 
     // ---二叉树连续序列问题---//

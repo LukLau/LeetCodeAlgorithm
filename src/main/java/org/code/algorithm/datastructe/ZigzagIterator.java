@@ -1,5 +1,7 @@
 package org.code.algorithm.datastructe;
 
+import jdk.nashorn.internal.ir.ReturnNode;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,13 +11,11 @@ import java.util.List;
  */
 public class ZigzagIterator {
 
+    private final Iterator<Integer> iterator1;
 
-    private Iterator<Integer> iterator1;
+    private final Iterator<Integer> iterator2;
 
-    private Iterator<Integer> iterator2;
-
-    private boolean leftToRight = true;
-
+    private volatile boolean leftToRight = true;
     /**
      * @param v1: A 1d vector
      * @param v2: A 1d vector
@@ -23,6 +23,7 @@ public class ZigzagIterator {
     public ZigzagIterator(List<Integer> v1, List<Integer> v2) {
         iterator1 = v1.iterator();
         iterator2 = v2.iterator();
+
 
     }
 
@@ -36,16 +37,14 @@ public class ZigzagIterator {
         if (!iterator2.hasNext()) {
             return iterator1.next();
         }
-        int result;
-
-        if (leftToRight) {
-            result = iterator1.next();
-        } else {
-            result = iterator2.next();
-        }
+        boolean tmp = leftToRight;
         leftToRight = !leftToRight;
-        // write your code here
-        return result;
+        if (tmp) {
+            return iterator1.next();
+        } else {
+            return iterator2.next();
+
+        }
     }
 
     /**
