@@ -323,30 +323,31 @@ public class RecursionSolution {
         if (num == null || num.isEmpty()) {
             return new ArrayList<>();
         }
+        List<String> result = new ArrayList<>();
+        intervalAddOperators(result, "", num, 0, 0, 0, target);
         return null;
     }
 
-    private List<String> intervalAddOperators(String num, int target) {
-        List<String> result = new ArrayList<>();
-        int size = num.length();
-        if (size == 1) {
-            result.add(num);
-            return result;
+    private void intervalAddOperators(List<String> result, String s, String num, int pos, long eval, int target, int i) {
+        if (pos == num.length() && eval == target) {
+            result.add(s);
+            return;
         }
-        for (int i = 1; i <= size - 1; i++) {
-            String s1 = num.substring(0, i);
-            String s2 = num.substring(i);
-            List<String> leftNums = intervalAddOperators(s1, target);
-            List<String> rightNums = intervalAddOperators(s2, target);
-            for (String leftNum : leftNums) {
-                for (String rightNum : rightNums) {
-                    result.add(leftNum + "+" + rightNum);
-                    result.add(leftNum + "*" + rightNum);
-                    result.add(leftNum + "-" + rightNum);
-                }
+        for (int i = pos; i < num.length(); i++) {
+            String tmp = s.substring(pos, i + 1);
+            long parse = Long.parseLong(tmp);
+            if (i == 0) {
+
+            } else {
+
+                intervalAddOperators(result, s + "+" + tmp, num, i + 1, eval + parse, target, target);
+
+                intervalAddOperators(result, s + "-" + tmp, num, i + 1, eval - parse, target, target);
+
+                intervalAddOperators(result, s + "*" + tmp, num, i + 1, eval -);
             }
+
         }
-        return result;
     }
 
 

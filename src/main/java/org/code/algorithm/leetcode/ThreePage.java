@@ -869,7 +869,7 @@ public class ThreePage {
      * @param nums
      */
     public void wiggleSort(int[] nums) {
-        if (nums == null || nums.length == 0) {
+        if (nums == null || nums.length <= 1) {
             return;
         }
         Arrays.sort(nums);
