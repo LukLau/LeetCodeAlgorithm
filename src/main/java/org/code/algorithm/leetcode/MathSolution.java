@@ -519,7 +519,30 @@ public class MathSolution {
         }
         int row = grid.length;
         int column = grid[0].length;
-        return -1;
+        int[] rowIndex = new int[row];
+        int[] columnIndex = new int[column];
+        for (int i = 0; i < grid.length; i++) {
+            int[] item = grid[i];
+            rowIndex[i] = item[0];
+            rowIndex[i] = item[1];
+        }
+        Arrays.sort(rowIndex);
+        Arrays.sort(columnIndex);
+        int result = 0;
+        result += intervalDistance(rowIndex,0, rowIndex.length - 1);
+        result += intervalDistance(rowIndex,0, rowIndex.length - 1);
+
+        return result;
+    }
+
+    private int intervalDistance(int[] nums, int start, int end) {
+        int result = 0;
+        while (start < end) {
+            result += nums[end] - nums[start];
+            start++;
+            end--;
+        }
+        return result;
     }
 
 
@@ -644,7 +667,6 @@ public class MathSolution {
         }
         return dp[n];
     }
-
 
 
 }

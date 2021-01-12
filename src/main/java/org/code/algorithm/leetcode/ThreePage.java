@@ -20,9 +20,7 @@ public class ThreePage {
 
         int[][] board = new int[][]{{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
 
-        int[] largest = new int[]{3, 2, 1, 5, 6, 4};
-        int[] three = new int[]{-2, 0, -1, 3};
-        page.threeSumSmaller(three, 2);
+        page.wordPattern("abc", "b c a");
     }
 
 
@@ -904,7 +902,6 @@ public class ThreePage {
                 }
             }
         }
-
     }
 
     private void intervalWallsAndGates(int[][] rooms, int i, int j, int distance) {
@@ -914,7 +911,7 @@ public class ThreePage {
         if (rooms[i][j] == -1) {
             return;
         }
-        if (rooms[i][j] > distance || rooms[i][j] == distance) {
+        if (rooms[i][j] == distance || rooms[i][j] > distance) {
             rooms[i][j] = distance;
             intervalWallsAndGates(rooms, i - 1, j, distance + 1);
             intervalWallsAndGates(rooms, i + 1, j, distance + 1);
@@ -951,15 +948,18 @@ public class ThreePage {
         if (board == null || board.length == 0) {
             return;
         }
-        int row = board.length;
-        int column = board[0].length;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                intervalGameOfLife(i, j, board);
+        int m = board.length;
+        int n = board[0].length;
+        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] >= 0) {
+                    intervalGameOfLine(i, j, board, matrix);
+                }
             }
         }
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 if (board[i][j] > 0) {
                     board[i][j] = 1;
                 } else {
@@ -969,36 +969,24 @@ public class ThreePage {
         }
     }
 
-    private void intervalGameOfLife(int currentRow, int currentColumn, int[][] board) {
-        int liveCount = 0;
-        int[][] matrix = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        for (int i = 0; i < matrix.length; i++) {
-            int row = currentRow + matrix[i][0];
-            int column = currentColumn + matrix[i][1];
-            if (row < 0 || row >= board.length || column < 0 || column >= board[currentRow].length) {
+    private void intervalGameOfLine(int currentRow, int currentColumn, int[][] board, int[][] matrix) {
+        int liveCellCount = 0;
+        for (int[] row : matrix) {
+            int i = currentRow + row[0];
+            int j = currentColumn + row[1];
+            if (i < 0 || i >= board.length || j < 0 || j >= board[i].length) {
                 continue;
             }
-            if (Math.abs(board[row][column]) == 1) {
-                liveCount++;
+            int cell = board[i][j];
+            if (Math.abs(cell) == 1) {
+                liveCellCount++;
             }
         }
-//        int[][] line = new int[][]{z};
-//        for (int i = 0; i < line.length; i++) {
-//            int row = currentRow + line[i][0];
-//            int column = currentColumn + line[i][1];
-//            if (row < 0 || row >= board.length || column < 0 || column >= board[currentRow].length) {
-//                continue;
-//            }
-//            if (board[row][column] == 1) {
-//                liveCount++;
-//            }
-//        }
-        boolean currentLive = board[currentRow][currentColumn] == 1;
-
-        if (currentLive && (liveCount < 2 || liveCount > 3)) {
+        boolean live = board[currentRow][currentColumn] == 1;
+        if (live && (liveCellCount < 2 || liveCellCount > 3)) {
             board[currentRow][currentColumn] = -1;
         }
-        if (board[currentRow][currentColumn] == 0 && liveCount == 3) {
+        if (board[currentRow][currentColumn] == 0 && liveCellCount == 3) {
             // 2 signifies the cell is now live but was originally dead.
             board[currentRow][currentColumn] = 2;
         }
@@ -1006,10 +994,11 @@ public class ThreePage {
 
 
     /**
+     * todo
      * 290. Word Pattern
      *
      * @param pattern
-     * @param str
+     * @param s
      * @return
      */
     public boolean wordPattern(String pattern, String str) {

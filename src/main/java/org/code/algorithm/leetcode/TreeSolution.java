@@ -787,12 +787,13 @@ public class TreeSolution {
 
     /**
      * 285 Inorder Successor in BST
+     *
      * @param root
      * @param p
      * @return
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        intervalInorderSuccessor(root,p);
+        intervalInorderSuccessor(root, p);
         return inorderSuccessorResult;
     }
 
@@ -817,28 +818,28 @@ public class TreeSolution {
      * @param root: the root of binary tree
      * @return: the length of the longest consecutive sequence path
      */
+    private int longestV2 = 0;
+
     public int longestConsecutive2(TreeNode root) {
         if (root == null) {
             return 0;
         }
-        intervalLongestConsecutive2(root, root.val, 0);
-        return maxConsecutiveResult;
-        // write your code here
+        intervalConsecutive(root, root.val);
+        return longestV2;
     }
 
-    private int intervalLongestConsecutive2(TreeNode root, int val, int result) {
+    private int intervalConsecutive(TreeNode root, int val) {
         if (root == null) {
             return 0;
         }
-        if (root.val == val + 1) {
-            result++;
-        } else {
-            result = 1;
+        int left = intervalConsecutive(root.left, root.val);
+
+        int right = intervalConsecutive(root.right, root.val);
+
+
+        if (Math.abs(root.val - val) == 1) {
         }
-        maxConsecutiveResult = Math.max(result, maxConsecutiveResult);
-        intervalLongestConsecutive2(root.left, root.val, result);
-        intervalLongestConsecutive2(root.right, root.val, result);
-        return result;
+        return 0;
     }
 
 

@@ -1,5 +1,7 @@
 package org.code.algorithm.datastructe;
 
+import java.util.LinkedList;
+
 /**
  * 297. Serialize and Deserialize Binary Tree
  *
@@ -21,7 +23,7 @@ public class Codec {
 
     private String intervalSerialize(StringBuilder builder, TreeNode root) {
         if (root == null) {
-            builder.append("#");
+            builder.append("#,");
             return builder.toString();
         }
         builder.append(root.val).append(",");
@@ -35,21 +37,23 @@ public class Codec {
         if (data == null || data.isEmpty()) {
             return null;
         }
-        String[] words = data.split(",");
-        return intervalDeserialize(words);
+        String[] split = data.split(",");
+        LinkedList<String> linkedList = new LinkedList<>();
+        for (String word : split) {
+            linkedList.offer(word);
+        }
+        return intervalDfs(linkedList);
     }
 
-    private TreeNode intervalDeserialize(String[] words) {
-        index++;
-        if (index == words.length) {
+    private TreeNode intervalDfs(LinkedList<String> linkedList) {
+        String poll = linkedList.poll();
+        if ("#".equals(poll)) {
             return null;
         }
-        if (words[index].equals("#")) {
-            return null;
-        }
-        TreeNode root = new TreeNode(Integer.parseInt(words[index]));
-        root.left = intervalDeserialize(words);
-        root.right = intervalDeserialize(words);
+        TreeNode root = new TreeNode(Integer.parseInt(poll));
+        root.left = intervalDfs(linkedList);
+        root.right = intervalDfs(linkedList);
         return root;
     }
+
 }
