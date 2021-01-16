@@ -8,16 +8,13 @@ import java.util.Map;
  * @date 2020/9/5
  */
 public class TwoSumIII {
+    private final Map<Integer, Integer> map = new HashMap<>();
 
-    private Map<Integer, Integer> map = new HashMap<>();
 
     public static void main(String[] args) {
         TwoSumIII sumIII = new TwoSumIII();
         sumIII.add(2);
-        sumIII.add(3);
-//        sumIII.find(4);
-//        sumIII.find(5);
-//        sumIII.find(6);
+        sumIII.add(3);;
         sumIII.add(3);
         sumIII.find(6);
     }
@@ -28,8 +25,9 @@ public class TwoSumIII {
      */
     public void add(int number) {
         Integer count = map.getOrDefault(number, 0);
-        count++;
-        map.put(number, count);
+
+        map.put(number, count + 1);
+
         // write your code here
     }
 
@@ -40,14 +38,12 @@ public class TwoSumIII {
     public boolean find(int value) {
         // write your code here
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            Integer number = entry.getKey();
-
-            int remainValue = value - number;
-
-            if (remainValue == number && entry.getValue() > 1) {
-                return true;
-            }
-            if (remainValue != number && map.containsKey(remainValue)) {
+            Integer key = entry.getKey();
+            int remain = value - key;
+            if (remain == key) {
+                Integer count = entry.getValue();
+                return count >= 2;
+            } else if (map.containsKey(remain)){
                 return true;
             }
         }

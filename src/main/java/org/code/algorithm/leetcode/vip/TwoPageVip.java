@@ -1,5 +1,6 @@
 package org.code.algorithm.leetcode.vip;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.code.algorithm.datastructe.TreeNode;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class TwoPageVip {
 
         int upper = Integer.MAX_VALUE;
 
-        List<String> missingRanges = vip.findMissingRanges(nums, lower, upper);
+        System.out.println(vip.isOneEditDistance("aDb", "adb"));
 
 //        System.out.println(missingRanges);
 
@@ -131,40 +132,25 @@ public class TwoPageVip {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        HashMap<Character, Integer> map = new HashMap<>();
-
-        int left = 0;
-
+        Map<Character, Integer> map = new HashMap<>();
         int result = 0;
+        int left = 0;
+        char[] words = s.toCharArray();
 
-        int length = s.length();
+        for (int i = 0; i < words.length; i++) {
+            char word = words[i];
 
-        for (int i = 0; i < length; i++) {
-            char word = s.charAt(i);
-
-            Integer number = map.getOrDefault(word, 0);
-
-            number++;
-
-            map.put(word, number);
+            map.put(word, i);
 
             while (map.size() > 2) {
+                Integer index = map.get(words[left]);
 
-                char leftWord = s.charAt(left);
-
-                Integer leftWordNum = map.get(leftWord);
-
-                leftWordNum--;
-
-                map.put(leftWord, leftWordNum);
-
-                if (leftWordNum == 0) {
-                    map.remove(leftWord);
+                if (index == left) {
+                    map.remove(words[left]);
                 }
                 left++;
+                result = Math.max(result, i - left + 1);
             }
-
-            result = Math.max(result, i - left + 1);
         }
         return result;
     }
@@ -206,34 +192,34 @@ public class TwoPageVip {
         if (s == null || t == null) {
             return false;
         }
-        if (s.equals(t)) {
-            return false;
-        }
         int m = s.length();
         int n = t.length();
+
         int diff = Math.abs(m - n);
         if (diff > 1) {
+            return false;
+        }
+        if (s.equals(t)) {
             return false;
         }
         if (m < n) {
             return isOneEditDistance(t, s);
         }
-        if (diff == 1) {
-            for (int i = 0; i < n; i++) {
+        int count = 0;
+        if (diff == 0) {
+            for (int i = 0; i < m; i++) {
                 if (s.charAt(i) != t.charAt(i)) {
-                    return s.substring(i + 1).equals(t.substring(i));
+                    count++;
                 }
-
+                if (count > 1) {
+                    return false;
+                }
             }
+            return count <= 1;
         }
-        int diffWord = 0;
-
         for (int i = 0; i < n; i++) {
             if (s.charAt(i) != t.charAt(i)) {
-                diffWord++;
-            }
-            if (diffWord > 1) {
-                return false;
+                return s.substring(i + 1).equals(t.substring(i));
             }
         }
         return true;
@@ -243,18 +229,20 @@ public class TwoPageVip {
         if (s == null || t == null) {
             return false;
         }
+        if (s.equals(t)) {
+            return false;
+        }
         int m = s.length();
-
         int n = t.length();
-
-        for (int i = 0; i < Math.min(m, n); i++) {
+        int end = Math.min(m, n);
+        for (int i = 0; i < end; i++) {
             if (s.charAt(i) != t.charAt(i)) {
                 if (m == n) {
                     return s.substring(i + 1).equals(t.substring(i + 1));
-                } else if (m < n) {
-                    return s.substring(i).equals(t.substring(i + 1));
-                } else {
+                } else if (m > n) {
                     return s.substring(i + 1).equals(t.substring(i));
+                } else {
+                    return s.substring(i).equals(t.substring(i + 1));
                 }
             }
         }
@@ -387,30 +375,7 @@ public class TwoPageVip {
     }
 
 
-    /**
-     * 169 摩尔投票法
-     *
-     * @param nums
-     * @return
-     */
-    public int majorityElement(int[] nums) {
-        int candidate = nums[0];
-        int count = 1;
-        for (int i = 1; i < nums.length; i++) {
-            int value = nums[i];
-            if (value == candidate) {
-                count++;
-            } else {
-                count--;
-                if (count == 0) {
-                    count = 1;
-                    candidate = value;
-                }
-            }
-        }
-        return candidate;
 
-    }
 
 
 }

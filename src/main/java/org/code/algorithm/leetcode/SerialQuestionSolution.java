@@ -1,5 +1,6 @@
 package org.code.algorithm.leetcode;
 
+import org.code.algorithm.datastructe.Interval;
 import org.code.algorithm.datastructe.ListNode;
 
 import java.util.*;
@@ -13,15 +14,30 @@ public class SerialQuestionSolution {
 
     // ---最长无重复子串问题--- //
 
+    // ---O log(N)算法---- //
+
     public static void main(String[] args) {
         SerialQuestionSolution solution = new SerialQuestionSolution();
-//        char[][] matrix = new char[][]{{'1', '0', '1', '1'}, {'1', '1', '0', '0'}};
-//        solution.maximalRectangle(matrix);
-        int[] nums = new int[]{2, 3, 4, 5, 1};
-        solution.findMin(nums);
+        String s = "3+2*2";
+
+        solution.generatePalindromes("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
     }
 
-    // ---O log(N)算法---- //
+    //计算最大质因数
+    public static int getTheLargestPrimeFactor(int n) {
+        int returnFactor = 1;
+        for (int factor = 2; n > 1; factor++) {
+            if (n % factor == 0) {
+                n = n / factor;
+                returnFactor = factor;
+                while (n % factor == 0) {
+                    n = n / factor;
+                }
+            }
+        }
+        return returnFactor;
+    }
 
     /**
      * 3. Longest Substring Without Repeating Characters
@@ -48,57 +64,6 @@ public class SerialQuestionSolution {
 
     }
 
-
-    /**
-     * 34. Find First and Last Position of Element in Sorted Array
-     *
-     * @param nums
-     * @param target
-     * @return
-     */
-    public int[] searchRange(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return new int[]{-1, -1};
-        }
-        int[] result = new int[2];
-        int left = 0;
-        int right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        if (nums[left] != target) {
-            return new int[]{-1, -1};
-        }
-        result[0] = left;
-        right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2 + 1;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else {
-                left = mid;
-            }
-        }
-        result[1] = left;
-
-        return result;
-    }
-
-
-    public int[] searchRangeV2(int[] nums, int target) {
-        if (nums == null || nums.length == 0) {
-            return new int[]{-1, -1};
-        }
-        int firstIndex = searchLeftIndex(nums, target, 0, nums.length - 1);
-        return nums;
-    }
-
-
     public int searchInsert(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
             return 0;
@@ -120,6 +85,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // --查找数组中的最小值---- //
+
     private int searchLeftIndex(int[] nums, int target, int left, int right) {
         if (left > right) {
             return -1;
@@ -140,7 +107,6 @@ public class SerialQuestionSolution {
         return -1;
     }
 
-
     /**
      * 4. Median of Two Sorted Arrays
      *
@@ -151,9 +117,6 @@ public class SerialQuestionSolution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return -1;
     }
-
-
-    // --查找数组中的最小值---- //
 
     /**
      * 153. Find Minimum in Rotated Sorted Array
@@ -179,6 +142,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // --正则表达式匹配问题 //
+
     /**
      * 154. Find Minimum in Rotated Sorted Array II
      *
@@ -202,7 +167,6 @@ public class SerialQuestionSolution {
         return nums[left];
     }
 
-
     /**
      * 162. Find Peak Element
      *
@@ -210,9 +174,6 @@ public class SerialQuestionSolution {
      * @return
      */
     public int findPeakElement(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return -1;
-        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -223,11 +184,8 @@ public class SerialQuestionSolution {
                 right = mid;
             }
         }
-        return left;
+        return nums[left];
     }
-
-
-    // --正则表达式匹配问题 //
 
     /**
      * 10. Regular Expression Matching
@@ -265,6 +223,8 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
+
+    // --旋转数组系列问题-- //
 
     /**
      * 45. Jump Game II
@@ -307,9 +267,6 @@ public class SerialQuestionSolution {
         }
         return reach >= nums.length - 1;
     }
-
-
-    // --旋转数组系列问题-- //
 
     /**
      * 30. Substring with Concatenation of All Words
@@ -387,7 +344,6 @@ public class SerialQuestionSolution {
         return nums[left] == target;
     }
 
-
     /**
      * 23. Merge k Sorted Lists
      *
@@ -420,6 +376,7 @@ public class SerialQuestionSolution {
         return root.next;
     }
 
+    // ---排列组合问题---- //
 
     public ListNode reverseKGroup(ListNode head, int k) {
         if (head == null || head.next == null) {
@@ -443,7 +400,6 @@ public class SerialQuestionSolution {
         }
         return head;
     }
-
 
     /**
      * todo
@@ -474,8 +430,6 @@ public class SerialQuestionSolution {
         return currentNode;
     }
 
-    // ---排列组合问题---- //
-
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
@@ -503,7 +457,6 @@ public class SerialQuestionSolution {
         }
     }
 
-
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         if (candidates == null || candidates.length == 0) {
             return new ArrayList<>();
@@ -528,7 +481,6 @@ public class SerialQuestionSolution {
             tmp.remove(tmp.size() - 1);
         }
     }
-
 
     public List<List<Integer>> permute(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -591,7 +543,6 @@ public class SerialQuestionSolution {
 
     }
 
-
     /**
      * todo 60. Permutation Sequence
      *
@@ -652,13 +603,18 @@ public class SerialQuestionSolution {
         }
     }
 
-
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
     public List<List<Integer>> subsetsWithDup(int[] nums) {
         if (nums == null || nums.length == 0) {
             return new ArrayList<>();
         }
-        Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
         intervalSubsetsWithDup(result, new ArrayList<>(), 0, nums);
         return result;
     }
@@ -675,9 +631,65 @@ public class SerialQuestionSolution {
         }
     }
 
+    /**
+     * 216. Combination Sum III
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        intervalCombinationSum3(result, new ArrayList<>(), 1, k, n);
+        return result;
+    }
+
+    private void intervalCombinationSum3(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int k, int value) {
+        if (tmp.size() == k && value == 0) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= 9 && i <= value; i++) {
+            tmp.add(i);
+            intervalCombinationSum3(result, tmp, i + 1, k, value - i);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * todo
+     * 254 Factor Combinations
+     *
+     * @param n: a integer
+     * @return: return a 2D array
+     */
+    public List<List<Integer>> getFactors(int n) {
+        // write your code here
+        if (n <= 0) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        intervalGetFactors(result, new ArrayList<>(), 2, n / 2, 1, n);
+        return result;
+    }
+
 
     // ---- //
 
+    private void intervalGetFactors(List<List<Integer>> result, ArrayList<Integer> tmp, int start, int end, int value, int n) {
+        if (value == n) {
+            result.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = start; i <= end && value * i <= n; i++) {
+            if (n % i != 0) {
+                continue;
+            }
+            tmp.add(i);
+            intervalGetFactors(result, tmp, i, end, value * i, n);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
 
     /**
      * @param nums
@@ -702,7 +714,6 @@ public class SerialQuestionSolution {
         nums[i] = nums[j];
         nums[j] = val;
     }
-
 
     public int trap(int[] height) {
         if (height == null || height.length == 0) {
@@ -762,6 +773,8 @@ public class SerialQuestionSolution {
     }
 
 
+    // ---跳跃格子游戏系列--- //
+
     public String multiply(String num1, String num2) {
         if (num1 == null && num2 == null) {
             return "0";
@@ -787,10 +800,6 @@ public class SerialQuestionSolution {
         return builder.length() == 0 ? "0" : builder.toString();
     }
 
-
-    // ---跳跃格子游戏系列--- //
-
-
     public int jump(int[] nums) {
         int step = 0;
         int currentIndex = 0;
@@ -805,31 +814,13 @@ public class SerialQuestionSolution {
         return step;
     }
 
-
-    public void rotate(int[][] matrix) {
-        if (matrix == null || matrix.length == 0) {
-            return;
-        }
-        int row = matrix.length;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < i; j++) {
-                swapMatrix(matrix, i, j);
-            }
-        }
-        for (int[] ints : matrix) {
-            for (int j = 0; j <= (ints.length - 1) / 2; j++) {
-                swap(ints, j, (ints.length - 1) - j);
-            }
-        }
-    }
+    // --数学原理--- //
 
     private void swapMatrix(int[][] matrix, int i, int j) {
         int val = matrix[i][j];
         matrix[i][j] = matrix[j][i];
         matrix[j][i] = val;
     }
-
-    // --数学原理--- //
 
     public double myPow(double x, int n) {
         if (n == 0) {
@@ -844,7 +835,6 @@ public class SerialQuestionSolution {
         }
         return n % 2 != 0 ? x * myPow(x * x, n / 2) : myPow(x * x, n / 2);
     }
-
 
     /**
      * 牛顿二分法
@@ -862,6 +852,8 @@ public class SerialQuestionSolution {
 
     }
 
+
+    // ---- 八皇后问题----//
 
     /**
      * todo
@@ -920,10 +912,6 @@ public class SerialQuestionSolution {
         return seenAfterE && seenNumber;
     }
 
-
-    // ---- 八皇后问题----//
-
-
     public List<List<String>> solveNQueens(int n) {
         if (n <= 0) {
             return new ArrayList<>();
@@ -979,7 +967,6 @@ public class SerialQuestionSolution {
         return true;
     }
 
-
     public int totalNQueens(int n) {
         if (n <= 0) {
             return 0;
@@ -1004,6 +991,8 @@ public class SerialQuestionSolution {
         return count;
     }
 
+    // --合并区间问题- //
+
     private boolean validTotalNQueens(int[] dp, int row, int col) {
         for (int i = row - 1; i >= 0; i--) {
             if (dp[i] == col || Math.abs(dp[i] - col) == Math.abs(i - row)) {
@@ -1012,9 +1001,6 @@ public class SerialQuestionSolution {
         }
         return true;
     }
-
-    // --合并区间问题- //
-
 
     public int[][] merge(int[][] intervals) {
         if (intervals == null || intervals.length == 0) {
@@ -1031,6 +1017,8 @@ public class SerialQuestionSolution {
         }
         return result.toArray(new int[][]{});
     }
+
+    // --最小路径-- //
 
     /**
      * 57. Insert Interval
@@ -1063,7 +1051,8 @@ public class SerialQuestionSolution {
         return ans.toArray(new int[][]{});
     }
 
-    // --最小路径-- //
+
+    // --链表相关接口-- //
 
     public int minPathSum(int[][] grid) {
         if (grid == null || grid.length == 0) {
@@ -1087,9 +1076,6 @@ public class SerialQuestionSolution {
         }
         return dp[row - 1][column - 1];
     }
-
-
-    // --链表相关接口-- //
 
     /**
      * 61. Rotate List
@@ -1119,42 +1105,6 @@ public class SerialQuestionSolution {
         current.next = null;
         return head;
     }
-
-
-    /**
-     * 86. Partition List
-     *
-     * @param head
-     * @param x
-     * @return
-     */
-    public ListNode partition(ListNode head, int x) {
-        if (head == null) {
-            return null;
-        }
-        ListNode smallList = new ListNode(0);
-        ListNode dummy1 = smallList;
-        ListNode bigList = new ListNode(0);
-        ListNode dummy2 = bigList;
-        while (head != null) {
-            if (head.val < x) {
-                dummy1.next = head;
-                dummy1 = dummy1.next;
-            } else {
-                dummy2.next = head;
-                dummy2 = dummy2.next;
-            }
-            head = head.next;
-        }
-        dummy1.next = bigList.next;
-
-        bigList.next = null;
-
-        dummy2.next = null;
-
-        return smallList.next;
-    }
-
 
     /**
      * 92. Reverse Linked List II
@@ -1192,6 +1142,22 @@ public class SerialQuestionSolution {
 
 
     // ----- //
+
+    /**
+     * 237. Delete Node in a Linked List
+     *
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        if (node.next.next == null) {
+            node.val = node.next.val;
+            node.next = null;
+        } else {
+            node.val = node.next.val;
+            node.next = node.next.next;
+        }
+
+    }
 
     /**
      * 68. Text Justification
@@ -1258,7 +1224,6 @@ public class SerialQuestionSolution {
         return result.toString();
     }
 
-
     public List<String> fullJustifyV2(String[] words, int maxWidth) {
         if (words == null || words.length == 0 || maxWidth <= 0) {
             return new ArrayList<>();
@@ -1297,6 +1262,7 @@ public class SerialQuestionSolution {
         return result;
     }
 
+    // --编辑距离问题- //
 
     public String simplifyPath(String path) {
         if (path == null || path.isEmpty()) {
@@ -1321,8 +1287,6 @@ public class SerialQuestionSolution {
         }
         return result.toString();
     }
-
-    // --编辑距离问题- //
 
     public int minDistance(String word1, String word2) {
         if (word1 == null || word2 == null) {
@@ -1349,7 +1313,6 @@ public class SerialQuestionSolution {
         return dp[m][n];
     }
 
-
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0) {
             return false;
@@ -1374,6 +1337,30 @@ public class SerialQuestionSolution {
 
     // ---双指针问题系列-- //
 
+    public boolean searchMatrixII(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int row = matrix.length;
+        int column = matrix[0].length;
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < column) {
+            int val = matrix[i][j];
+            if (val == target) {
+                return true;
+            } else if (val < target) {
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return false;
+
+    }
+
+
+    // --滑动窗口问题- //
 
     public void sortColors(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -1390,9 +1377,6 @@ public class SerialQuestionSolution {
             }
         }
     }
-
-
-    // --滑动窗口问题- //
 
     public String minWindow(String s, String t) {
         if (s == null || t == null) {
@@ -1431,6 +1415,39 @@ public class SerialQuestionSolution {
 
     // --dfs优先遍历----- //
 
+    /**
+     * 239. Sliding Window Maximum
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return new int[]{};
+        }
+        List<Integer> result = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index = i - k + 1;
+            if (!linkedList.isEmpty() && linkedList.peek() < index) {
+                linkedList.poll();
+            }
+            while (!linkedList.isEmpty() && nums[linkedList.getLast()] <= nums[i]) {
+                linkedList.pollLast();
+            }
+            linkedList.offer(i);
+            if (index >= 0) {
+                result.add(nums[linkedList.peek()]);
+            }
+        }
+        int[] tmp = new int[result.size()];
+        for (int i = 0; i < tmp.length; i++) {
+            tmp[i] = result.get(i);
+        }
+        return tmp;
+    }
+
     public boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0) {
             return false;
@@ -1448,6 +1465,9 @@ public class SerialQuestionSolution {
         return false;
 
     }
+
+
+    // --唯一路径问题-- //
 
     private boolean intervalExist(int i, int j, int k, char[][] board, String word, boolean[][] used) {
         if (k == word.length()) {
@@ -1467,10 +1487,6 @@ public class SerialQuestionSolution {
 
         return false;
     }
-
-
-    // --唯一路径问题-- //
-
 
     /**
      * 62. Unique Paths
@@ -1492,7 +1508,6 @@ public class SerialQuestionSolution {
         }
         return dp[n - 1];
     }
-
 
     /**
      * 63. Unique Paths II
@@ -1521,6 +1536,7 @@ public class SerialQuestionSolution {
         return dp[column - 1];
     }
 
+    // --移除重复元素链表 - //
 
     /**
      * 64. Minimum Path Sum
@@ -1547,8 +1563,6 @@ public class SerialQuestionSolution {
         return dp[column - 1];
     }
 
-    // --移除重复元素链表 - //
-
     public ListNode deleteDuplicates(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -1563,6 +1577,8 @@ public class SerialQuestionSolution {
         head.next = deleteDuplicates(head.next);
         return head;
     }
+
+    //--动态规划问题---- //
 
     public int largestRectangleArea(int[] heights) {
         if (heights == null || heights.length == 0) {
@@ -1585,8 +1601,6 @@ public class SerialQuestionSolution {
         }
         return result;
     }
-
-    //--动态规划问题---- //
 
     /**
      * 85. Maximal Rectangle
@@ -1625,6 +1639,9 @@ public class SerialQuestionSolution {
         }
         return result;
     }
+
+
+    // ---格雷码---- //
 
     public int maximalRectangleV2(char[][] matrix) {
         if (matrix == null || matrix.length == 0) {
@@ -1668,10 +1685,6 @@ public class SerialQuestionSolution {
         return result;
     }
 
-
-    // ---格雷码---- //
-
-
     /**
      * todo
      * 89. Gray Code
@@ -1683,7 +1696,6 @@ public class SerialQuestionSolution {
         List<Integer> result = new ArrayList<>();
         return null;
     }
-
 
     /**
      * 142. Linked List Cycle II
@@ -1706,12 +1718,11 @@ public class SerialQuestionSolution {
                     fast = fast.next;
                     slow = slow.next;
                 }
-                return fast;
+                return slow;
             }
         }
         return null;
     }
-
 
     /**
      * 143. Reorder List
@@ -1728,18 +1739,17 @@ public class SerialQuestionSolution {
             slow = slow.next;
             fast = fast.next.next;
         }
-        ListNode split = slow.next;
+
+        ListNode reverseList = reverseList(slow.next);
 
         slow.next = null;
-
-        ListNode reverseList = reverseList(split);
 
         slow = head;
 
         while (slow != null && reverseList != null) {
             ListNode tmp = slow.next;
 
-            ListNode reverseNext = reverseList.next;
+            ListNode reverseListTmp = reverseList.next;
 
             slow.next = reverseList;
 
@@ -1747,10 +1757,12 @@ public class SerialQuestionSolution {
 
             slow = tmp;
 
-            reverseList = reverseNext;
+            reverseList = reverseListTmp;
         }
-
     }
+
+
+    // ---逆波兰系列--- //
 
     private ListNode reverseList(ListNode head) {
         ListNode prev = null;
@@ -1763,8 +1775,7 @@ public class SerialQuestionSolution {
         return prev;
     }
 
-
-    // ---逆波兰系列--- //
+    // ---计算器系列--- //
 
     /**
      * 逆波兰
@@ -1796,6 +1807,416 @@ public class SerialQuestionSolution {
             }
         }
         return stack.pop();
+    }
+
+    /**
+     * todo
+     * 224. Basic Calculator
+     *
+     * @param s
+     * @return
+     */
+    public int calculate(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        int result = 0;
+        int sign = 1;
+        char[] words = s.toCharArray();
+        Stack<Integer> stack = new Stack<>();
+        int end = 0;
+        while (end < words.length) {
+            char word = words[end];
+            if (Character.isDigit(word)) {
+                int tmp = 0;
+                while (end < words.length && Character.isDigit(words[end])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[end]);
+                    end++;
+                }
+                result += sign * tmp;
+            } else {
+                if (word == '+') {
+                    sign = 1;
+                } else if (word == '-') {
+                    sign = -1;
+                } else if (word == '(') {
+                    stack.push(result);
+                    stack.push(sign);
+                    result = 0;
+                    sign = 1;
+                } else if (word == ')') {
+                    result = stack.pop() * result + stack.pop();
+                }
+            }
+        }
+        return result;
+    }
+
+    // --- 单词最短距离系列 ---//
+
+    /**
+     * todo
+     * 227. Basic Calculator II
+     *
+     * @param s
+     * @return
+     */
+    public int calculateII(String s) {
+        if (s == null) {
+            return 0;
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return 0;
+        }
+        Stack<Integer> stack = new Stack<>();
+        char sign = '+';
+        char[] words = s.toCharArray();
+        int end = 0;
+        int tmp = 0;
+        int len = words.length;
+        while (end < len) {
+            if (Character.isDigit(words[end])) {
+                while (end < len && Character.isDigit(words[end])) {
+                    tmp = tmp * 10 + Character.getNumericValue(words[end]);
+                    end++;
+                }
+            }
+            boolean lastIndex = end == len;
+            if (lastIndex || (!Character.isDigit(words[end]) && words[end] != ' ')) {
+                if (sign == '+') {
+                    stack.push(tmp);
+                } else if (sign == '-') {
+                    stack.push(-tmp);
+                } else if (sign == '*') {
+                    stack.push(stack.pop() * tmp);
+                } else if (sign == '/') {
+                    stack.push(stack.pop() / tmp);
+                }
+            }
+            if (end != len && words[end] != ' ') {
+                sign = words[end];
+                tmp = 0;
+            }
+            end++;
+        }
+        int result = 0;
+        for (Integer num : stack) {
+            result += num;
+        }
+        return result;
+    }
+
+
+    // ---会议室问题---//
+
+    /**
+     * 243 Shortest Word Distance
+     *
+     * @param words: a list of words
+     * @param word1: a string
+     * @param word2: a string
+     * @return: the shortest distance between word1 and word2 in the list
+     */
+    public int shortestDistance(String[] words, String word1, String word2) {
+        // Write your code here
+        int result = Integer.MAX_VALUE;
+        int leftIndex = -1;
+        int rightIndex = -1;
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.equals(word1)) {
+                leftIndex = i;
+            } else if (word.equals(word2)) {
+                rightIndex = i;
+            }
+            if (leftIndex != -1 && rightIndex != -1) {
+                result = Math.min(result, Math.abs(leftIndex - rightIndex));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 252 Meeting Rooms
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: if a person could attend all meetings
+     */
+    public boolean canAttendMeetings(List<Interval> intervals) {
+        if (intervals == null) {
+            return false;
+        }
+        int size = intervals.size();
+        if (size <= 1) {
+            return true;
+        }
+        intervals.sort(Comparator.comparingInt(o -> o.start));
+
+        int endTime = intervals.get(0).end;
+        for (int i = 1; i < size; i++) {
+            Interval current = intervals.get(i);
+            if (endTime <= current.start) {
+                endTime = current.end;
+            } else {
+                return false;
+            }
+        }
+        return true;
+        // Write your code here
+    }
+
+    // --- 画房子问题---//
+
+    /**
+     * todo
+     * 253 Meeting Rooms II
+     *
+     * @param intervals: an array of meeting time intervals
+     * @return: the minimum number of conference rooms required
+     */
+    public int minMeetingRooms(List<Interval> intervals) {
+        // Write your code here
+        if (intervals == null || intervals.isEmpty()) {
+            return 0;
+        }
+        int size = intervals.size();
+
+        if (size == 1) {
+            return size;
+        }
+        intervals.sort(Comparator.comparingInt(interval -> interval.start));
+        PriorityQueue<Interval> priorityQueue = new PriorityQueue<>(Comparator.comparing(item -> item.end));
+        priorityQueue.offer(intervals.get(0));
+        for (int i = 1; i < size; i++) {
+            Interval poll = priorityQueue.poll();
+
+            Interval current = intervals.get(i);
+
+            if (current.start <= poll.end) {
+                priorityQueue.offer(current);
+            } else {
+                poll.end = current.end;
+            }
+            priorityQueue.offer(poll);
+        }
+        return priorityQueue.size();
+    }
+
+    /**
+     * todo
+     * 256 Paint House
+     *
+     * @param costs: n x 3 cost matrix
+     * @return: An integer, the minimum cost to paint all houses
+     */
+    public int minCost(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int row = costs.length - 1;
+
+        for (int i = 1; i < row; i++) {
+            costs[i][0] = Math.min(costs[i - 1][1], costs[i - 1][2]) + costs[i][0];
+            costs[i][1] = Math.min(costs[i - 1][0], costs[i - 1][2]) + costs[i][1];
+            costs[i][2] = Math.min(costs[i - 1][1], costs[i - 1][0]) + costs[i][2];
+        }
+        return Math.min(Math.min(costs[row - 1][0], costs[row - 1][1]), costs[row - 1][2]);
+        // write your code here
+    }
+
+    /**
+     * todo
+     * 265
+     * Paint House II
+     *
+     * @param costs: n x k cost matrix
+     * @return: an integer, the minimum cost to paint all houses
+     */
+    public int minCostII(int[][] costs) {
+        // write your code here
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int row = costs.length;
+        int n = costs[0].length;
+
+        int index1 = -1;
+        int index2 = -1;
+
+        for (int i = 0; i < row; i++) {
+
+            int lastIndex1 = index1;
+
+            int lastIndex2 = index2;
+
+            index1 = -1;
+
+            index2 = -1;
+
+            for (int j = 0; j < n; j++) {
+                if (lastIndex1 >= 0) {
+                    if (j != lastIndex1) {
+                        costs[i][j] += costs[i - 1][lastIndex1];
+                    } else {
+                        costs[i][j] += costs[i - 1][lastIndex2];
+                    }
+                }
+//                if (index1 < 0 || costs[i][j] < costs[i][index1]) {
+//                    index2 = index1;
+//                    index1 = j;
+//                } else if (index2 < 0 || costs[i][j] < costs[i][index2]) {
+//                    index2 = j;
+//                }
+
+                if (index1 < 0 || costs[i][j] < costs[i][index1]) {
+                    index2 = index1;
+                    index1 = j;
+                } else if (index2 < 0 || costs[i][j] < costs[i][index2]) {
+                    index2 = j;
+                }
+            }
+        }
+        return costs[row - 1][index1];
+    }
+
+    /**
+     * 优化上面空间
+     *
+     * @param costs
+     * @return
+     */
+    public int minCostIIV2(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        int column = costs[0].length;
+        int row = costs.length;
+        int minValue1 = -1;
+        int minValue2 = -1;
+        int idx = -1;
+        for (int i = 0; i < row; i++) {
+
+
+            for (int j = 0; j < column; j++) {
+
+//                costs[i][j] += (j == idx ? costs[i-1][j] : costs[]);
+
+
+            }
+        }
+        return -1;
+
+    }
+
+    /**
+     * 266
+     * Palindrome Permutation
+     *
+     * @param s: the given string
+     * @return: if a permutation of the string could form a palindrome
+     */
+    public boolean canPermutePalindrome(String s) {
+        if (s == null || s.isEmpty()) {
+            return false;
+        }
+        char[] words = s.toCharArray();
+        boolean odd = false;
+        Map<Character, Integer> map = getPalindromeMap(words);
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            Integer num = entry.getValue();
+            if (num % 2 == 1) {
+                if (odd) {
+                    return false;
+                }
+                odd = true;
+            }
+        }
+        return true;
+        // write your code here
+    }
+
+    /**
+     * 267	Palindrome Permutation II
+     *
+     * @param s: the given string
+     * @return: all the palindromic permutations (without duplicates) of it
+     */
+    public List<String> generatePalindromes(String s) {
+        // write your code here
+        if (s == null || s.isEmpty()) {
+            return new ArrayList<>();
+        }
+        char[] words = s.toCharArray();
+        Map<Character, Integer> map = getPalindromeMap(words);
+        if (map.size() == 1) {
+            return Arrays.asList(s);
+        }
+        StringBuilder builder = new StringBuilder();
+        Character odd = null;
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            Character character = entry.getKey();
+
+            Integer num = entry.getValue();
+
+            int count = num / 2;
+
+            for (int i = 0; i < count; i++) {
+                builder.append(character);
+            }
+            if (num % 2 != 0) {
+                if (odd != null) {
+                    return new ArrayList<>();
+                }
+                odd = character;
+            }
+        }
+        List<String> palindromes = new ArrayList<>();
+        intervalPalindrome(palindromes, builder.toString().toCharArray(), 0);
+
+        List<String> result = new ArrayList<>();
+        for (String palindrome : palindromes) {
+            StringBuilder reverse = new StringBuilder(palindrome);
+
+            if (odd != null) {
+                palindrome = palindrome + odd;
+            }
+            result.add(palindrome + reverse.reverse().toString());
+        }
+        return result;
+    }
+
+
+    private void intervalPalindrome(List<String> result, char[] words, int start) {
+        if (start == words.length) {
+            result.add(String.valueOf(words));
+            return;
+        }
+        for (int i = start; i < words.length; i++) {
+            if (i > start && words[i] == words[start]) {
+                continue;
+            }
+            swap(words, i, start);
+            intervalPalindrome(result, words, start + 1);
+            swap(words, i, start);
+        }
+    }
+
+    private void swap(char[] words, int i, int j) {
+        char tmp = words[i];
+        words[i] = words[j];
+        words[j] = tmp;
+    }
+
+
+    private Map<Character, Integer> getPalindromeMap(char[] words) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (char word : words) {
+            Integer num = map.getOrDefault(word, 0);
+            num++;
+            map.put(word, num);
+        }
+        return map;
     }
 
 
