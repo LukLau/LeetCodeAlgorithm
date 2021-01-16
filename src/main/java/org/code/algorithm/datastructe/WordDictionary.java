@@ -5,6 +5,12 @@ package org.code.algorithm.datastructe;
  * @date 2020/10/22
  */
 public class WordDictionary {
+    public static void main(String[] args) {
+        WordDictionary wordDictionary = new WordDictionary();
+        wordDictionary.addWord("at");
+        wordDictionary.search(".at");
+    }
+
     private Trie root;
 
     /**
@@ -12,12 +18,6 @@ public class WordDictionary {
      */
     public WordDictionary() {
         root = new Trie();
-    }
-
-    public static void main(String[] args) {
-        WordDictionary wordDictionary = new WordDictionary();
-        wordDictionary.addWord("at");
-        wordDictionary.search(".at");
     }
 
     /**

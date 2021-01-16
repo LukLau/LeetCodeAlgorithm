@@ -8,27 +8,25 @@ package org.code.algorithm.datastructe;
  */
 public class Trie {
 
-
-    private final TrieNode root;
+    TrieNode root;
 
     /**
      * Initialize your data structure here.
      */
     public Trie() {
-        this.root = new TrieNode();
+        root = new TrieNode();
     }
 
     /**
      * Inserts a word into the trie.
      */
     public void insert(String word) {
-        if (word == null) {
+        if (word == null || word.isEmpty()) {
             return;
         }
         TrieNode p = root;
-        char[] words = word.toCharArray();
-        for (char tmp : words) {
-            int index = tmp - 'a';
+        for (int i = 0; i < word.length(); i++) {
+            int index = word.charAt(i) - 'a';
             if (p.words[index] == null) {
                 p.words[index] = new TrieNode();
             }
@@ -45,66 +43,62 @@ public class Trie {
             return true;
         }
         TrieNode p = root;
-        int m = word.length();
-        for (int i = 0; i < m; i++) {
-            char tmp = word.charAt(i);
-            if (p.words[tmp - 'a'] == null) {
+        for (int i = 0; i < word.length(); i++) {
+
+            int index = word.charAt(i) - 'a';
+            if (p.words[index] == null) {
                 return false;
             }
-            p = p.words[tmp - 'a'];
+            p = p.words[index];
+
         }
         return word.equals(p.word);
     }
 
     public boolean searchV2(String word) {
         if (word == null || word.isEmpty()) {
-            return false;
+            return true;
         }
         return intervalSearchV2(root, word);
     }
 
     private boolean intervalSearchV2(TrieNode root, String word) {
-        int m = word.length();
-
-        TrieNode q = root;
-
-        for (int i = 0; i < m; i++) {
-            if (word.charAt(i) == '.') {
-                for (TrieNode trieNode : q.words) {
-                    if (trieNode != null && intervalSearchV2(trieNode, word.substring(i + 1))) {
-                        return true;
+        for (int i = 0; i < word.length(); i++) {
+            char tmp = word.charAt(i);
+            if (tmp == '.') {
+                for (TrieNode trieNode : root.words) {
+                    if (trieNode != null) {
+                        if (intervalSearchV2(trieNode, word.substring(i + 1))) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             } else {
                 int index = word.charAt(i) - 'a';
-
-                if (q.words[index] == null) {
+                if (root.words[index] == null) {
                     return false;
                 }
-                q = q.words[index];
+                root = root.words[index];
             }
         }
-        return !"".equals(q.word);
-
+        return !"".equals(root.word);
     }
 
     /**
      * Returns if there is any word in the trie that starts with the given prefix.
      */
     public boolean startsWith(String prefix) {
-        if (prefix == null || prefix.isEmpty()) {
-            return false;
+        if (prefix == null || prefix.length() == 0) {
+            return true;
         }
-        char[] prefixWords = prefix.toCharArray();
         TrieNode p = root;
-        int m = prefix.length();
-        for (int i = 0; i < m; i++) {
-            char tmp = prefix.charAt(i);
-            if (p.words[tmp - 'a'] == null) {
+        for (int i = 0; i < prefix.length(); i++) {
+            int index = prefix.charAt(i) - 'a';
+            if (p.words[index] == null) {
                 return false;
             }
-            p = p.words[tmp - 'a'];
+            p = p.words[index];
         }
         return true;
     }

@@ -20,10 +20,31 @@ public class TwoPage {
 
         String[] tokens = new String[]{"4", "3", "-"};
 
-        String s = "pineapplepenapple";
 
-        List<String> words = Arrays.asList("apple", "pen", "applepen", "pine", "pineapple");
-        page.wordBreakV2(s, words);
+//        String s = "catsanddog";
+//
+//        ListNode head = new ListNode(1);
+//
+//        ListNode two = new ListNode(2);
+//
+//        head.next = two;
+//
+//        ListNode three = new ListNode(3);
+//
+//        two.next = three;
+//
+//        three.next = new ListNode(4);
+//
+//        three.next.next = new ListNode(5);
+
+//        List<String> wordDict = Arrays.asList("cat", "cats", "and", "sand", "dog");
+//        page.wordBreakV2(s, wordDict);
+
+//        page.reorderList(head);
+//        String word = "the sky is blue";
+//        page.reverseWords(word.toCharArray());
+
+        int[] nums = new int[]{1, 2, 3, 1};
     }
 
     /**
@@ -655,38 +676,28 @@ public class TwoPage {
         if (nums == null || nums.length == 0) {
             return 0;
         }
+        HashMap<Integer, Integer> map = new HashMap<>();
         int result = 0;
-
-        Map<Integer, Integer> map = new HashMap<>();
-
         for (int num : nums) {
-
             if (map.containsKey(num)) {
                 continue;
             }
-            Integer left = map.getOrDefault(num - 1, 0);
+            Integer leftSide = map.getOrDefault(num - 1, 0);
+            Integer rightSide = map.getOrDefault(num + 1, 0);
 
-            Integer right = map.getOrDefault(num + 1, 0);
-
-            int tmp = left + right + 1;
+            int tmp = leftSide + rightSide + 1;
 
             result = Math.max(result, tmp);
 
-            map.put(num - left, tmp);
+            map.put(num - leftSide, tmp);
 
-            map.put(num + right, tmp);
+            map.put(num + rightSide, tmp);
 
             map.put(num, tmp);
         }
         return result;
     }
 
-    /**
-     * 129. Sum Root to Leaf Numbers
-     *
-     * @param root
-     * @return
-     */
     public int sumNumbers(TreeNode root) {
         if (root == null) {
             return 0;
@@ -696,7 +707,7 @@ public class TwoPage {
 
     private int intervalSumNumbers(int val, TreeNode root) {
         if (root == null) {
-            return val;
+            return 0;
         }
         int tmp = val * 10 + root.val;
         if (root.left == null && root.right == null) {
@@ -824,28 +835,20 @@ public class TwoPage {
     }
 
 
-    /**
-     * 132. Palindrome Partitioning II
-     *
-     * @param s
-     * @return
-     */
     public int minCut(String s) {
         if (s == null || s.isEmpty()) {
             return 0;
         }
         int len = s.length();
-
         int[] cut = new int[len];
-
         boolean[][] dp = new boolean[len][len];
-
-        for (int i = 1; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             int minCut = i;
             for (int j = 0; j <= i; j++) {
-                dp[j][i] = s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1]);
-                if (dp[j][i]) {
-                    minCut = j == 0 ? 0 : 1 + Math.min(minCut, cut[j - 1] + 1);
+                if (s.charAt(j) == s.charAt(i) && (i - j < 2 || dp[j + 1][i - 1])) {
+                    dp[j][i] = true;
+
+                    minCut = j == 0 ? 0 : Math.min(minCut, cut[j - 1] + 1);
                 }
             }
             cut[i] = minCut;
@@ -872,23 +875,24 @@ public class TwoPage {
      * @return
      */
     public int canCompleteCircuit(int[] gas, int[] cost) {
-        if (gas == null || gas.length == 0) {
+        if (gas == null || gas.length == 0 || cost == null || cost.length == 0) {
             return -1;
         }
-        int global = 0;
-        int local = 0;
-        int index = 0;
+        int globalCost = 0;
+        int localCost = 0;
+        int index = -1;
         for (int i = 0; i < gas.length; i++) {
-            global += gas[i] - cost[i];
+            globalCost += gas[i] - cost[i];
 
-            local += gas[i] - cost[i];
+            localCost += gas[i] - cost[i];
 
-            if (local < 0) {
-                index = i + 1;
-                local = 0;
+            if (localCost < 0) {
+                index = i;
+                localCost = 0;
             }
         }
-        return global < 0 ? -1 : index;
+
+        return globalCost < 0 ? -1 : index + 1;
     }
 
     public int candy(int[] ratings) {
@@ -926,7 +930,6 @@ public class TwoPage {
 
 
     /**
-     * https://leetcode.com/problems/single-number-ii/
      * todo 137. 只出现一次的数字 II
      *
      * @param nums
@@ -938,106 +941,95 @@ public class TwoPage {
     }
 
 
-    /**
-     * 138 Copy List with Random Pointer
-     *
-     * @param head
-     * @return
-     */
     public Node copyRandomList(Node head) {
         if (head == null) {
             return null;
         }
-        Node current = head;
 
-        while (current != null) {
-
-            Node node = new Node(current.val);
-
-            node.next = current.next;
-
-            current.next = node;
-
-            current = node.next;
-        }
-        current = head;
-        while (current != null) {
-            Node tmp = current.next;
-            if (current.random != null) {
-                tmp.random = current.random.next;
+        Node currentNode = head;
+        while (currentNode != null) {
+            Node tmp = new Node(currentNode.val);
+            if (currentNode.next != null) {
+                tmp.next = currentNode.next;
             }
-            current = tmp.next;
+            currentNode.next = tmp;
+            currentNode = tmp.next;
         }
-        current = head;
-        Node copyHead = head.next;
-        while (current.next != null) {
-            Node next = current.next;
-            current.next = next.next;
-            current = next;
+        currentNode = head;
+        while (currentNode != null) {
+            Node tmp = currentNode.next;
+            if (currentNode.random != null) {
+                tmp.random = currentNode.random.next;
+            }
+            currentNode = tmp.next;
         }
-        return copyHead;
+        currentNode = head;
+
+        Node randomHead = head.next;
+        while (currentNode.next != null) {
+            Node tmp = currentNode.next;
+            currentNode.next = tmp.next;
+            currentNode = tmp;
+        }
+        return randomHead;
     }
 
 
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s == null || wordDict == null || wordDict.isEmpty()) {
-            return false;
+        if (s == null || s.isEmpty()) {
+            return true;
         }
-        Map<String, Boolean> map = new HashMap<>();
+        HashMap<String, Boolean> map = new HashMap<>();
         return intervalWordBreak(map, s, wordDict);
     }
 
-    public boolean intervalWordBreak(Map<String, Boolean> map, String s, List<String> wordDict) {
-        if (map.containsKey(s)) {
-            return map.get(s);
-        }
+    private boolean intervalWordBreak(HashMap<String, Boolean> map, String s, List<String> wordDict) {
         if (s.isEmpty()) {
             return true;
         }
-        for (String word : wordDict) {
-
-            if (!s.startsWith(word)) {
+        if (map.containsKey(s)) {
+            return map.get(s);
+        }
+        for (String dict : wordDict) {
+            int index = s.indexOf(dict);
+            if (index != 0) {
                 continue;
             }
-            String tmp = s.substring(word.length());
-            if (intervalWordBreak(map, tmp, wordDict)) {
+            String substring = s.substring(dict.length());
+            if (intervalWordBreak(map, substring, wordDict)) {
+                map.put(s, true);
                 return true;
             }
-            map.put(tmp, false);
         }
+        map.put(s, false);
         return false;
     }
 
 
     public List<String> wordBreakV2(String s, List<String> wordDict) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return new ArrayList<>();
         }
-        return intervalWordBreakV2(new HashMap<>(), s, wordDict);
+        HashMap<String, List<String>> map = new HashMap<>();
+        return intervalWordBreakV2(map, s, wordDict);
     }
 
-    private List<String> intervalWordBreakV2(Map<String, List<String>> map, String s, List<String> wordDict) {
+    private List<String> intervalWordBreakV2(HashMap<String, List<String>> map, String s, List<String> wordDict) {
         if (map.containsKey(s)) {
             return map.get(s);
         }
-        List<String> result = new ArrayList<>();
         if (s.isEmpty()) {
-            result.add(s);
-            return result;
+            return Arrays.asList("");
         }
+        List<String> result = new ArrayList<>();
         for (String word : wordDict) {
             int index = s.indexOf(word);
             if (index != 0) {
                 continue;
             }
-            String tmp = s.substring(word.length());
-
-            List<String> items = intervalWordBreakV2(map, tmp, wordDict);
-
-            if (!items.isEmpty()) {
-                for (String item : items) {
-                    result.add(word + (item.isEmpty() ? "" : " " + item));
-                }
+            List<String> tmp = intervalWordBreakV2(map, s.substring(word.length()), wordDict);
+            for (String t : tmp) {
+                result.add(word + (t.isEmpty() ? "" : " ") + t);
             }
         }
         map.put(s, result);
@@ -1321,26 +1313,54 @@ public class TwoPage {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        int max = nums[0];
-        int min = nums[0];
         int result = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            int tmpMax = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+        int minValue = nums[0];
+        int maxValue = nums[0];
 
-            int tmpMin = Math.min(Math.min(max * nums[i], min * nums[i]), nums[i]);
+        for (int i = 1; i < nums.length; i++) {
+            int tmpMax = Math.max(Math.max(maxValue * nums[i], minValue * nums[i]), nums[i]);
+
+            int tmpMin = Math.min(Math.min(maxValue * nums[i], minValue * nums[i]), nums[i]);
 
             result = Math.max(result, tmpMax);
 
-            max = tmpMax;
+            maxValue = tmpMax;
 
-            min = tmpMin;
-
+            minValue = tmpMin;
         }
         return result;
+
     }
 
 
     public int findMin(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return Integer.MAX_VALUE;
+        }
+        int left = 0;
+
+        int right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] < nums[right]) {
+                return nums[left];
+            }
+            int mid = left + (right - left) / 2;
+
+
+            if (nums[left] <= nums[mid]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return nums[left];
+    }
+
+
+    public int findMinV2(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return Integer.MAX_VALUE;
+        }
         int left = 0;
         int right = nums.length - 1;
         while (left < right) {
@@ -1350,6 +1370,7 @@ public class TwoPage {
                 right = mid;
             } else {
                 left = mid + 1;
+
             }
         }
         return nums[left];
@@ -1408,6 +1429,20 @@ public class TwoPage {
             p2 = p2 == null ? headA : p2.next;
         }
         return p1;
+
+    }
+
+
+    public int hammingWeight(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n = n & (n - 1);
+        }
+        return count;
 
     }
 
@@ -1578,21 +1613,15 @@ public class TwoPage {
     }
 
 
-    /**
-     * 189. Rotate Array
-     *
-     * @param nums
-     * @param k
-     */
     public void rotate(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
             return;
         }
         k %= nums.length;
-        k--;
+        k = nums.length - k;
+        swapArray(nums, 0, k - 1);
+        swapArray(nums, k, nums.length - 1);
         swapArray(nums, 0, nums.length - 1);
-        swapArray(nums, 0, k);
-        swapArray(nums, k + 1, nums.length - 1);
     }
 
     private void swapArray(int[] nums, int start, int end) {
@@ -1615,18 +1644,7 @@ public class TwoPage {
      * @return
      */
     public int reverseBits(int n) {
-        int result = 0;
-
-        for (int i = 0; i < 32; i++) {
-            result += n & 1;
-
-            n >>= 1;
-
-            if (i < 31) {
-                result <<= 1;
-            }
-        }
-        return result;
+        return -1;
     }
 
     /**
@@ -1682,17 +1700,22 @@ public class TwoPage {
         }
         List<Integer> result = new ArrayList<>();
         LinkedList<TreeNode> linkedList = new LinkedList<>();
+
         linkedList.add(root);
+
         while (!linkedList.isEmpty()) {
+
             int size = linkedList.size();
+
             for (int i = 0; i < size; i++) {
-                TreeNode node = linkedList.poll();
+
+                TreeNode node = linkedList.pollFirst();
 
                 if (node.left != null) {
-                    linkedList.offer(node.left);
+                    linkedList.add(node.left);
                 }
                 if (node.right != null) {
-                    linkedList.offer(node.right);
+                    linkedList.add(node.right);
                 }
                 if (i == size - 1) {
                     result.add(node.val);
@@ -1700,6 +1723,7 @@ public class TwoPage {
             }
         }
         return result;
+
     }
 
 
@@ -1715,15 +1739,15 @@ public class TwoPage {
                 if (grid[i][j] == '1') {
                     intervalIslands(i, j, grid);
                     count++;
-
                 }
             }
         }
         return count;
+
     }
 
     private void intervalIslands(int i, int j, char[][] grid) {
-        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length) {
+        if (i < 0 || i == grid.length || j < 0 || j == grid[i].length) {
             return;
         }
         if (grid[i][j] != '1') {

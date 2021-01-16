@@ -1,9 +1,5 @@
 package org.code.algorithm.leetcode;
 
-import org.code.algorithm.datastructe.ListNode;
-import org.code.algorithm.datastructe.TreeLinkNode;
-import org.code.algorithm.datastructe.TreeNode;
-
 import java.util.*;
 
 /**
@@ -13,18 +9,6 @@ import java.util.*;
  * @date 2020/10/15
  */
 public class MathSolution {
-
-    public static void main(String[] args) {
-        MathSolution solution = new MathSolution();
-        int[] nums = new int[]{3, 2, 3};
-
-        int n = 19;
-
-        solution.numSquares(12);
-    }
-
-
-    // --- 单个数字问题 ---//
 
     /**
      * 136. Single Number
@@ -53,33 +37,6 @@ public class MathSolution {
 
 
     /**
-     * 260. Single Number III
-     *
-     * @param nums
-     * @return
-     */
-    public int[] singleNumberIII(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return new int[]{};
-        }
-        int result = 0;
-        for (int num : nums) {
-            result ^= num;
-        }
-        result &= -result;
-        int[] ans = new int[2];
-        for (int num : nums) {
-            if ((num & result) == 0) {
-                ans[0] ^= num;
-            } else {
-                ans[1] ^= num;
-            }
-        }
-        return ans;
-    }
-
-
-    /**
      * 149. Max Points on a Line
      *
      * @param points
@@ -89,49 +46,61 @@ public class MathSolution {
         if (points == null || points.length == 0) {
             return 0;
         }
+
         int result = 0;
         for (int i = 0; i < points.length; i++) {
-            int overlap = 0;
-            int num = 0;
-            Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+            HashMap<Integer, Map<Integer, Integer>> map = new HashMap<>();
+            int repeatPoint = 0;
+            int distinctPoint = 0;
             for (int j = i + 1; j < points.length; j++) {
                 int x = points[j][0] - points[i][0];
                 int y = points[j][1] - points[i][1];
 
                 if (x == 0 && y == 0) {
-                    overlap++;
+                    repeatPoint++;
                     continue;
                 }
                 int gcd = gcd(x, y);
-
                 x /= gcd;
-
                 y /= gcd;
+                if (map.containsKey(x)) {
+                    Map<Integer, Integer> vertical = map.get(x);
 
-                if (!map.containsKey(x)) {
-                    Map<Integer, Integer> tmp = new HashMap<>();
-                    tmp.put(y, 1);
-                    map.put(x, tmp);
+                    if (vertical.containsKey(y)) {
+                        Integer point = vertical.get(y);
+                        vertical.put(y, point + 1);
+                    } else {
+                        vertical.put(y, 1);
+                    }
                 } else {
-                    Map<Integer, Integer> tmp = map.get(x);
-
-                    Integer count = tmp.getOrDefault(y, 0);
-
-                    tmp.put(y, count + 1);
+                    Map<Integer, Integer> vertical = new HashMap<>();
+                    vertical.put(y, 1);
+                    map.put(x, vertical);
                 }
-                num = Math.max(num, map.get(x).get(y));
+                distinctPoint = Math.max(distinctPoint, map.get(x).get(y));
             }
-            result = Math.max(result, overlap + num + 1);
+            result = Math.max(result, distinctPoint + repeatPoint + 1);
         }
         return result;
     }
 
-    private int gcd(int a, int b) {
-        if (b == 0) {
-            return a;
+
+    private int gcd(int x, int y) {
+        if (y == 0) {
+            return x;
         }
-        return gcd(b, a % b);
+        return gcd(y, x % y);
     }
+
+    public static void main(String[] args) {
+        MathSolution solution = new MathSolution();
+        int[] nums = new int[]{3, 2, 3};
+
+        int n = 19;
+
+        solution.isHappy(8);
+    }
+
 
     /**
      * 152. Maximum Product Subarray
@@ -210,14 +179,16 @@ public class MathSolution {
      */
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
         // write your code here
-        if (nums == null || nums.length == 0) {
+        if (nums == null) {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
+
         for (int num : nums) {
-            if (num > lower && num >= lower + 1) {
-                String tmp = constructRange(lower, num - 1);
-                result.add(tmp);
+            if (num > lower) {
+                String range = constructRange(lower, num - 1);
+
+                result.add(range);
             }
             if (num == upper) {
                 return result;
@@ -225,18 +196,18 @@ public class MathSolution {
             lower = num + 1;
         }
         if (lower <= upper) {
-            result.add(constructRange(lower + 1, upper));
+            String word = constructRange(lower, upper);
+            result.add(word);
         }
         return result;
     }
 
     private String constructRange(int start, int end) {
-        return start == end ? String.valueOf(start) : start + "->" + end;
+        return start == end ? start + "" : start + "->" + end;
     }
 
 
     /**
-     * moore vote
      * 摩尔投票法
      * 169. Majority Element
      *
@@ -252,70 +223,12 @@ public class MathSolution {
             } else {
                 count--;
             }
-
             if (count == 0) {
                 candidate = num;
                 count = 1;
             }
         }
         return candidate;
-    }
-
-
-    /**
-     * todo
-     * 229. Majority Element II
-     *
-     * @param nums
-     * @return
-     */
-    public List<Integer> majorityElementII(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return new ArrayList<>();
-        }
-        List<Integer> result = new ArrayList<>();
-        int candidateA = nums[0];
-        int candidateB = nums[0];
-        int countA = 0;
-        int countB = 0;
-        for (int num : nums) {
-            if (num == candidateA) {
-                countA++;
-                continue;
-            }
-            if (num == candidateB) {
-                countB++;
-                continue;
-            }
-            if (countA == 0) {
-                candidateA = num;
-                countA = 1;
-                continue;
-            }
-            if (countB == 0) {
-                candidateB = num;
-                countB = 1;
-                continue;
-            }
-            countA--;
-            countB--;
-        }
-        countA = 0;
-        countB = 0;
-        for (int num : nums) {
-            if (num == candidateA) {
-                countA++;
-            } else if (num == candidateB) {
-                countB++;
-            }
-        }
-        if (3 * countA > nums.length) {
-            result.add(candidateA);
-        }
-        if (3 * countB > nums.length) {
-            result.add(candidateB);
-        }
-        return result;
     }
 
 
@@ -422,250 +335,28 @@ public class MathSolution {
      */
     public boolean isHappy(int n) {
         Set<Integer> repeat = new HashSet<>();
-
         while (n != 1) {
-
             int tmp = n;
-
-            int val = 0;
+            int value = 0;
 
             while (tmp != 0) {
-                int num = tmp % 10;
-                val += num * num;
+                int remain = tmp % 10;
 
-                tmp = tmp / 10;
+                value += remain * remain;
+
+                tmp /= 10;
             }
-            if (repeat.contains(val)) {
+            if (value == 1) {
+                return true;
+            }
+
+            if (repeat.contains(value)) {
                 return false;
             }
-            repeat.add(val);
-            n = val;
+            repeat.add(value);
+            n = value;
         }
         return true;
-    }
-
-
-    /**
-     * 231. Power of Two
-     *
-     * @param n
-     * @return
-     */
-    public boolean isPowerOfTwo(int n) {
-        if (n <= 0) {
-            return false;
-        }
-        int result = n & (n - 1);
-        return result == 0;
-    }
-
-    /**
-     * todo
-     * 233. Number of Digit One
-     *
-     * @param n
-     * @return
-     */
-    public int countDigitOne(int n) {
-        return -1;
-    }
-
-
-    public int addDigits(int num) {
-        return 1 + (num - 1) % 9;
-
-    }
-
-
-    public int missingNumber(int[] nums) {
-        int len = nums.length;
-        int result = (len) * (len + 1) / 2;
-        for (int num : nums) {
-            result -= num;
-        }
-        return result;
-    }
-
-
-    // --- 丑数系列 ---//
-
-    /**
-     * todo
-     * 263. Ugly Number
-     *
-     * @param num
-     * @return
-     */
-    public boolean isUgly(int num) {
-        if (num < 7) {
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * todo 使用曼哈顿距离
-     * 296 Best Meeting Point
-     *
-     * @param grid: a 2D grid
-     * @return: the minimize travel distance
-     */
-    public int minTotalDistance(int[][] grid) {
-        // Write your code here
-        // Write your code here
-        if (grid == null || grid.length == 0) {
-            return -1;
-        }
-        int row = grid.length;
-        int column = grid[0].length;
-        int[] rowIndex = new int[row];
-        int[] columnIndex = new int[column];
-        for (int i = 0; i < grid.length; i++) {
-            int[] item = grid[i];
-            rowIndex[i] = item[0];
-            rowIndex[i] = item[1];
-        }
-        Arrays.sort(rowIndex);
-        Arrays.sort(columnIndex);
-        int result = 0;
-        result += intervalDistance(rowIndex,0, rowIndex.length - 1);
-        result += intervalDistance(rowIndex,0, rowIndex.length - 1);
-
-        return result;
-    }
-
-    private int intervalDistance(int[] nums, int start, int end) {
-        int result = 0;
-        while (start < end) {
-            result += nums[end] - nums[start];
-            start++;
-            end--;
-        }
-        return result;
-    }
-
-
-    /**
-     * 稀疏矩阵算法
-     * todo Sparse Matrix Multiplication
-     *
-     * @param A: a sparse matrix
-     * @param B: a sparse matrix
-     * @return: the result of A * B
-     */
-    public int[][] multiply(int[][] A, int[][] B) {
-        // write your code here
-        int rowA = A.length;
-        int columnA = A[0].length;
-        int columnB = B[0].length;
-        int[][] result = new int[rowA][columnB];
-        for (int i = 0; i < rowA; i++) {
-            for (int k = 0; k < columnA; k++) {
-                if (A[i][k] == 0) {
-                    continue;
-                }
-                for (int j = 0; j < columnB; j++) {
-                    result[i][j] += A[i][k] * B[k][j];
-                }
-
-            }
-        }
-        return result;
-    }
-
-
-    public ListNode deleteDuplication(ListNode pHead) {
-        if (pHead == null || pHead.next == null) {
-            return pHead;
-        }
-        ListNode next = pHead.next;
-        if (pHead.val == next.val) {
-            while (next != null && next.val == pHead.val) {
-                next = next.next;
-            }
-            return deleteDuplication(next);
-        }
-        pHead.next = deleteDuplication(pHead.next);
-        return pHead;
-    }
-
-
-    public TreeLinkNode GetNext(TreeLinkNode pNode) {
-        if (pNode == null) {
-            return null;
-        }
-        TreeLinkNode nextNode = pNode.right;
-        if (nextNode != null) {
-            while (nextNode.left != null) {
-                nextNode = nextNode.left;
-            }
-            return nextNode;
-        }
-        while (pNode.next != null) {
-            if (pNode.next.left == pNode) {
-                return pNode.next;
-            }
-            pNode = pNode.next;
-        }
-        return null;
-    }
-
-    public boolean isSymmetrical(TreeNode pRoot) {
-        if (pRoot == null) {
-            return true;
-        }
-        return intervalSymmetrical(pRoot.left, pRoot.right);
-    }
-
-    private boolean intervalSymmetrical(TreeNode left, TreeNode right) {
-        if (left == null && right == null) {
-            return true;
-        }
-        if (left == null || right == null) {
-            return false;
-        }
-        if (left.val != right.val) {
-            return false;
-        }
-        return intervalSymmetrical(left.left, right.right) && intervalSymmetrical(left.right, right.left);
-    }
-
-
-    /**
-     * todo
-     * 273. Integer to English Words
-     *
-     * @param num
-     * @return
-     */
-    public String numberToWords(int num) {
-        return null;
-    }
-
-
-    /**
-     * 279. Perfect Squares
-     *
-     * @param n
-     * @return
-     */
-    public int numSquares(int n) {
-        if (n == 1) {
-            return 1;
-        }
-        int[] dp = new int[n + 1];
-        dp[0] = 0;
-        dp[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            int tmp = i;
-            for (int j = 1; j * j <= i; j++) {
-                int key1 = dp[i - j * j];
-                tmp = Math.min(tmp, key1 + 1);
-            }
-            dp[i] = tmp;
-        }
-        return dp[n];
     }
 
 

@@ -22,8 +22,6 @@ public class Node {
         this.key = key;
     }
 
-
-
     public Node(int val) {
         this.val = val;
     }

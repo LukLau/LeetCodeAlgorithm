@@ -6,8 +6,6 @@ import org.code.algorithm.datastructe.Trie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * @author dora
@@ -19,8 +17,7 @@ public class RecursionSolution {
         char[][] board = new char[][]{{'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'}};
         String[] words = new String[]{"oath", "pea", "eat", "rain"};
 
-        String num = "105";
-        solution.addOperators(num, 5);
+        solution.findWords(board, words);
     }
 
 
@@ -69,21 +66,24 @@ public class RecursionSolution {
         int column = board[0].length;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                boolean edge = i == 0 || i == row - 1 || j == 0 || j == column - 1;
-                if (edge && board[i][j] == 'O') {
+                boolean edgeScene = i == 0 || i == row - 1 || j == 0 || j == column - 1;
+                if (edgeScene && board[i][j] == 'O') {
                     dfsReplace(i, j, board);
                 }
             }
         }
+
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (board[i][j] == '0') {
+                if (board[i][j] == 'o') {
                     board[i][j] = 'O';
                 } else if (board[i][j] == 'O') {
                     board[i][j] = 'X';
                 }
             }
         }
+
+
     }
 
     private void dfsReplace(int i, int j, char[][] board) {
@@ -93,7 +93,8 @@ public class RecursionSolution {
         if (board[i][j] != 'O') {
             return;
         }
-        board[i][j] = '0';
+        board[i][j] = 'o';
+
         dfsReplace(i - 1, j, board);
         dfsReplace(i + 1, j, board);
         dfsReplace(i, j - 1, board);
@@ -140,7 +141,6 @@ public class RecursionSolution {
 
 
     /**
-     * 该题类似于 排列组合
      * todo
      * 131. Palindrome Partitioning
      *
@@ -157,12 +157,11 @@ public class RecursionSolution {
     }
 
     private void intervalPartition(List<List<String>> result, List<String> tmp, int start, String s) {
-        int len = s.length();
-        if (start == len) {
+        if (start == s.length()) {
             result.add(new ArrayList<>(tmp));
             return;
         }
-        for (int i = start; i < len; i++) {
+        for (int i = start; i < s.length(); i++) {
             if (!partitionValid(s, start, i)) {
                 continue;
             }
@@ -173,13 +172,15 @@ public class RecursionSolution {
     }
 
     private boolean partitionValid(String s, int begin, int end) {
-        if (begin > end) {
-            return false;
+        if (begin == end) {
+            return true;
         }
         while (begin < end) {
-            if (s.charAt(begin++) != s.charAt(end--)) {
+            if (s.charAt(begin) != s.charAt(end)) {
                 return false;
             }
+            begin++;
+            end--;
         }
         return true;
     }
@@ -275,22 +276,20 @@ public class RecursionSolution {
             return head;
         }
         ListNode slow = head;
-
         ListNode fast = head;
-
         while (fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
             slow = slow.next;
+            fast = fast.next.next;
         }
-        ListNode split = slow.next;
+        ListNode fastHead = slow.next;
 
         slow.next = null;
 
-        ListNode list1 = sortList(head);
-        ListNode list2 = sortList(split);
+        ListNode sortList1 = sortList(head);
 
-        return mergeList(list1, list2);
+        ListNode sortList2 = sortList(fastHead);
 
+        return mergeList(sortList1, sortList2);
     }
 
     private ListNode mergeList(ListNode node1, ListNode node2) {
@@ -312,50 +311,11 @@ public class RecursionSolution {
         }
     }
 
-    /**
-     * todo
-     * 282. Expression Add Operators
-     *
-     * @param num
-     * @param target
-     * @return
-     */
-    public List<String> addOperators(String num, int target) {
-        if (num == null || num.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<String> result = new ArrayList<>();
-        intervalAddOperators(result, "", num, 0, 0, 0, target);
-        return result;
-    }
-
-    private void intervalAddOperators(List<String> result, String s, String num, int pos, long eval, long multi, int target) {
-        if (pos == num.length() && eval == target) {
-            result.add(s);
-            return;
-        }
-        for (int i = pos; i < num.length(); i++) {
-            if (i != pos && num.charAt(pos) == '0') {
-                continue;
-            }
-            String tmp = num.substring(pos, i + 1);
-            long parse = Long.parseLong(tmp);
-            if (pos == 0) {
-                intervalAddOperators(result, s + parse, num, i + 1, eval + parse, parse, target);
-            } else {
-                intervalAddOperators(result, s + "+" + tmp, num, i + 1, eval + parse, parse, target);
-
-                intervalAddOperators(result, s + "-" + tmp, num, i + 1, eval - parse, -parse, target);
-
-                intervalAddOperators(result, s + "*" + tmp, num, i + 1, eval - multi + multi * parse, parse * multi, target);
-            }
-        }
-    }
-
 
     // --波兰数系列- //
 
     /**
+     * todo
      * 150. Evaluate Reverse Polish Notation
      *
      * @param tokens
@@ -365,35 +325,11 @@ public class RecursionSolution {
         if (tokens == null || tokens.length == 0) {
             return 0;
         }
-        Stack<Integer> stack = new Stack<>();
+        List<Integer> signIndex = new ArrayList<>();
         for (String token : tokens) {
-            if ("+".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(first + second);
-            } else if ("-".equals(token)) {
-                Integer first = stack.pop();
-                Integer second = stack.pop();
-                stack.push(second - first);
-            } else if ("*".equals(token)) {
-                Integer first = stack.pop();
 
-                Integer second = stack.pop();
-
-                stack.push(first * second);
-            } else if ("/".equals(token)) {
-
-                Integer first = stack.pop();
-
-                Integer second = stack.pop();
-
-                stack.push(second / first);
-
-            } else {
-                stack.push(Integer.parseInt(token));
-            }
         }
-        return stack.pop();
+        return -1;
     }
 
 
@@ -418,51 +354,6 @@ public class RecursionSolution {
         return node;
     }
 
-    // 深度优先遍历系列 //
-
-
-    /**
-     * 79. Word Search
-     *
-     * @param board
-     * @param word
-     * @return
-     */
-    public boolean exist(char[][] board, String word) {
-        if (board == null || board.length == 0) {
-            return false;
-        }
-        int row = board.length;
-        int column = board[0].length;
-        boolean[][] used = new boolean[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                if (board[i][j] == word.charAt(0) && intervalExist(used, board, i, j, 0, word)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean intervalExist(boolean[][] used, char[][] board, int i, int j, int k, String word) {
-        if (k == word.length()) {
-            return true;
-        }
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length || word.charAt(k) != board[i][j] || used[i][j]) {
-            return false;
-        }
-        used[i][j] = true;
-        if (intervalExist(used, board, i - 1, j, k + 1, word) |
-                intervalExist(used, board, i + 1, j, k + 1, word) ||
-                intervalExist(used, board, i, j - 1, k + 1, word) ||
-                intervalExist(used, board, i, j + 1, k + 1, word)) {
-            return true;
-        }
-        used[i][j] = false;
-        return false;
-    }
-
 
     /**
      * 212. Word Search II
@@ -472,46 +363,23 @@ public class RecursionSolution {
      * @return
      */
     public List<String> findWords(char[][] board, String[] words) {
-        if (board == null || board.length == 0 || words == null) {
+        if (board == null || board.length == 0) {
             return new ArrayList<>();
         }
-        int row = board.length;
-        int column = board[0].length;
-        boolean[][] used = new boolean[row][column];
+        List<String> result = new ArrayList<>();
         Trie trie = new Trie();
         for (String word : words) {
             trie.insert(word);
         }
-        List<String> result = new ArrayList<>();
+        int row = board.length;
+        int column = board[0].length;
+        boolean[][] used = new boolean[row][column];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                if (trie.startsWith(String.valueOf(board[i][j]))) {
-                    intervalFindWords(result, trie, used, i, j, board, "");
-                }
+
             }
         }
-        result = result.stream().distinct().collect(Collectors.toList());
         return result;
-    }
-
-    private void intervalFindWords(List<String> result, Trie trie, boolean[][] used, int i, int j, char[][] board, String prefixWord) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[j].length || used[i][j]) {
-            return;
-        }
-        prefixWord += board[i][j];
-
-        if (!trie.startsWith(prefixWord)) {
-            return;
-        }
-        if (trie.search(prefixWord)) {
-            result.add(prefixWord);
-        }
-        used[i][j] = true;
-        intervalFindWords(result, trie, used, i - 1, j, board, prefixWord);
-        intervalFindWords(result, trie, used, i + 1, j, board, prefixWord);
-        intervalFindWords(result, trie, used, i, j - 1, board, prefixWord);
-        intervalFindWords(result, trie, used, i, j + 1, board, prefixWord);
-        used[i][j] = false;
     }
 
 

@@ -10,81 +10,66 @@ import java.util.Map;
  * @date 2020/8/17
  */
 public class LRUCache {
-    private final Node head;
+    private Node head;
 
-    private final Node tail;
+    private Node tail;
 
-    private final int capacity;
+    private int capacity;
 
     private Map<Integer, Node> map;
 
+
     public LRUCache(int capacity) {
-        this.capacity = capacity;
 
         head = new Node();
-
         tail = new Node();
 
         head.next = tail;
         tail.prev = head;
 
         map = new HashMap<>();
+        this.capacity = capacity;
     }
-
-
-//    public static void main(String[] args) {
-//        LRUCache cache = new LRUCache(2);
-//        cache.put(1, 1);
-//        cache.put(2, 2);
-//        cache.get(1);
-//        cache.put(3, 3);
-//        cache.get(2);
-//        cache.put(4, 4);
-//        cache.get(1);
-//        cache.get(3);
-//        cache.get(4);
-//    }
 
     public int get(int key) {
         Node node = map.get(key);
         if (node == null) {
             return -1;
         }
-        changeNode(node);
+        intervalLru(node);
         return node.val;
     }
 
-    private void changeNode(Node node) {
+    private void intervalLru(Node node) {
         removeNode(node);
-        addFirst(node);
-    }
 
+        addToFirst(node);
+    }
 
     private void removeNode(Node node) {
-        Node prev = node.prev;
+        Node prevNode = node.prev;
 
-        Node next = node.next;
+        Node nextNode = node.next;
 
+        prevNode.next = nextNode;
 
-        prev.next = next;
-
-        next.prev = prev;
-
-        node.prev = null;
+        nextNode.prev = prevNode;
 
         node.next = null;
+
+        node.prev = null;
     }
 
-    private void addFirst(Node node) {
-        Node next = head.next;
+    private void addToFirst(Node node) {
+        Node previousFirst = head.next;
 
         head.next = node;
 
         node.prev = head;
 
-        node.next = next;
+        node.next = previousFirst;
 
-        next.prev = node;
+        previousFirst.prev = node;
     }
 
     private Node popTailNode() {
@@ -101,21 +86,37 @@ public class LRUCache {
         return lastNode;
     }
 
-    public void put(int key, int val) {
+    public void put(int key, int value) {
         Node node = map.get(key);
+
         if (node != null) {
-            node.val = val;
-            changeNode(node);
+            node.val = value;
+            intervalLru(node);
             return;
         }
-        node = new Node(key, val);
-        map.put(key, node);
-        addFirst(node);
-        if (map.size() > this.capacity) {
-
+        if (map.size() == capacity) {
             Node tailNode = popTailNode();
+
             map.remove(tailNode.key);
         }
+        node = new Node(key, value);
+
+        map.put(key, node);
+
+        addToFirst(node);
+    }
+
+    public static void main(String[] args) {
+        LRUCache cache = new LRUCache(2);
+        cache.put(1, 1);
+        cache.put(2, 2);
+        cache.get(1);
+        cache.put(3, 3);
+        cache.get(2);
+        cache.put(4, 4);
+        cache.get(1);
+        cache.get(3);
+        cache.get(4);
     }
 
 }
