@@ -13,10 +13,7 @@ public class ForPage {
 
     public static void main(String[] args) {
         ForPage page = new ForPage();
-//        int[][] matrix = new int[][]{{1, 1}, {0, 1}, {3, 3}, {3, 4}};
-        String word = "bcabc";
-//        System.out.println(page.removeDuplicateLetters(word));
-        System.out.println(page.removeDuplicateLetters("cbacdcbc"));
+        page.removeInvalidParentheses("()())()");
     }
 
     /**
@@ -27,32 +24,33 @@ public class ForPage {
      * @return
      */
     public List<String> removeInvalidParentheses(String s) {
-        if (s == null) {
-            return new ArrayList<>();
-        }
         List<String> result = new ArrayList<>();
-        Set<String> visited = new HashSet<>();
-        LinkedList<String> deque = new LinkedList<>();
-        deque.offer(s);
-        while (!deque.isEmpty()) {
-            String poll = deque.poll();
-            if (intervalInvalid(poll)) {
+        if (s == null || s.isEmpty()) {
+            return result;
+        }
+        LinkedList<String> linkedList = new LinkedList<>();
+        Set<String> repeat = new HashSet<>();
+        linkedList.offer(s);
+        while (!linkedList.isEmpty()) {
+            String poll = linkedList.poll();
+            if (validParentheses(poll)) {
                 result.add(poll);
             }
-            if (!result.isEmpty()) {
+            if (result.size() != 0) {
                 continue;
             }
             int len = poll.length();
             for (int i = 0; i < len; i++) {
-                char word = s.charAt(i);
-                if (word != '(' && word != ')') {
+
+                char character = poll.charAt(i);
+                if (character != '(' && character != ')') {
                     continue;
                 }
-                String tmp = poll.substring(0, i) + poll.substring(i + 1);
+                String t = poll.substring(0, i) + poll.substring(i + 1);
 
-                if (!visited.contains(tmp)) {
-                    visited.add(tmp);
-                    deque.offer(tmp);
+                if (!repeat.contains(t)) {
+                    repeat.add(t);
+                    linkedList.offer(t);
                 }
             }
         }
@@ -60,6 +58,30 @@ public class ForPage {
             result.add("");
         }
         return result;
+    }
+
+    private boolean validParentheses(String s) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        int count = 0;
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char tmp = s.charAt(i);
+            if (tmp != '(' && tmp != ')') {
+                continue;
+            }
+            if (count < 0) {
+                return false;
+            }
+            if (tmp == '(') {
+                count++;
+            }
+            if (tmp == ')') {
+                count--;
+            }
+        }
+        return count == 0;
     }
 
     private boolean intervalInvalid(String poll) {
